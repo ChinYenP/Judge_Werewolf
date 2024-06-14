@@ -1,0 +1,8 @@
+*.env
+node_modules/
+db_backup/
+db_temp/
+database.sqlite
+package-lock.json
+*.log
+eslint.config.mjs

@@ -1,0 +1,201 @@
+{
+    "general": {
+        "error": {
+            "display": {
+                "eng": "Something has gone wrong during the code runtime: Error ",
+                "malay": "Sesuatu telah berlaku semasa masa jalan kod: Ralat ",
+                "schi": "代码运行时出了点问题: 错误",
+                "tchi": "代碼運行時出了點問題: 錯誤",
+                "yue": "代碼運行時出咗啲問題: 錯誤"
+            },
+            "error_code": {
+                "database": {
+                    "insert_data": "D1",
+                    "delete_data": "D2",
+                    "modify_data": "D3",
+                    "search_data": "D4"
+                },
+                "command": {
+                    "undefined_prefix": "C1",
+                    "error_execute_cmd": "C2"
+                },
+                "select_menu": "S"
+            }
+        },
+        "command_args_error": {
+            "less_args": {
+                "eng": " requires more arguments.",
+                "malay": " memerlukan lebih banyak argumen.",
+                "schi": "需要更多的参数。",
+                "tchi": "需要更多的參數。",
+                "yue": "要仲參数。"
+            },
+            "wrong_args": {
+                "eng": " has wrong argument(s): ",
+                "malay": " mempunyai argumen yang salah: ",
+                "schi": "有错误的参数: ",
+                "tchi": "有錯誤的參數: ",
+                "yue": "有错误嘅參数: "
+            },
+            "much_args": {
+                "eng": " has too much arguments.",
+                "malay": " mempunyai terlalu banyak argumen.",
+                "schi": "有太多的参数。",
+                "tchi": "有太多的參數。",
+                "yue": "有太多嘅參數。"
+            }
+        },
+        "permission_error": {
+            "not_administrator": {
+                "eng": "You have no Administrator permission.",
+                "malay": "Anda tiada kebenaran Pentadbir.",
+                "schi": "您没有管理员权限。",
+                "tchi": "您沒有管理員權限。",
+                "yue": "你冇管理員權限。"
+            }
+        },
+        "message_type_error": {
+            "message_edit_error": {
+                "eng": "Error: Either the bot's message is deleted or something else wrong while editing message.",
+                "malay": "Ralat: Sama ada mesej bot telah dipadamkan atau ada masalah lain semasa mengedit mesej.",
+                "schi": "错误: 机器人的讯息被删除或编辑消息时出现其他错误。",
+                "tchi": "錯誤: 機器人的訊息被刪除或編輯消息時出現其他錯誤。",
+                "yue": "錯誤: 機械人嘅訊息畀刪除或者老編消息時出現其他錯誤。"
+            }
+        },
+        "timeout_sec": {
+            "settings": {
+                "general": 30,
+                "server": {
+                    "prefix": 15
+                }
+            }
+        },
+        "cooldown_sec": {
+            "help": 5,
+            "ping": 3,
+            "settings": 10
+        },
+        "timeout_display": {
+            "eng": "",
+            "malay": "",
+            "schi": "",
+            "tchi": "",
+            "yue": ""
+        }
+    },
+    "ping": {
+        "pong": {
+            "eng": "Pong!",
+            "malay": "Pong!",
+            "schi": "乓!",
+            "tchi": "乓!",
+            "yue": "乓!"
+        },
+        "latency": {
+            "eng": "Latency: ",
+            "malay": "Kependaman",
+            "schi": "延迟: ",
+            "tchi": "延遲: ",
+            "yue": "延遲: "
+        },
+        "ws_latency": {
+            "eng": "Websocket Latency: ",
+            "malay": "Kependaman Soket Web: ",
+            "schi": "Websocket延迟: ",
+            "tchi": "Websocket延遲: ",
+            "yue": "Websocket延遲: "
+        }
+    },
+    "help": {
+        "eng": "__List of bat bot's Commands (replace <...>)__\n\n**/help** List down all commands.\n**/ping** Replies with \"Pong\"!\n**/settings <optional arguments>** List settings for user and server if contains no/wrong arguments. Apply server settings if contains correct arguments.",
+        "malay": "__Senarai Arahan bat bot (ganti <...>)__\n\n**/help** Senarai semua arahan.\n**/ping** Balas dengan \"Pong\"!\n**/settings <argumen pilihan>** Senaraikan tetapan untuk pengguna dan pelayan jika tidak mengandungi argumen / mengandungi argumen yang salah. Gunakan tetapan pelayan jika mengandungi argumen yang betul.",
+        "schi": "__列出 bat 机器人的指令 (替换 <...>)__\n\n**/help** 列出所有指令。\n**/ping** 回复\"乓\"!\n**/settings <可选参数>** 如果不包含/错误参数, 则列出用户和服务器的设置。如果包含正确的参数, 则应用服务器设置。",
+        "tchi": "__列出 bat 機器人的指令 (替換 <...>)__\n\n**/help** 列出所有指令。\n**/ping** 回覆\"乓\"!\n**/settings <可選參數>** 如果不包含/錯誤參數, 則列出用戶和服務器的設置。如果包含正確的參數, 則應用服務器設置。",
+        "yue": "__列出 bat 機械人嘅指令 (替換 <...>)__\n\n**/help**列出所有指令。\n**/ping**回覆\"乓\"!\n**/settings <可選參數>**如果唔包含/錯誤參數, 就列出用戶同服務器嘅設置。如果包含正確嘅參數, 就應用服務器設置。"
+    },
+    "settings": {
+        "user_settings": {
+            "eng": "__User Settings__\n**Language** Set the language used for this bot. (Default: English)",
+            "malay": "__Tetapan Pengguna__\n**Bahasa** Tetapkan bahasa yang digunakan untuk bot ini. (Lalai: English)",
+            "schi": "__用户设置__\n**语言** 设置此机器人使用的语言。(预设: English)",
+            "tchi": "__用戶設置__\n**語言** 設置此機器人使用的語言。(預設: English)",
+            "yue": "__用戶設置__\n**語言**設置此機械人使用嘅語言。(預設: English)",
+            "placeholder_text": {
+                "lang": {
+                    "eng": "Language: English",
+                    "malay": "Bahasa: Bahasa Melayu",
+                    "schi": "语言: 简体中文",
+                    "tchi": "語言: 繁體中文",
+                    "yue": "語言: 粵語",
+                    "default": "Language: None (default: English)"
+                }
+            }
+        },
+        "server_settings": {
+            "eng": "__Server Settings (Administrator users can change these settings)__\n**Prefix** Set the prefix for all commands for this bot. (Default: bat)\nCommand (replace <...>): <old prefix or mention bot> settings prefix <new prefix>\nPrefix must have between 1 to 5 characters inclusive, and only contains the following characters:\n",
+            "malay": "__Tetapan Pelayan (Pengguna pentadbir boleh menukar tetapan ini)__\n**Awalan** Tetapkan awalan untuk semua arahan untuk bot ini. (Lalai: bat)\nArahan (ganti <...>): <awalan lama atau sebutan bot> settings prefix <awalan baharu>\nAwalan mesti mempunyai antara 1 hingga 5 aksara termasuk, dan hanya mengandungi aksara berikut:\n",
+            "schi": "__服务器设置 (管理员用户可以更改这些设置)__\n**前缀** 为此机器人设置所有命令的前缀。(预设: bat)\n指令(替换 <...>): <旧前缀或提及机器人> settings prefix <新前缀>\n前缀必须包含1到5个字符(含), 并且仅包含以下字符:\n",
+            "tchi": "__服務器設置 (管理員用戶可以更改這些設置)__\n**前綴** 爲此機器人設置所有命令的前綴。(預設: bat)\n指令(替換 <...>): <舊前綴或提及機器人> settings prefix <新前綴>\n前綴必須包含1到5個字符(含), 並且僅包含以下字符:\n",
+            "yue": "__服務器設置 (管理員用戶可以更改呢啲設置)__\n**前綴** 爲此機械人設置所有命令嘅前綴。(預設: bat)\n指令(替換 <...>): <舊前綴或提及機械人> settings prefix <新前綴>\n前綴一定要包含1到5個字元(含), 兼夾僅包含以下字元:\n",
+            "prefix": {
+                "invalid_prefix": {
+                    "eng": "Your new prefix is invalid.\nNote that prefix must have between 1 to 5 characters inclusive, and only contains the following characters:\n",
+                    "malay": "Awalan baharu anda tidak sah.\nPerhatikan bahawa awalan mesti mempunyai antara 1 hingga 5 aksara termasuk, dan hanya mengandungi aksara berikut:\n",
+                    "schi": "您的新前缀无效。\n注意前缀必须包含1到5个字符(含), 并且仅包含以下字符:\n",
+                    "tchi": "您的新前綴無效。\n注意前綴必須包含1到5個字符(含), 並且僅包含以下字符:\n",
+                    "yue": "您的新前綴無效。\n注意前綴一定要包含1到5個字元(含), 兼夾僅包含以下字元:\n"
+                },
+                "confirmation": {
+                    "eng": "Are you sure you want to change this bot's prefix for this server?\nNew prefix: ",
+                    "malay": "Adakah anda pasti mahu menukar awalan bot ini untuk pelayan ini?\nAwalan baharu: ",
+                    "schi": "您确定要更改该服务器的机器人前缀吗? \n新前缀: ",
+                    "tchi": "您確定要更改該服務器的機器人前綴嗎? \n新前綴: ",
+                    "yue": "你肯定要更改該服務器嘅機械人前綴嗎? \n新前綴: "
+                },
+                "button_yes": {
+                    "eng": "Yes",
+                    "malay": "Ya",
+                    "schi": "是",
+                    "tchi": "是",
+                    "yue": "系"
+                },
+                "button_no": {
+                    "eng": "No",
+                    "malay": "Tidak",
+                    "schi": "否",
+                    "tchi": "否",
+                    "yue": "否"
+                },
+                "timeout_text": {
+                    "eng": "Prefix confirmation are disabled after inactivity: ",
+                    "malay": "Pengesahan awalan dilumpuhkan selepas tidak aktif: ",
+                    "schi": "在不活动后将禁用前缀确认: ",
+                    "tchi": "在不活動後將禁用前綴確認: ",
+                    "yue": "喺唔活動後將停用前綴確認: "
+                },
+                "cancelation": {
+                    "eng": "Cancelled prefix setting.",
+                    "malay": "Tetapan awalan dibatalkan.",
+                    "schi": "取消前缀设置。",
+                    "tchi": "取消前綴設置。",
+                    "yue": "取消前綴設置。"
+                },
+                "success": {
+                    "eng": "Prefix has changed to: ",
+                    "malay": "Awalan telah berubah kepada: ",
+                    "schi": "前缀已更改为: ",
+                    "tchi": "前綴已更改為: ",
+                    "yue": "前綴已更改為: "
+                }
+            }
+        },
+        "timeout": {
+            "eng": "Settings adjustments are disabled after inactivity: ",
+            "malay": "Penyesuaian tetapan dilumpuhkan selepas tidak aktif: ",
+            "schi": "在不活动后将禁用设置调整: ",
+            "tchi": "在不活動後將禁用設置調整: ",
+            "yue": "喺唔活動後將停用設置較: "
+        }
+    }
+}
