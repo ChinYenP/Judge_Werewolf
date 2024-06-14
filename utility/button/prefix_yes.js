@@ -1,6 +1,5 @@
 const { settings_prefix_timeout_delete, settings_prefix_is_message_author, settings_get_prefix } = require('../timeout/settings_prefix_timeout.js');
 const display_text = require('../../display_text.json');
-const Sequelize = require('sequelize');
 const db = require('../../sqlite_db.js');
 
 async function button_prefix_yes(interaction) {
@@ -9,46 +8,47 @@ async function button_prefix_yes(interaction) {
         return;
     };
 
-    let prefix = await settings_get_prefix(interaction.guildId);
+    const prefix = await settings_get_prefix(interaction.guildId);
 
     //Do sequelize thing here while get output text
-	const sqlite_status = await sequelize_prefix_yes(interaction, prefix);
+    const sqlite_status = await sequelize_prefix_yes(interaction, prefix);
 
     // equivalent to: SELECT * FROM tags WHERE name = 'tagName' LIMIT 1;
     const user_settings = await db.USER_SETTINGS.findOne({ where: { clientId: interaction.user.id } });
 
-    let language = "";
+    let language = '';
     if (user_settings !== null) {
         //clientId exist
-        switch(user_settings.lang) {
-            case "eng":
-                language = "eng";
+        switch (user_settings.lang) {
+            case 'eng':
+                language = 'eng';
                 break;
-            case "malay":
-                language = "malay";
+            case 'malay':
+                language = 'malay';
                 break;
-            case "schi":
-                language = "schi";
+            case 'schi':
+                language = 'schi';
                 break;
-            case "tchi":
-                language = "tchi";
+            case 'tchi':
+                language = 'tchi';
                 break;
-            case "yue":
-                language = "yue";
+            case 'yue':
+                language = 'yue';
                 break;
             default:
-                let error_msg = display_text.general.error.display.eng + display_text.general.error.error_code.select_menu;
-                await message.reply(error_msg);
+                const error_msg = display_text.general.error.display.eng + display_text.general.error.error_code.select_menu;
+                await interaction.reply(error_msg);
         };
     } else {
         //clientId not exist
-        language = "eng";
+        language = 'eng';
     };
 
-    let Content = '';
+    const Content = '';
     switch (sqlite_status) {
         case 'err modify data':
 
+            let confirm_msg = '';
             switch (language) {
                 case 'eng':
                     confirm_msg = display_text.general.error.display.eng + display_text.general.error.error_code.database.modify_data;
@@ -68,39 +68,38 @@ async function button_prefix_yes(interaction) {
                 default:
                     confirm_msg = display_text.general.error.display.eng + display_text.general.error.error_code.select_menu;
             };
-            interaction.message.edit({ content: Content, components: [] })
+            interaction.message.edit({ content: Content, components: [] });
             break;
 
         case 'err insert data':
 
-        switch (language) {
-            case 'eng':
-                confirm_msg = display_text.general.error.display.eng + display_text.general.error.error_code.database.insert_data;
-                break;
-            case 'malay':
-                confirm_msg = display_text.general.error.display.malay + display_text.general.error.error_code.database.insert_data;
-                break;
-            case 'schi':
-                confirm_msg = display_text.general.error.display.schi + display_text.general.error.error_code.database.insert_data;
-                break;
-            case 'tchi':
-                confirm_msg = display_text.general.error.display.tchi + display_text.general.error.error_code.database.insert_data;
-                break;
-            case 'yue':
-                confirm_msg = display_text.general.error.display.yue + display_text.general.error.error_code.database.insert_data;
-                break;
-            default:
-                confirm_msg = display_text.general.error.display.eng + display_text.general.error.error_code.select_menu;
-        };
-        interaction.message.edit({ content: Content, components: [] })
-        break;
+            switch (language) {
+                case 'eng':
+                    confirm_msg = display_text.general.error.display.eng + display_text.general.error.error_code.database.insert_data;
+                    break;
+                case 'malay':
+                    confirm_msg = display_text.general.error.display.malay + display_text.general.error.error_code.database.insert_data;
+                    break;
+                case 'schi':
+                    confirm_msg = display_text.general.error.display.schi + display_text.general.error.error_code.database.insert_data;
+                    break;
+                case 'tchi':
+                    confirm_msg = display_text.general.error.display.tchi + display_text.general.error.error_code.database.insert_data;
+                    break;
+                case 'yue':
+                    confirm_msg = display_text.general.error.display.yue + display_text.general.error.error_code.database.insert_data;
+                    break;
+                default:
+                    confirm_msg = display_text.general.error.display.eng + display_text.general.error.error_code.select_menu;
+            };
+            interaction.message.edit({ content: confirm_msg, components: [] });
+            break;
 
         case 'success':
             success_display(interaction, language, prefix);
             break;
     };
 };
-
 
 
 async function sequelize_prefix_yes(interaction, prefix) {
@@ -114,28 +113,28 @@ async function sequelize_prefix_yes(interaction, prefix) {
         // equivalent to: UPDATE SETTINGS (lang) values (?) WHERE clientId='?';
         const affectedRows = await db.SERVER_SETTINGS.update({ prefix: prefix }, { where: { guildId: interaction.guildId } });
         if (affectedRows > 0) {
-            return "success";
+            return 'success';
         };
-        return "err modify data";
+        return 'err modify data';
     };
     //clientId not exist, create new data:
     try {
         // equivalent to: INSERT INTO SETTINGS (clientId, lang, hardMode) values (?, ?, ?);
-        const settings = await db.SERVER_SETTINGS.create({
+        await db.SERVER_SETTINGS.create({
             guildId: interaction.guildId,
             prefix: prefix,
         });
-        return "success";
+        return 'success';
     }
     catch (error) {
         console.log(error);
-        return "err insert data";
+        return 'err insert data';
     };
 };
 
 
 async function success_display(interaction, language, prefix) {
-    let success_msg = "";
+    let success_msg = '';
     switch (language) {
         case 'eng':
             success_msg = display_text.settings.server_settings.prefix.success.eng + prefix;
@@ -157,7 +156,7 @@ async function success_display(interaction, language, prefix) {
     };
 
     await interaction.update({ content: success_msg, components: []});
-    await settings_prefix_timeout_delete(interaction.message.id, interaction.user.id, interaction.guildId)
+    await settings_prefix_timeout_delete(interaction.message.id, interaction.user.id, interaction.guildId);
 };
 
 module.exports = { button_prefix_yes };

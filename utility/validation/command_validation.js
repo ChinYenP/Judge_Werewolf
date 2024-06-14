@@ -11,7 +11,7 @@ async function command_validation(command) {
         getCommandsPromise.then((commands) => {
             commands_collection = commands;
         });
-    } catch(error) {
+    } catch (error) {
         console.error(error);
         return;
     };

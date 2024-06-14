@@ -1,5 +1,3 @@
-const display_text = require('../display_text.json');
-const Sequelize = require('sequelize');
 const db = require('../sqlite_db.js');
 const { command_validation } = require('./validation/command_validation.js');
 
@@ -7,7 +5,7 @@ async function check_cooldown(clientId, command) {
 
     //Check command
     if (!(await command_validation(command))) {
-        console.error("Command not found during validation in cooldown.js");
+        console.error('Command not found during validation in cooldown.js');
         return (['command_not_validate']);
     }
 
@@ -15,8 +13,8 @@ async function check_cooldown(clientId, command) {
     const settings = await db.COMMAND_COOLDOWN.findOne({ where: { clientId: clientId, command: command } });
     if (settings !== null) {
         //data exist
-        let expired_date = settings.expired_date;
-        let date_now = Date.now();
+        const expired_date = settings.expired_date;
+        const date_now = Date.now();
         if (date_now < expired_date) {
             return (['cooldown_not_over', Math.float((expired_date - date_now) / 1000)]);
         };
@@ -28,11 +26,11 @@ async function update_cooldown(clientId, command, time_sec) {
 
     //Check command
     if (!(await command_validation(command))) {
-        console.error("Command not found during validation in cooldown.js");
+        console.error('Command not found during validation in cooldown.js');
         return ('command_not_validate');
     }
 
-    let expired_date = Date.now() + (time_sec * 1000);
+    const expired_date = Date.now() + (time_sec * 1000);
 
     // equivalent to: SELECT * FROM tags WHERE name = 'tagName' LIMIT 1;
     const settings = await db.COMMAND_COOLDOWN.findOne({ where: { clientId: clientId, command: command } });
@@ -40,23 +38,23 @@ async function update_cooldown(clientId, command, time_sec) {
         //data exist
         const affectedRows = await db.COMMAND_COOLDOWN.update({ expired_date: expired_date }, { where: { clientId: clientId, command: command } });
         if (affectedRows > 0) {
-            return "success";
+            return 'success';
         };
-        return "err modify data";
+        return 'err modify data';
     };
     //Data not exist
     try {
         // equivalent to: INSERT INTO SETTINGS (clientId, lang, hardMode) values (?, ?, ?);
-        const settings = await db.COMMAND_COOLDOWN.create({
+        await db.COMMAND_COOLDOWN.create({
             clientId: clientId,
             command: command,
             expired_date: expired_date
         });
-        return "success";
+        return 'success';
     }
     catch (error) {
         console.log(error);
-        return "err insert data";
+        return 'err insert data';
     };
 };
 

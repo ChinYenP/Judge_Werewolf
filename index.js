@@ -1,7 +1,7 @@
 // Require the necessary discord.js classes
 const fs = require('node:fs');
 const path = require('node:path');
-const { Client, Events, GatewayIntentBits, Collection } = require('discord.js');
+const { Client, GatewayIntentBits, Collection } = require('discord.js');
 require('dotenv').config();
 // Require Sequelize
 const db = require('./sqlite_db.js');
@@ -20,10 +20,10 @@ const client = new Client({
 
 
 try {
-	db.sequelize.authenticate();
-	console.log('Connection in index.js has been established successfully.');
+    db.sequelize.authenticate();
+    console.log('Connection in index.js has been established successfully.');
 } catch (error) {
-	console.error('Unable to connect to the database:', error);
+    console.error('Unable to connect to the database:', error);
 };
 
 
@@ -50,19 +50,18 @@ const eventsPath = path.join(__dirname, 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
 for (const file of eventFiles) {
-	const filePath = path.join(eventsPath, file);
-	const event = require(filePath);
-	if (event.once) {
-		client.once(event.name, (...args) => event.execute(...args));
-	} else {
-		client.on(event.name, (...args) => event.execute(...args));
-	};
+    const filePath = path.join(eventsPath, file);
+    const event = require(filePath);
+    if (event.once) {
+        client.once(event.name, (...args) => event.execute(...args));
+    } else {
+        client.on(event.name, (...args) => event.execute(...args));
+    };
 };
 
 
 // Log in to Discord with your client's token
 client.login(process.env.TOKEN);
-
 
 
 //Event emmitter:

@@ -1,6 +1,6 @@
 async function prefix_validation(prefix) {
-    let allow_characters = process.env.ALLOWED_PREFIX_CHARACTERS;
-    let prefix_length = prefix.length;
+    const allow_characters = process.env.ALLOWED_PREFIX_CHARACTERS;
+    const prefix_length = prefix.length;
     if (prefix_length < 1 || prefix_length > 5) {
         return (false);
     };

@@ -5,47 +5,47 @@ const db = require('../../sqlite_db.js');
 async function get_display_text(query_arr, clientId) {
     // equivalent to: SELECT * FROM tags WHERE name = 'tagName' LIMIT 1;
     const settings = await db.USER_SETTINGS.findOne({ where: { clientId: clientId } });
-    let language = "";
+    let language = '';
     if (settings !== null) {
         //clientId exist
-        switch(settings.lang) {
-            case "eng":
-                language = "eng";
+        switch (settings.lang) {
+            case 'eng':
+                language = 'eng';
                 break;
-            case "malay":
-                language = "malay";
+            case 'malay':
+                language = 'malay';
                 break;
-            case "schi":
-                language = "schi";
+            case 'schi':
+                language = 'schi';
                 break;
-            case "tchi":
-                language = "tchi";
+            case 'tchi':
+                language = 'tchi';
                 break;
-            case "yue":
-                language = "yue";
+            case 'yue':
+                language = 'yue';
                 break;
             default:
                 return ([]);
         };
     } else {
         //clientId not exist
-        language = "eng";
+        language = 'eng';
     };
 
     //Tranverse the display_text object
     try {
-        let display_arr = [];
-        for (let query_str of query_arr) {
-            let query_keys = query_str.split(".");
+        const display_arr = [];
+        for (const query_str of query_arr) {
+            const query_keys = query_str.split('.');
             let display_ref = display_text;
-            for (let key of query_keys) {
+            for (const key of query_keys) {
                 display_ref = display_ref[key];
             };
             display_arr.push(display_ref[language]);
         };
         return (display_arr);
     }
-    catch(err) {
+    catch (err) {
         console.error(err);
         return ([]);
     };

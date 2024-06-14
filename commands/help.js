@@ -8,10 +8,10 @@ module.exports = {
 
         const display_arr = await get_display_text(['help'], message.author.id);
         if (display_arr.length !== 1) {
-            await message.reply("Something went wrong during retrieving text.");
+            await message.reply('Something went wrong during retrieving text.');
             return;
         };
-        let text = display_arr[0];
+        const text = display_arr[0];
 
         await message.reply(text);
     },
