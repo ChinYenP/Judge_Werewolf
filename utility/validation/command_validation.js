@@ -1,24 +1,18 @@
 const myEmitter = require('../../emitter.js');
 const { Collection } = require('discord.js');
 
+//You should not fail this normally...
 async function command_validation(command) {
-    let commands_collection = new Collection();
     try {
         const getCommandsPromise = new Promise((resolve) => {
             myEmitter.emit('getCommands', resolve);
         });
-        // Call the function and log the latency
-        getCommandsPromise.then((commands) => {
-            commands_collection = commands;
-        });
+        const commands = await getCommandsPromise;
+        return (commands.has(command));
     } catch (error) {
         console.error(error);
-        return;
+        return (false);
     };
-    if (commands_collection.has(command)) {
-        return (true);
-    };
-    return (false);
 };
 
 module.exports = { command_validation };

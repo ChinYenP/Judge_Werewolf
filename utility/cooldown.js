@@ -16,7 +16,7 @@ async function check_cooldown(clientId, command) {
         const expired_date = settings.expired_date;
         const date_now = Date.now();
         if (date_now < expired_date) {
-            return (['cooldown_not_over', Math.float((expired_date - date_now) / 1000)]);
+            return (['cooldown_not_over', parseFloat((expired_date - date_now) / 1000)]);
         };
     };
     return (['cooldown_over']);

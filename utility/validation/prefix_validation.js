@@ -1,3 +1,4 @@
+//You should not fail this normally...
 async function prefix_validation(prefix) {
     const allow_characters = process.env.ALLOWED_PREFIX_CHARACTERS;
     const prefix_length = prefix.length;

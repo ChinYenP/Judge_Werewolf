@@ -73,11 +73,11 @@
         },
         "cooldown_sec": {
             "help": 5,
-            "ping": 3,
+            "ping": 5,
             "settings": 10
         },
         "timeout_display": {
-            "eng": "",
+            "eng": "This command has a remaining cooldown of: ",
             "malay": "",
             "schi": "",
             "tchi": "",

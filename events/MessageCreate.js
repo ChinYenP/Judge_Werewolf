@@ -20,7 +20,7 @@ module.exports = {
         //Validate prefix
         if (!(prefix_validation(preset_prefix))) {
             await message.reply('Something is wrong related to prefix.');
-            console.error(`Prefix in the guild ${message.guildId} has wrong format: ${  preset_prefix}`);
+            console.error(`Prefix in the guild ${message.guildId} has wrong format: ${preset_prefix}`);
         };
 
         // Check if the message starts with the prefix or sent by a bot
