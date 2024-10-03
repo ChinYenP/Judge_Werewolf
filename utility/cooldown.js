@@ -7,7 +7,7 @@ async function check_cooldown(clientId, command) {
     if (!(await command_validation(command))) {
         console.error('Command not found during validation in cooldown.js');
         return (['command_not_validate']);
-    }
+    };
 
     // equivalent to: SELECT * FROM tags WHERE name = 'tagName' LIMIT 1;
     const settings = await db.COMMAND_COOLDOWN.findOne({ where: { clientId: clientId, command: command } });
@@ -28,7 +28,7 @@ async function update_cooldown(clientId, command, time_sec) {
     if (!(await command_validation(command))) {
         console.error('Command not found during validation in cooldown.js');
         return ('command_not_validate');
-    }
+    };
 
     const expired_date = Date.now() + (time_sec * 1000);
 

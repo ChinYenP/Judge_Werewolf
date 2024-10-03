@@ -103,7 +103,3 @@ async function get_display_error(error_type, clientId) {
 };
 
 module.exports = { get_display_error };
-
-/*
-
-*/

@@ -9,6 +9,8 @@ module.exports = {
     async execute(message, args) {
         console.log(`Ping command ran, args: ${  args}`);
 
+        //Check cooldown
+        //let cooldown_arr = check_cooldown(message.author.id, 'ping');
 
         const sent = await message.reply({ content: 'Pinging...', fetchReply: true });
         const latency = sent.createdTimestamp - message.createdTimestamp;
