@@ -15,7 +15,7 @@ module.exports = {
             preset_prefix = settings.prefix;
         } else {
             //guildId not exist
-            preset_prefix = 'bat';
+            preset_prefix = process.env.PRESET_PREFIX;
         };
         //Validate prefix
         if (!(prefix_validation(preset_prefix))) {

@@ -108,11 +108,11 @@
         }
     },
     "help": {
-        "eng": "__List of bat bot's Commands (replace <...>)__\n\n**/help** List down all commands.\n**/ping** Replies with \"Pong\"!\n**/settings <optional arguments>** List settings for user and server if contains no/wrong arguments. Apply server settings if contains correct arguments.",
-        "malay": "__Senarai Arahan bat bot (ganti <...>)__\n\n**/help** Senarai semua arahan.\n**/ping** Balas dengan \"Pong\"!\n**/settings <argumen pilihan>** Senaraikan tetapan untuk pengguna dan pelayan jika tidak mengandungi argumen / mengandungi argumen yang salah. Gunakan tetapan pelayan jika mengandungi argumen yang betul.",
-        "schi": "__列出 bat 机器人的指令 (替换 <...>)__\n\n**/help** 列出所有指令。\n**/ping** 回复\"乓\"!\n**/settings <可选参数>** 如果不包含/错误参数, 则列出用户和服务器的设置。如果包含正确的参数, 则应用服务器设置。",
-        "tchi": "__列出 bat 機器人的指令 (替換 <...>)__\n\n**/help** 列出所有指令。\n**/ping** 回覆\"乓\"!\n**/settings <可選參數>** 如果不包含/錯誤參數, 則列出用戶和服務器的設置。如果包含正確的參數, 則應用服務器設置。",
-        "yue": "__列出 bat 機械人嘅指令 (替換 <...>)__\n\n**/help**列出所有指令。\n**/ping**回覆\"乓\"!\n**/settings <可選參數>**如果唔包含/錯誤參數, 就列出用戶同服務器嘅設置。如果包含正確嘅參數, 就應用服務器設置。"
+        "eng": "__List of Judge Werewolf bot's Commands (replace <...>)__\n\n**<prefix or mention bot> help** List down all commands.\n**<prefix or mention bot> ping** Replies with \"Pong\"!\n**<prefix or mention bot> settings <optional arguments>** List settings for user and server if contains no/wrong arguments. Apply server settings if contains correct arguments.",
+        "malay": "__Senarai Arahan Judge Werewolf bot (ganti <...>)__\n\n**<awalan atau sebutan bot> help** Senarai semua arahan.\n**<awalan atau sebutan bot> ping** Balas dengan \"Pong\"!\n**<awalan atau sebutan bot> settings <argumen pilihan>** Senaraikan tetapan untuk pengguna dan pelayan jika tidak mengandungi argumen / mengandungi argumen yang salah. Gunakan tetapan pelayan jika mengandungi argumen yang betul.",
+        "schi": "__列出 Judge Werewolf 机器人的指令 (替换 <...>)__\n\n**<旧前缀或提及机器人> help** 列出所有指令。\n**<旧前缀或提及机器人> ping** 回复\"乓\"!\n**<旧前缀或提及机器人> settings <可选参数>** 如果不包含/错误参数, 则列出用户和服务器的设置。如果包含正确的参数, 则应用服务器设置。",
+        "tchi": "__列出 Judge Werewolf 機器人的指令 (替換 <...>)__\n\n**<舊前綴或提及機器人> help** 列出所有指令。\n**<舊前綴或提及機器人> ping** 回覆\"乓\"!\n**<舊前綴或提及機器人> settings <可選參數>** 如果不包含/錯誤參數, 則列出用戶和服務器的設置。如果包含正確的參數, 則應用服務器設置。",
+        "yue": "__列出 Judge Werewolf 機械人嘅指令 (替換 <...>)__\n\n**<舊前綴或提及機器人> help** 列出所有指令。\n**<舊前綴或提及機器人> ping** 回覆\"乓\"!\n**<舊前綴或提及機器人> settings <可選參數>** 如果唔包含/錯誤參數, 就列出用戶同服務器嘅設置。如果包含正確嘅參數, 就應用服務器設置。"
     },
     "settings": {
         "user_settings": {
@@ -133,11 +133,11 @@
             }
         },
         "server_settings": {
-            "eng": "__Server Settings (Administrator users can change these settings)__\n**Prefix** Set the prefix for all commands for this bot. (Default: bat)\nCommand (replace <...>): <old prefix or mention bot> settings prefix <new prefix>\nPrefix must have between 1 to 5 characters inclusive, and only contains the following characters:\n",
-            "malay": "__Tetapan Pelayan (Pengguna pentadbir boleh menukar tetapan ini)__\n**Awalan** Tetapkan awalan untuk semua arahan untuk bot ini. (Lalai: bat)\nArahan (ganti <...>): <awalan lama atau sebutan bot> settings prefix <awalan baharu>\nAwalan mesti mempunyai antara 1 hingga 5 aksara termasuk, dan hanya mengandungi aksara berikut:\n",
-            "schi": "__服务器设置 (管理员用户可以更改这些设置)__\n**前缀** 为此机器人设置所有命令的前缀。(预设: bat)\n指令(替换 <...>): <旧前缀或提及机器人> settings prefix <新前缀>\n前缀必须包含1到5个字符(含), 并且仅包含以下字符:\n",
-            "tchi": "__服務器設置 (管理員用戶可以更改這些設置)__\n**前綴** 爲此機器人設置所有命令的前綴。(預設: bat)\n指令(替換 <...>): <舊前綴或提及機器人> settings prefix <新前綴>\n前綴必須包含1到5個字符(含), 並且僅包含以下字符:\n",
-            "yue": "__服務器設置 (管理員用戶可以更改呢啲設置)__\n**前綴** 爲此機械人設置所有命令嘅前綴。(預設: bat)\n指令(替換 <...>): <舊前綴或提及機械人> settings prefix <新前綴>\n前綴一定要包含1到5個字元(含), 兼夾僅包含以下字元:\n",
+            "eng": "__Server Settings (Administrator users can change these settings)__\n**Prefix** Set the prefix for all commands for this bot. (Default: jw)\nCommand (replace <...>): <old prefix or mention bot> settings prefix <new prefix>\nPrefix must have between 1 to 5 characters inclusive, and only contains the following characters:\n",
+            "malay": "__Tetapan Pelayan (Pengguna pentadbir boleh menukar tetapan ini)__\n**Awalan** Tetapkan awalan untuk semua arahan untuk bot ini. (Lalai: jw)\nArahan (ganti <...>): <awalan lama atau sebutan bot> settings prefix <awalan baharu>\nAwalan mesti mempunyai antara 1 hingga 5 aksara termasuk, dan hanya mengandungi aksara berikut:\n",
+            "schi": "__服务器设置 (管理员用户可以更改这些设置)__\n**前缀** 为此机器人设置所有命令的前缀。(预设: jw)\n指令(替换 <...>): <旧前缀或提及机器人> settings prefix <新前缀>\n前缀必须包含1到5个字符(含), 并且仅包含以下字符:\n",
+            "tchi": "__服務器設置 (管理員用戶可以更改這些設置)__\n**前綴** 爲此機器人設置所有命令的前綴。(預設: jw)\n指令(替換 <...>): <舊前綴或提及機器人> settings prefix <新前綴>\n前綴必須包含1到5個字符(含), 並且僅包含以下字符:\n",
+            "yue": "__服務器設置 (管理員用戶可以更改呢啲設置)__\n**前綴** 爲此機械人設置所有命令嘅前綴。(預設: jw)\n指令(替換 <...>): <舊前綴或提及機械人> settings prefix <新前綴>\n前綴一定要包含1到5個字元(含), 兼夾僅包含以下字元:\n",
             "prefix": {
                 "invalid_prefix": {
                     "eng": "Your new prefix is invalid.\nNote that prefix must have between 1 to 5 characters inclusive, and only contains the following characters:\n",
