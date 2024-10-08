@@ -20,13 +20,13 @@ module.exports = {
             fs.copyFileSync(dbFilePath, backupFilePath);
             console.log(`Database backup created successfully at ${backupFilePath}`);
         } catch (error) {
-            throw new Error('Failed to create database backup: '+ error);
+            throw new Error(`Failed to create database backup: ${ error}`);
         };
 
         await db.sequelize.sync(/*{force: true}*/).then(() => {
             console.log('Database created in ready.js successfully!');
         }).catch((error) => {
-            throw new Error('Unable to create table: '+ error);
+            throw new Error(`Unable to create table: ${ error}`);
         });
 
         console.log(`Ready! Logged in as ${client.user.tag}`);

@@ -10,19 +10,19 @@ async function menu_select_lang(interaction) {
         return;
     };
 
-    let display_text = "";
+    let display_text = '';
 
     //Do sequelize thing here while get output text
     const sqlite_status = await sequelize_select_lang(interaction, interaction.values[0]);
 
-    if (sqlite_status[0] == 0) {
+    if (sqlite_status[0] === 0) {
         display_text = await get_display_error_code(sqlite_status[1], interaction.user.id);
         if (display_text.length !== 1) {
-            console.error("DSPY error at ./interaction_elements/select menu/select_lang.js, no1");
-            await interaction.message.edit({Content: "Something has gone wrong during the code runtime: Error DSPY", Component: []});
+            console.error('DSPY error at ./interaction_elements/select menu/select_lang.js, no1');
+            await interaction.message.edit({Content: 'Something has gone wrong during the code runtime: Error DSPY', Component: []});
             return;
         };
-        console.error(sqlite_status[1] + " error at ./interaction_elements/select menu/select_lang.js, no2");
+        console.error(`${sqlite_status[1]  } error at ./interaction_elements/select menu/select_lang.js, no2`);
         await interaction.message.edit({Content: display_text[0], Component: []});
         return;
     };
@@ -30,10 +30,10 @@ async function menu_select_lang(interaction) {
     //Success
     const time_sec = config.timeout_sec.settings.user;
     const allowed_symbol_text = process.env.ALLOWED_PREFIX_CHARACTERS;
-    display_text = await get_display_text(["settings.user_settings","settings.server_settings","settings.user_settings.placeholder_text.lang","settings.timeout"], interaction.user.id);
+    display_text = await get_display_text(['settings.user_settings','settings.server_settings','settings.user_settings.placeholder_text.lang','settings.timeout'], interaction.user.id);
     if (display_text.length !== 4) {
-        console.error("DSPY error at ./interaction_elements/select menu/select_lang.js, no3");
-        await interaction.message.edit({Content: "Something has gone wrong during the code runtime: Error DSPY", Component: []});
+        console.error('DSPY error at ./interaction_elements/select menu/select_lang.js, no3');
+        await interaction.message.edit({Content: 'Something has gone wrong during the code runtime: Error DSPY', Component: []});
         return;
     };
     const rowLang = new ActionRowBuilder()
@@ -77,7 +77,7 @@ async function menu_select_lang(interaction) {
 
     async function interaction_timeout(update_msg) {
         const timeout_content = `${display_text[0]}\n\n${display_text[1] + allowed_symbol_text}\n\n${display_text[3]}`;
-        await update_msg.edit({ content: timeout_content + time_sec + "s", components: [] });
+        await update_msg.edit({ content: `${timeout_content + time_sec  }s`, components: [] });
     };
 };
 
@@ -99,7 +99,7 @@ async function sequelize_select_lang(interaction, value) {
         if (affectedRows > 0) {
             return [1];
         };
-        return [0, "D3"];
+        return [0, 'D3'];
     };
     //clientId not exist, create new data:
     try {
@@ -112,7 +112,7 @@ async function sequelize_select_lang(interaction, value) {
     }
     catch (error) {
         console.log(error);
-        return [0, "D1"];
+        return [0, 'D1'];
     };
 };
 

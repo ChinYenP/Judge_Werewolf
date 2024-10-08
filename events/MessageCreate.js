@@ -21,7 +21,7 @@ module.exports = {
         };
         //Validate prefix
         if (!(prefix_validation(preset_prefix))) {
-            await message.reply(await get_display_error_code("C3", message.author.id));
+            await message.reply(await get_display_error_code('C3', message.author.id));
             console.error('C3 error at ./events/MessageCreate.js, no1');
         };
 
@@ -36,7 +36,7 @@ module.exports = {
         } else if (message.content.startsWith(clientMention)) {
             args = message.content.slice(clientMention.length).trim().split(/ +/);
         } else {
-            await message.reply(await get_display_error_code("C3", message.author.id));
+            await message.reply(await get_display_error_code('C3', message.author.id));
             console.error('C3 error at ./events/MessageCreate.js, no2');
         };
         const commandName = args.shift().toLowerCase();
@@ -51,7 +51,7 @@ module.exports = {
         try {
             await command.execute(message, args);
         } catch (error) {
-            await message.reply(await get_display_error_code("C2", message.author.id));
+            await message.reply(await get_display_error_code('C2', message.author.id));
             console.error('C2 error at ./events/MessageCreate.js, no1');
             console.error(error);
         };

@@ -38,7 +38,7 @@ async function get_display_text(query_arr, clientId) {
                 language = 'yue';
                 break;
             default:
-                console.error("D5 error at ./utility/get_display.js, no1")
+                console.error('D5 error at ./utility/get_display.js, no1');
                 return ([]);
         };
     } else {
@@ -61,15 +61,15 @@ async function get_display_text(query_arr, clientId) {
     }
     catch (err) {
         console.error(err);
-        console.error("DSPY error at ./utility/get_display.js, no1")
+        console.error('DSPY error at ./utility/get_display.js, no1');
         return ([]);
     };
 };
 
 async function get_display_error_code(error_code, clientId) {
-    let display_arr = await get_display_text(['general.error.display'], clientId);
+    const display_arr = await get_display_text(['general.error.display'], clientId);
     if (display_arr.length !== 1) {
-        console.error("DSPY error at ./utility/get_display.js, no2")
+        console.error('DSPY error at ./utility/get_display.js, no2');
         return ([]);
     };
     return ([display_arr[0] + error_code]);

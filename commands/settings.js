@@ -12,38 +12,40 @@ module.exports = {
     async execute(message, args) {
         console.log(`Settings command ran, args: ${args}`);
 
+        let display_arr = '';
+
         //Check cooldown
-        let cooldown_arr = await check_cooldown(message.author.id, 'settings', config.cooldown_sec.settings);
+        const cooldown_arr = await check_cooldown(message.author.id, 'settings', config.cooldown_sec.settings);
         switch (cooldown_arr[0]) {
             case 0:
                 display_arr = await get_display_text(['general.timeout_display'], message.author.id);
-                if (display_arr.length != 1) {
-                    console.error("DSPY error at ./commands/settings.js, no1");
-                    await message.reply("Something has gone wrong during the code runtime: Error DSPY");
+                if (display_arr.length !== 1) {
+                    console.error('DSPY error at ./commands/settings.js, no1');
+                    await message.reply('Something has gone wrong during the code runtime: Error DSPY');
                     return;
                 };
-                await message.reply(display_arr[0] + cooldown_arr[1] + "s");
+                await message.reply(`${display_arr[0] + cooldown_arr[1]  }s`);
                 return;
             case 1:
                 break;
             case 2:
                 display_arr = await get_display_error_code(cooldown_arr[1], message.author.id);
-                if (display_arr.length != 1) {
-                    console.error("DSPY error at ./commands/settings.js, no2");
-                    await message.reply("Something has gone wrong during the code runtime: Error DSPY");
+                if (display_arr.length !== 1) {
+                    console.error('DSPY error at ./commands/settings.js, no2');
+                    await message.reply('Something has gone wrong during the code runtime: Error DSPY');
                     return;
                 };
-                console.error(cooldown_arr[1] + " error at ./commands/settings.js, no3");
+                console.error(`${cooldown_arr[1]  } error at ./commands/settings.js, no3`);
                 await message.reply(display_arr[0]);
                 return;
             default:
-                display_arr = await get_display_error_code("U", message.author.id);
-                if (display_arr.length != 1) {
-                    console.error("DSPY error at ./commands/settings.js, no4");
-                    await message.reply("Something has gone wrong during the code runtime: Error DSPY");
+                display_arr = await get_display_error_code('U', message.author.id);
+                if (display_arr.length !== 1) {
+                    console.error('DSPY error at ./commands/settings.js, no4');
+                    await message.reply('Something has gone wrong during the code runtime: Error DSPY');
                     return;
                 };
-                console.error("U error at ../commands/settings.js, no5");
+                console.error('U error at ../commands/settings.js, no5');
                 await message.reply(display_arr[0]);
                 return;
         };
@@ -51,10 +53,10 @@ module.exports = {
         //Check arguments
         if (args.length === 1) {
             //Too less arguments
-            const less_args_text = await get_display_text(["general.command_args_error.less_args"], message.author.id);
+            const less_args_text = await get_display_text(['general.command_args_error.less_args'], message.author.id);
             if (less_args_text.length !== 1) {
-                console.error("DSPY error at ./commands/settings.js, no6");
-                await message.reply("Something has gone wrong during the code runtime: Error DSPY");
+                console.error('DSPY error at ./commands/settings.js, no6');
+                await message.reply('Something has gone wrong during the code runtime: Error DSPY');
                 return;
             };
             await message.reply(`settings${  less_args_text[0]}`);
@@ -62,10 +64,10 @@ module.exports = {
         };
         if (args.length > 2) {
             //Too much arguments
-            const much_args_text = await get_display_text(["general.command_args_error.much_args"], message.author.id);
+            const much_args_text = await get_display_text(['general.command_args_error.much_args'], message.author.id);
             if (much_args_text.length !== 1) {
-                console.error("DSPY error at ./commands/settings.js, no7");
-                await message.reply("Something has gone wrong during the code runtime: Error DSPY");
+                console.error('DSPY error at ./commands/settings.js, no7');
+                await message.reply('Something has gone wrong during the code runtime: Error DSPY');
                 return;
             };
             await message.reply(`settings${  much_args_text[0]}`);
@@ -74,10 +76,10 @@ module.exports = {
         //Check administrator permission
         if (args.length === 2 && !(message.member.permissionsIn(message.channel).has('Administrator'))) {
             //No permission for server settings
-            const not_administrator_text = await get_display_text(["general.permission_error.not_administrator"], message.author.id);
+            const not_administrator_text = await get_display_text(['general.permission_error.not_administrator'], message.author.id);
             if (not_administrator_text.length !== 1) {
-                console.error("DSPY error at ./commands/settings.js, no8");
-                await message.reply("Something has gone wrong during the code runtime: Error DSPY");
+                console.error('DSPY error at ./commands/settings.js, no8');
+                await message.reply('Something has gone wrong during the code runtime: Error DSPY');
                 return;
             };
             await message.reply(`settings${  not_administrator_text[0]}`);
@@ -93,10 +95,10 @@ module.exports = {
                     return;
                 };
                 //Invalid argument for prefix
-                const invalid_prefix_text = await get_display_text(["settings.server_settings.prefix.invalid_prefix"], message.author.id);
+                const invalid_prefix_text = await get_display_text(['settings.server_settings.prefix.invalid_prefix'], message.author.id);
                 if (invalid_prefix_text.length !== 1) {
-                    console.error("DSPY error at ./commands/settings.js, no9");
-                    await message.reply("Something has gone wrong during the code runtime: Error DSPY");
+                    console.error('DSPY error at ./commands/settings.js, no9');
+                    await message.reply('Something has gone wrong during the code runtime: Error DSPY');
                     return;
                 };
                 const allow_characters = process.env.ALLOWED_PREFIX_CHARACTERS;
@@ -104,10 +106,10 @@ module.exports = {
                 return;
             };
             //Does not match any server settings
-            const args_error_text = await get_display_text(["general.command_args_error.wrong_args"], message.author.id);
+            const args_error_text = await get_display_text(['general.command_args_error.wrong_args'], message.author.id);
             if (args_error_text.length !== 1) {
-                console.error("DSPY error at ./commands/settings.js, no10");
-                await message.reply("Something has gone wrong during the code runtime: Error DSPY");
+                console.error('DSPY error at ./commands/settings.js, no10');
+                await message.reply('Something has gone wrong during the code runtime: Error DSPY');
                 return;
             };
             await message.reply(`settings${  args_error_text[0]  }${args[0]}`);
@@ -127,10 +129,10 @@ async function general_settings(message) {
     await settings_general_delete_message(message.author.id);
     const time_sec = config.timeout_sec.settings.user;
     const allowed_symbol_text = process.env.ALLOWED_PREFIX_CHARACTERS;
-    let display_arr = await get_display_text(['settings.user_settings', 'settings.server_settings', 'settings.user_settings.placeholder_text.lang', 'settings.timeout'], message.author.id);
+    const display_arr = await get_display_text(['settings.user_settings', 'settings.server_settings', 'settings.user_settings.placeholder_text.lang', 'settings.timeout'], message.author.id);
     if (display_arr.length !== 4) {
-        console.error("DSPY error at ./commands/ping.js, no11");
-        await message.reply("Something has gone wrong during the code runtime: Error DSPY");
+        console.error('DSPY error at ./commands/ping.js, no11');
+        await message.reply('Something has gone wrong during the code runtime: Error DSPY');
         return;
     };
     const rowLang = new ActionRowBuilder()
@@ -172,7 +174,7 @@ async function general_settings(message) {
     settings_general_timeout_set(bot_reply.id, message.author.id, message.channelId, time_sec, message_timeout, bot_reply);
 
     async function message_timeout(bot_reply) {
-        const timeout_content = `${display_arr[0]}\n\n${display_arr[1] + allowed_symbol_text}\n\n${display_arr[3] + time_sec + "s"}`;
+        const timeout_content = `${display_arr[0]}\n\n${display_arr[1] + allowed_symbol_text}\n\n${`${display_arr[3] + time_sec  }s`}`;
         await bot_reply.edit({ content: timeout_content, components: [] });
     };
 
@@ -183,10 +185,13 @@ async function prefix_settings(message, args) {
 
     await settings_prefix_delete_message(message.author.id);
     const time_sec = config.timeout_sec.settings.server.prefix;
-    let display_arr = await get_display_text(['settings.server_settings.prefix.confirmation', 'settings.server_settings.prefix.button_yes', 'settings.server_settings.prefix.button_no', 'settings.server_settings.prefix.timeout_text'], message.author.id);
+    const display_arr = await get_display_text(['settings.server_settings.prefix.confirmation',
+        'settings.server_settings.prefix.button_yes',
+        'settings.server_settings.prefix.button_no',
+        'settings.server_settings.prefix.timeout_text'], message.author.id);
     if (display_arr.length !== 4) {
-        console.error("DSPY error at ./commands/ping.js, no12");
-        await message.reply("Something has gone wrong during the code runtime: Error DSPY");
+        console.error('DSPY error at ./commands/ping.js, no12');
+        await message.reply('Something has gone wrong during the code runtime: Error DSPY');
         return;
     };
 
@@ -207,7 +212,7 @@ async function prefix_settings(message, args) {
     await settings_prefix_timeout_set(args[1], bot_reply.id, message.author.id, message.channelId, message.guildId, time_sec, message_timeout, bot_reply);
 
     async function message_timeout(bot_reply) {
-        const timeout_content = `${display_arr[0] + args[1]  }\n\n${display_arr[3] + time_sec + "s"}`;
+        const timeout_content = `${display_arr[0] + args[1]  }\n\n${`${display_arr[3] + time_sec  }s`}`;
         await bot_reply.edit({ content: timeout_content, components: [] });
     };
 

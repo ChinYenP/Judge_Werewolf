@@ -6,9 +6,9 @@ async function button_prefix_no(interaction) {
         return;
     };
 
-    let display_arr = await get_display_text(['settings.server_settings.prefix.cancelation'], interaction.user.id);
+    const display_arr = await get_display_text(['settings.server_settings.prefix.cancelation'], interaction.user.id);
     if (display_arr.length !== 1) {
-        await interaction.reply(await get_display_error_code("S", message.author.id));
+        await interaction.reply(await get_display_error_code('S', interaction.user.id));
         console.error('S error at ./utility/button/prefix_no.js, no1');
         return;
     };
