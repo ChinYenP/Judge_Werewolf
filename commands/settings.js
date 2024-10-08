@@ -1,54 +1,60 @@
 const { ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const display_text = require('../display_text.json');
-const db = require('../sqlite_db.js');
 const { prefix_validation } = require('../utility/validation/prefix_validation.js');
-const { get_display_text } = require('../utility/get_display/get_display_text.js');
-const { get_display_error } = require('../utility/get_display/get_display_error.js');
+const { get_display_text, get_display_error_code } = require('../utility/get_display.js');
+const { check_cooldown } = require('../utility/cooldown.js');
+const { settings_general_timeout_set, settings_general_delete_message } = require('../utility/timeout/settings_general_timeout.js');
+const { settings_prefix_timeout_set, settings_prefix_delete_message } = require('../utility/timeout/settings_prefix_timeout.js');
+const config = require('../text_data_config/config.json');
 
 module.exports = {
 
     name: 'settings',
     async execute(message, args) {
-        console.log(`Settings command ran, args: ${  args}`);
+        console.log(`Settings command ran, args: ${args}`);
 
-        // equivalent to: SELECT * FROM tags WHERE name = 'tagName' LIMIT 1;
-        const settings = await db.USER_SETTINGS.findOne({ where: { clientId: message.author.id } });
-        let language = '';
-
-        if (settings !== null) {
-            //clientId exist
-            switch (settings.lang) {
-                case 'eng':
-                    language = 'eng';
-                    break;
-                case 'malay':
-                    language = 'malay';
-                    break;
-                case 'schi':
-                    language = 'schi';
-                    break;
-                case 'tchi':
-                    language = 'tchi';
-                    break;
-                case 'yue':
-                    language = 'yue';
-                    break;
-                default:
-                    const error_msg = display_text.general.error.display.eng + display_text.general.error.error_code.select_menu;
-                    await message.reply(error_msg);
-            };
-        } else {
-            //clientId not exist
-            language = 'eng';
+        //Check cooldown
+        let cooldown_arr = await check_cooldown(message.author.id, 'settings', config.cooldown_sec.settings);
+        switch (cooldown_arr[0]) {
+            case 0:
+                display_arr = await get_display_text(['general.timeout_display'], message.author.id);
+                if (display_arr.length != 1) {
+                    console.error("DSPY error at ./commands/settings.js, no1");
+                    await message.reply("Something has gone wrong during the code runtime: Error DSPY");
+                    return;
+                };
+                await message.reply(display_arr[0] + cooldown_arr[1] + "s");
+                return;
+            case 1:
+                break;
+            case 2:
+                display_arr = await get_display_error_code(cooldown_arr[1], message.author.id);
+                if (display_arr.length != 1) {
+                    console.error("DSPY error at ./commands/settings.js, no2");
+                    await message.reply("Something has gone wrong during the code runtime: Error DSPY");
+                    return;
+                };
+                console.error(cooldown_arr[1] + " error at ./commands/settings.js, no3");
+                await message.reply(display_arr[0]);
+                return;
+            default:
+                display_arr = await get_display_error_code("U", message.author.id);
+                if (display_arr.length != 1) {
+                    console.error("DSPY error at ./commands/settings.js, no4");
+                    await message.reply("Something has gone wrong during the code runtime: Error DSPY");
+                    return;
+                };
+                console.error("U error at ../commands/settings.js, no5");
+                await message.reply(display_arr[0]);
+                return;
         };
-
 
         //Check arguments
         if (args.length === 1) {
             //Too less arguments
-            const less_args_text = await get_display_error('less_args', message.author.id);
+            const less_args_text = await get_display_text(["general.command_args_error.less_args"], message.author.id);
             if (less_args_text.length !== 1) {
-                await message.reply('Something went wrong during retrieving text.');
+                console.error("DSPY error at ./commands/settings.js, no6");
+                await message.reply("Something has gone wrong during the code runtime: Error DSPY");
                 return;
             };
             await message.reply(`settings${  less_args_text[0]}`);
@@ -56,36 +62,41 @@ module.exports = {
         };
         if (args.length > 2) {
             //Too much arguments
-            const much_args_text = await get_display_error('much_args', message.author.id);
+            const much_args_text = await get_display_text(["general.command_args_error.much_args"], message.author.id);
             if (much_args_text.length !== 1) {
-                await message.reply('Something went wrong during retrieving text.');
+                console.error("DSPY error at ./commands/settings.js, no7");
+                await message.reply("Something has gone wrong during the code runtime: Error DSPY");
                 return;
             };
             await message.reply(`settings${  much_args_text[0]}`);
             return;
         };
+        //Check administrator permission
         if (args.length === 2 && !(message.member.permissionsIn(message.channel).has('Administrator'))) {
             //No permission for server settings
-            const no_administrator_text = await get_display_error('not_administrator', message.author.id);
-            if (no_administrator_text.length !== 1) {
-                await message.reply('Something went wrong during retrieving text.');
+            const not_administrator_text = await get_display_text(["general.permission_error.not_administrator"], message.author.id);
+            if (not_administrator_text.length !== 1) {
+                console.error("DSPY error at ./commands/settings.js, no8");
+                await message.reply("Something has gone wrong during the code runtime: Error DSPY");
                 return;
             };
-            await message.reply(no_administrator_text[0]);
+            await message.reply(`settings${  not_administrator_text[0]}`);
             return;
         };
 
+        //Specific settings
         if (args.length === 2 && message.member.permissionsIn(message.channel).has('Administrator')) {
             if (args[0] === 'prefix') {
                 if (await prefix_validation(args[1])) {
                     //Valid argument for prefix
-                    await prefix_settings(message, args, language);
+                    await prefix_settings(message, args);
                     return;
                 };
                 //Invalid argument for prefix
-                const invalid_prefix_text = await get_display_error('settings_prefix_invalid', message.author.id);
+                const invalid_prefix_text = await get_display_text(["settings.server_settings.prefix.invalid_prefix"], message.author.id);
                 if (invalid_prefix_text.length !== 1) {
-                    await message.reply('Something went wrong during retrieving text.');
+                    console.error("DSPY error at ./commands/settings.js, no9");
+                    await message.reply("Something has gone wrong during the code runtime: Error DSPY");
                     return;
                 };
                 const allow_characters = process.env.ALLOWED_PREFIX_CHARACTERS;
@@ -93,9 +104,10 @@ module.exports = {
                 return;
             };
             //Does not match any server settings
-            const args_error_text = await get_display_error('wrong_args', message.author.id);
+            const args_error_text = await get_display_text(["general.command_args_error.wrong_args"], message.author.id);
             if (args_error_text.length !== 1) {
-                await message.reply('Something went wrong during retrieving text.');
+                console.error("DSPY error at ./commands/settings.js, no10");
+                await message.reply("Something has gone wrong during the code runtime: Error DSPY");
                 return;
             };
             await message.reply(`settings${  args_error_text[0]  }${args[0]}`);
@@ -103,63 +115,29 @@ module.exports = {
         };
 
         //For general settings
-        await general_settings(message, language);
-        
+        await general_settings(message);
 
     },
 
 };
 
 
-async function general_settings(message, language) {
-
-    const { settings_general_timeout_set, settings_general_delete_message } = require('../utility/timeout/settings_general_timeout.js');
+async function general_settings(message) {
 
     await settings_general_delete_message(message.author.id);
-    let user_text = '';
-    let server_text = '';
-    let placeholder_text = '';
-    let timeout_text = '';
-    const time_sec = display_text.general.timeout_sec.settings.general;
+    const time_sec = config.timeout_sec.settings.user;
     const allowed_symbol_text = process.env.ALLOWED_PREFIX_CHARACTERS;
-    switch (language) {
-        case 'eng':
-            user_text = `${display_text.settings.user_settings.eng}`;
-            server_text = `${display_text.settings.server_settings.eng}${allowed_symbol_text}`;
-            placeholder_text = display_text.settings.user_settings.placeholder_text.lang.eng;
-            timeout_text = `${display_text.settings.timeout.eng + time_sec  }s`;
-            break;
-        case 'malay':
-            user_text = `${display_text.settings.user_settings.malay}`;
-            server_text = `${display_text.settings.server_settings.malay}${allowed_symbol_text}`;
-            placeholder_text = display_text.settings.user_settings.placeholder_text.lang.malay;
-            timeout_text = `${display_text.settings.timeout.malay + time_sec  }s`;
-            break;
-        case 'schi':
-            user_text = `${display_text.settings.user_settings.schi}`;
-            server_text = `${display_text.settings.server_settings.schi}${allowed_symbol_text}`;
-            placeholder_text = display_text.settings.user_settings.placeholder_text.lang.schi;
-            timeout_text = `${display_text.settings.timeout.schi + time_sec  }s`;
-            break;
-        case 'tchi':
-            user_text = `${display_text.settings.user_settings.tchi}`;
-            server_text = `${display_text.settings.server_settings.tchi}${allowed_symbol_text}`;
-            placeholder_text = display_text.settings.user_settings.placeholder_text.lang.tchi;
-            timeout_text = `${display_text.settings.timeout.tchi + time_sec  }s`;
-            break;
-        case 'yue':
-            user_text = `${display_text.settings.user_settings.yue}`;
-            server_text = `${display_text.settings.server_settings.yue}${allowed_symbol_text}`;
-            placeholder_text = display_text.settings.user_settings.placeholder_text.lang.yue;
-            timeout_text = `${display_text.settings.timeout.yue + time_sec  }s`;
-            break;
+    let display_arr = await get_display_text(['settings.user_settings', 'settings.server_settings', 'settings.user_settings.placeholder_text.lang', 'settings.timeout'], message.author.id);
+    if (display_arr.length !== 4) {
+        console.error("DSPY error at ./commands/ping.js, no11");
+        await message.reply("Something has gone wrong during the code runtime: Error DSPY");
+        return;
     };
-
     const rowLang = new ActionRowBuilder()
         .addComponents(
             new StringSelectMenuBuilder()
                 .setCustomId('select lang')
-                .setPlaceholder(placeholder_text)
+                .setPlaceholder(display_arr[2])
                 .addOptions(
                     {
                         label: 'English',
@@ -189,79 +167,47 @@ async function general_settings(message, language) {
                 ),
         );
     
-    const Content = `${user_text  }\n\n${  server_text}`;
+    const Content = `${display_arr[0]}\n\n${display_arr[1] + allowed_symbol_text}`;
     const bot_reply = await message.reply({ content: Content, components: [rowLang] });
     settings_general_timeout_set(bot_reply.id, message.author.id, message.channelId, time_sec, message_timeout, bot_reply);
 
     async function message_timeout(bot_reply) {
-        const timeout_content = `${user_text  }\n\n${  server_text  }\n\n${  timeout_text}`;
+        const timeout_content = `${display_arr[0]}\n\n${display_arr[1] + allowed_symbol_text}\n\n${display_arr[3] + time_sec + "s"}`;
         await bot_reply.edit({ content: timeout_content, components: [] });
     };
 
 };
 
 
-async function prefix_settings(message, args, language) {
-
-    const { settings_prefix_timeout_set, settings_prefix_delete_message } = require('../utility/timeout/settings_prefix_timeout.js');
+async function prefix_settings(message, args) {
 
     await settings_prefix_delete_message(message.author.id);
-    let confirmation_text = '';
-    let button_yes_text = '';
-    let button_no_text = '';
-    let timeout_text = '';
-    const time_sec = display_text.general.timeout_sec.settings.server.prefix;
-    switch (language) {
-        case 'eng':
-            confirmation_text = display_text.settings.server_settings.prefix.confirmation.eng;
-            button_yes_text = display_text.settings.server_settings.prefix.button_yes.eng;
-            button_no_text = display_text.settings.server_settings.prefix.button_no.eng;
-            timeout_text = `${display_text.settings.server_settings.prefix.timeout_text.eng + time_sec  }s`;
-            break;
-        case 'malay':
-            confirmation_text = display_text.settings.server_settings.prefix.confirmation.malay;
-            button_yes_text = display_text.settings.server_settings.prefix.button_yes.malay;
-            button_no_text = display_text.settings.server_settings.prefix.button_no.malay;
-            timeout_text = `${display_text.settings.server_settings.prefix.timeout_text.malay + time_sec  }s`;
-            break;
-        case 'schi':
-            confirmation_text = display_text.settings.server_settings.prefix.confirmation.schi;
-            button_yes_text = display_text.settings.server_settings.prefix.button_yes.schi;
-            button_no_text = display_text.settings.server_settings.prefix.button_no.schi;
-            timeout_text = `${display_text.settings.server_settings.prefix.timeout_text.schi + time_sec  }s`;
-            break;
-        case 'tchi':
-            confirmation_text = display_text.settings.server_settings.prefix.confirmation.tchi;
-            button_yes_text = display_text.settings.server_settings.prefix.button_yes.tchi;
-            button_no_text = display_text.settings.server_settings.prefix.button_no.tchi;
-            timeout_text = `${display_text.settings.server_settings.prefix.timeout_text.tchi + time_sec  }s`;
-            break;
-        case 'yue':
-            confirmation_text = display_text.settings.server_settings.prefix.confirmation.yue;
-            button_yes_text = display_text.settings.server_settings.prefix.button_yes.yue;
-            button_no_text = display_text.settings.server_settings.prefix.button_no.yue;
-            timeout_text = `${display_text.settings.server_settings.prefix.timeout_text.yue + time_sec  }s`;
-            break;
+    const time_sec = config.timeout_sec.settings.server.prefix;
+    let display_arr = await get_display_text(['settings.server_settings.prefix.confirmation', 'settings.server_settings.prefix.button_yes', 'settings.server_settings.prefix.button_no', 'settings.server_settings.prefix.timeout_text'], message.author.id);
+    if (display_arr.length !== 4) {
+        console.error("DSPY error at ./commands/ping.js, no12");
+        await message.reply("Something has gone wrong during the code runtime: Error DSPY");
+        return;
     };
 
     const yes_button = new ButtonBuilder()
         .setCustomId('settings_prefix_yes')
-        .setLabel(button_yes_text)
+        .setLabel(display_arr[1])
         .setStyle(ButtonStyle.Success);
 
     const no_button = new ButtonBuilder()
         .setCustomId('settings_prefix_no')
-        .setLabel(button_no_text)
+        .setLabel(display_arr[2])
         .setStyle(ButtonStyle.Secondary);
     
     const rowButton = new ActionRowBuilder()
         .addComponents(yes_button, no_button);
     
-    const bot_reply = await message.reply({ content: confirmation_text + args[1], components: [rowButton] });
-    settings_prefix_timeout_set(args[1], bot_reply.id, message.author.id, message.channelId, message.guildId, time_sec, message_timeout, bot_reply);
+    const bot_reply = await message.reply({ content: display_arr[0] + args[1], components: [rowButton] });
+    await settings_prefix_timeout_set(args[1], bot_reply.id, message.author.id, message.channelId, message.guildId, time_sec, message_timeout, bot_reply);
 
     async function message_timeout(bot_reply) {
-        const timeout_content = `${confirmation_text + args[1]  }\n\n${  timeout_text}`;
+        const timeout_content = `${display_arr[0] + args[1]  }\n\n${display_arr[3] + time_sec + "s"}`;
         await bot_reply.edit({ content: timeout_content, components: [] });
     };
 

@@ -7,19 +7,6 @@
                 "schi": "代码运行时出了点问题: 错误",
                 "tchi": "代碼運行時出了點問題: 錯誤",
                 "yue": "代碼運行時出咗啲問題: 錯誤"
-            },
-            "error_code": {
-                "database": {
-                    "insert_data": "D1",
-                    "delete_data": "D2",
-                    "modify_data": "D3",
-                    "search_data": "D4"
-                },
-                "command": {
-                    "undefined_prefix": "C1",
-                    "error_execute_cmd": "C2"
-                },
-                "select_menu": "S"
             }
         },
         "command_args_error": {
@@ -54,34 +41,12 @@
                 "yue": "你冇管理員權限。"
             }
         },
-        "message_type_error": {
-            "message_edit_error": {
-                "eng": "Error: Either the bot's message is deleted or something else wrong while editing message.",
-                "malay": "Ralat: Sama ada mesej bot telah dipadamkan atau ada masalah lain semasa mengedit mesej.",
-                "schi": "错误: 机器人的讯息被删除或编辑消息时出现其他错误。",
-                "tchi": "錯誤: 機器人的訊息被刪除或編輯消息時出現其他錯誤。",
-                "yue": "錯誤: 機械人嘅訊息畀刪除或者老編消息時出現其他錯誤。"
-            }
-        },
-        "timeout_sec": {
-            "settings": {
-                "general": 30,
-                "server": {
-                    "prefix": 15
-                }
-            }
-        },
-        "cooldown_sec": {
-            "help": 5,
-            "ping": 5,
-            "settings": 10
-        },
         "timeout_display": {
             "eng": "This command has a remaining cooldown of: ",
-            "malay": "",
-            "schi": "",
-            "tchi": "",
-            "yue": ""
+            "malay": "Perintah ini mempunyai baki penyejukan sebanyak: ",
+            "schi": "该命令的剩余冷却时间为: ",
+            "tchi": "該命令的剩餘冷卻時間為: ",
+            "yue": "該命令嘅剩餘冷卻時間為: "
         }
     },
     "ping": {

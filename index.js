@@ -3,8 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 require('dotenv').config();
-// Require Sequelize
-const db = require('./sqlite_db.js');
+const db = require('./database/sqlite_db.js');
 
 // Create a new client instance
 const client = new Client({
@@ -15,22 +14,14 @@ const client = new Client({
     ],
 });
 
-//Create a cooldown checker (set)
-//const talkedRecently = new Set();
-
-
-try {
-    db.sequelize.authenticate();
-    console.log('Connection in index.js has been established successfully.');
-} catch (error) {
-    console.error('Unable to connect to the database:', error);
-};
+db.sequelize.authenticate();
+console.log('Connection in index.js has been established successfully.');
 
 
 client.commands = new Collection();
 
 // Dynamically retrieve command files
-const commandsPath = path.join(__dirname, 'commands');
+const commandsPath = path.join(__dirname, './commands');
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
@@ -46,7 +37,7 @@ for (const file of commandFiles) {
 
 
 //Event Handling
-const eventsPath = path.join(__dirname, 'events');
+const eventsPath = path.join(__dirname, './events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
 for (const file of eventFiles) {
@@ -65,7 +56,7 @@ client.login(process.env.TOKEN);
 
 
 //Event emmitter:
-const myEmitter = require('./emitter');
+const myEmitter = require('./emitter.js');
 
 myEmitter.on('getWebsocketLatency', async (callback) => {
     const ws_latency_event = await client.ws.ping;

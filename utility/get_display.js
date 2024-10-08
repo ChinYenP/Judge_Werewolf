@@ -1,7 +1,20 @@
-const display_text = require('../../display_text.json');
-const db = require('../../sqlite_db.js');
+const display_text = require('../text_data_config/display_text.json');
+const db = require('../database/sqlite_db.js');
+
+/*
+If return value after calling these functions are empty array, print the following default error text:
+'DSPY error at ./___.js, no_'
+Then display this to user before return:
+"Something has gone wrong during the code runtime: Error DSPY"
+How to check (example):
+if (display_arr.length !== 1) {
+    console.error("DSPY error at ./___.js, no1");
+    //display error code and return
+};
+*/
 
 //query_arr = [query_string1, query_string2, ...]
+//return [answer_string1, answer_string2, ...]
 async function get_display_text(query_arr, clientId) {
     // equivalent to: SELECT * FROM tags WHERE name = 'tagName' LIMIT 1;
     const settings = await db.USER_SETTINGS.findOne({ where: { clientId: clientId } });
@@ -25,6 +38,7 @@ async function get_display_text(query_arr, clientId) {
                 language = 'yue';
                 break;
             default:
+                console.error("D5 error at ./utility/get_display.js, no1")
                 return ([]);
         };
     } else {
@@ -47,8 +61,18 @@ async function get_display_text(query_arr, clientId) {
     }
     catch (err) {
         console.error(err);
+        console.error("DSPY error at ./utility/get_display.js, no1")
         return ([]);
     };
 };
 
-module.exports = { get_display_text };
+async function get_display_error_code(error_code, clientId) {
+    let display_arr = await get_display_text(['general.error.display'], clientId);
+    if (display_arr.length !== 1) {
+        console.error("DSPY error at ./utility/get_display.js, no2")
+        return ([]);
+    };
+    return ([display_arr[0] + error_code]);
+};
+
+module.exports = { get_display_text, get_display_error_code };

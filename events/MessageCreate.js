@@ -1,6 +1,8 @@
 const { Events } = require('discord.js');
-const db = require('../sqlite_db.js');
+const db = require('../database/sqlite_db.js');
 const { prefix_validation } = require('../utility/validation/prefix_validation.js');
+const config = require('../text_data_config/config.json');
+const { get_display_error_code } = require('../utility/get_display.js');
 
 module.exports = {
     name: Events.MessageCreate,
@@ -15,16 +17,18 @@ module.exports = {
             preset_prefix = settings.prefix;
         } else {
             //guildId not exist
-            preset_prefix = process.env.PRESET_PREFIX;
+            preset_prefix = config.default_prefix;
         };
         //Validate prefix
         if (!(prefix_validation(preset_prefix))) {
-            await message.reply('Something is wrong related to prefix.');
-            console.error(`Prefix in the guild ${message.guildId} has wrong format: ${preset_prefix}`);
+            await message.reply(await get_display_error_code("C3", message.author.id));
+            console.error('C3 error at ./events/MessageCreate.js, no1');
         };
 
         // Check if the message starts with the prefix or sent by a bot
-        if (!(message.content.startsWith(preset_prefix) || message.content.startsWith(clientMention)) || message.author.bot) return;
+        if (!(message.content.startsWith(preset_prefix) || message.content.startsWith(clientMention)) || message.author.bot) {
+            return;
+        };
 
         let args = [];
         if (message.content.startsWith(preset_prefix)) {
@@ -32,7 +36,8 @@ module.exports = {
         } else if (message.content.startsWith(clientMention)) {
             args = message.content.slice(clientMention.length).trim().split(/ +/);
         } else {
-            console.error('Something wrong by identifying prefix.');
+            await message.reply(await get_display_error_code("C3", message.author.id));
+            console.error('C3 error at ./events/MessageCreate.js, no2');
         };
         const commandName = args.shift().toLowerCase();
         const command = message.client.commands.get(commandName);
@@ -46,7 +51,8 @@ module.exports = {
         try {
             await command.execute(message, args);
         } catch (error) {
-            console.error(`Error executing ${commandName}`);
+            await message.reply(await get_display_error_code("C2", message.author.id));
+            console.error('C2 error at ./events/MessageCreate.js, no1');
             console.error(error);
         };
     },

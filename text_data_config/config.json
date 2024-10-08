@@ -1,0 +1,16 @@
+{
+    "default_prefix": "jw",
+    "timeout_sec": {
+        "settings": {
+            "user": 30,
+            "server": {
+                "prefix": 15
+            }
+        }
+    },
+    "cooldown_sec": {
+        "help": 5,
+        "ping": 5,
+        "settings": 10
+    }
+}

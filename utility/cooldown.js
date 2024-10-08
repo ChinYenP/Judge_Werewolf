@@ -1,12 +1,17 @@
-const db = require('../sqlite_db.js');
+const db = require('../database/sqlite_db.js');
 const { command_validation } = require('./validation/command_validation.js');
 
-async function check_cooldown(clientId, command) {
+async function check_cooldown(clientId, command, time_sec) {
+
+    /*Return array:
+    [0, <float>] - cooldown is not over, next element represents remaining time.
+    [1] - cooldown is over, cooldown will be updated automatically.
+    [2, <str>] - error encountered, next element represents error code.
+    */
 
     //Check command
     if (!(await command_validation(command))) {
-        console.error('Command not found during validation in cooldown.js');
-        return (['command_not_validate']);
+        return ([2, 'C4']);
     };
 
     // equivalent to: SELECT * FROM tags WHERE name = 'tagName' LIMIT 1;
@@ -16,18 +21,17 @@ async function check_cooldown(clientId, command) {
         const expired_date = settings.expired_date;
         const date_now = Date.now();
         if (date_now < expired_date) {
-            return (['cooldown_not_over', parseFloat((expired_date - date_now) / 1000)]);
+            return ([0, parseFloat((expired_date - date_now) / 1000)]);
         };
     };
-    return (['cooldown_over']);
+    return (await update_cooldown(clientId, command, time_sec));
 };
 
 async function update_cooldown(clientId, command, time_sec) {
 
     //Check command
     if (!(await command_validation(command))) {
-        console.error('Command not found during validation in cooldown.js');
-        return ('command_not_validate');
+        return ([2, 'C4']);
     };
 
     const expired_date = Date.now() + (time_sec * 1000);
@@ -38,9 +42,9 @@ async function update_cooldown(clientId, command, time_sec) {
         //data exist
         const affectedRows = await db.COMMAND_COOLDOWN.update({ expired_date: expired_date }, { where: { clientId: clientId, command: command } });
         if (affectedRows > 0) {
-            return 'success';
+            return ([1]);
         };
-        return 'err modify data';
+        return ([2, 'D3']);
     };
     //Data not exist
     try {
@@ -50,12 +54,12 @@ async function update_cooldown(clientId, command, time_sec) {
             command: command,
             expired_date: expired_date
         });
-        return 'success';
+        return ([1]);
     }
     catch (error) {
         console.log(error);
-        return 'err insert data';
+        return ([2, 'D1']);
     };
 };
 
-module.exports = { check_cooldown, update_cooldown };
+module.exports = { check_cooldown };

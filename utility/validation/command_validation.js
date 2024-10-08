@@ -1,5 +1,4 @@
 const myEmitter = require('../../emitter.js');
-const { Collection } = require('discord.js');
 
 //You should not fail this normally...
 async function command_validation(command) {
