@@ -1,5 +1,6 @@
 // Require Sequelize
 const Sequelize = require('sequelize');
+const myEmitter = require('../emitter.js');
 
 //Connect Database: SQLite
 const sequelize = new Sequelize({
@@ -66,5 +67,13 @@ const COMMAND_COOLDOWN = sequelize.define('COMMAND_COOLDOWN', {
     timestamps: false
 });
 
+async function shutdown_sqlite_db()  {
+    try {
+        await COMMAND_COOLDOWN.truncate();
+    } catch (err) {
+        console.error(err);
+    };
+};
 
-module.exports = { sequelize, USER_SETTINGS, SERVER_SETTINGS, COMMAND_COOLDOWN };
+
+module.exports = { shutdown_sqlite_db, sequelize, USER_SETTINGS, SERVER_SETTINGS, COMMAND_COOLDOWN };

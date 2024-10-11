@@ -30,7 +30,10 @@ async function settings_prefix_delete_message(clientId) {
         const oldChannelId = prefix_client_to_message.get(clientId)[1];
         const oldGuildId = prefix_client_to_message.get(clientId)[2];
         await settings_prefix_timeout_delete(oldMessageId, clientId, oldGuildId);
-        myEmitter.emit('deleteMessage', { channelId: oldChannelId, messageId: oldMessageId });
+        await new Promise((resolve) => {
+            myEmitter.once('deleteMessageComplete', resolve); // Listen for the completion
+            myEmitter.emit('deleteMessage', { channelId: oldChannelId, messageId: oldMessageId });
+        });
     };
 };
 
@@ -58,4 +61,14 @@ async function settings_prefix_timeout_delete(messageId, clientId, guildId) {
     };
 };
 
-module.exports = { settings_prefix_timeout_set, settings_get_prefix, settings_prefix_is_message_author, settings_prefix_delete_message, settings_prefix_timeout_delete };
+async function shutdown_settings_prefix_timeout() {
+    try {
+        prefix_client_to_message.forEach(async (value, key) => {
+            await settings_prefix_delete_message(key);
+        });
+    } catch (err) {
+        console.error(err);
+    };
+};
+
+module.exports = { shutdown_settings_prefix_timeout, settings_prefix_timeout_set, settings_get_prefix, settings_prefix_is_message_author, settings_prefix_delete_message, settings_prefix_timeout_delete };

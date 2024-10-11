@@ -50,6 +50,25 @@ for (const file of eventFiles) {
     };
 };
 
+// Graceful shutdown
+const { shutdown_cleanup } = require('./shutdown_cleanup.js')
+async function shutdown(signal) {
+    console.log(`${signal} received: shutting down gracefully...`);
+    await shutdown_cleanup();
+    await client.destroy(); // Close Discord connection
+    process.exit(0); // Exit after cleanup
+};
+
+// Handle termination signals
+process.on('SIGINT', async () => await shutdown('SIGINT'));  // Ctrl + C
+process.on('SIGTERM', async () => await shutdown('SIGTERM')); // System termination signal
+
+// Handle uncaught exceptions
+process.on('uncaughtException', async (err) => {
+    console.error('Unhandled Exception:', err);
+    await shutdown('uncaughtException');
+});
+
 
 // Log in to Discord with your client's token
 client.login(process.env.TOKEN);
@@ -68,6 +87,7 @@ myEmitter.on('getCommands', async (callback) => {
 });
 
 myEmitter.on('deleteMessage', async ({ channelId, messageId }) => {
+    console.log("received")
     client.channels.fetch(channelId).then(channel => {
         channel.messages.fetch(messageId).then(message => {
             message.delete();
@@ -77,4 +97,5 @@ myEmitter.on('deleteMessage', async ({ channelId, messageId }) => {
     }).catch(error => {
         console.error('Error fetching channel:', error);
     });
+    myEmitter.emit('deleteMessageComplete');
 });
