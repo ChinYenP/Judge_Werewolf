@@ -138,7 +138,7 @@ async function general_settings(message) {
     const rowLang = new ActionRowBuilder()
         .addComponents(
             new StringSelectMenuBuilder()
-                .setCustomId('select lang')
+                .setCustomId('settings_prefix_lang')
                 .setPlaceholder(display_arr[2])
                 .addOptions(
                     {

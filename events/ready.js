@@ -13,9 +13,13 @@ module.exports = {
 
         // Generate a timestamp for the backup file name
         const timestamp = Date.now();
-        const backupFilename = `/database/db_backup/backup_${timestamp}.sqlite`;
-        const backupFilePath = path.join(__dirname, '..', backupFilename);
+        const backupFolderPath = process.env.DBBACKUPFOLDER;
+        const backupFilePath = path.join(__dirname, '..', backupFolderPath, `backup_${timestamp}.sqlite`);
         try {
+            if (!fs.existsSync(backupFolderPath)) {
+                fs.mkdirSync(backupFolderPath, { recursive: true });
+                console.log(`Backup folder created at ${backupFolderPath}`);
+            };
             // Create a backup of the existing database file
             fs.copyFileSync(dbFilePath, backupFilePath);
             console.log(`Database backup created successfully at ${backupFilePath}`);

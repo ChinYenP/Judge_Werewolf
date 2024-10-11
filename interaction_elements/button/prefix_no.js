@@ -6,6 +6,8 @@ async function button_prefix_no(interaction) {
         return;
     };
 
+    console.log("Button: prefix no");
+
     const display_arr = await get_display_text(['settings.server_settings.prefix.cancelation'], interaction.user.id);
     if (display_arr.length !== 1) {
         await interaction.reply(await get_display_error_code('S', interaction.user.id));

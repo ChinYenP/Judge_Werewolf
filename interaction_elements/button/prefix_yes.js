@@ -8,6 +8,8 @@ async function button_prefix_yes(interaction) {
         return;
     };
 
+    console.log("Button: prefix yes");
+
     let display_text = '';
 
     const prefix = await settings_get_prefix(interaction.guildId);

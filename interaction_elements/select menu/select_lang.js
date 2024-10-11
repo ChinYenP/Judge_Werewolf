@@ -10,6 +10,8 @@ async function menu_select_lang(interaction) {
         return;
     };
 
+    console.log("Select menu: settings_prefix_lang");
+
     let display_text = '';
 
     //Do sequelize thing here while get output text
@@ -39,7 +41,7 @@ async function menu_select_lang(interaction) {
     const rowLang = new ActionRowBuilder()
         .addComponents(
             new StringSelectMenuBuilder()
-                .setCustomId('select lang')
+                .setCustomId('settings_prefix_lang')
                 .setPlaceholder(display_text[2])
                 .addOptions(
                     {
@@ -72,7 +74,7 @@ async function menu_select_lang(interaction) {
 
     const Content = `${display_text[0]}\n\n${display_text[1] + allowed_symbol_text}`;
     
-    const update_msg = await interaction.update({ content: Content, components: [rowLang], fetchReply: true });
+    const update_msg = await interaction.message.edit({ content: Content, components: [rowLang], fetchReply: true });
     await settings_general_timeout_set(update_msg.id, interaction.user.id, interaction.channelId, time_sec, interaction_timeout, update_msg);
 
     async function interaction_timeout(update_msg) {

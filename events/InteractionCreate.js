@@ -5,7 +5,7 @@ module.exports = {
     async execute(interaction) {
 
         if (interaction.isStringSelectMenu()) {
-            if (interaction.customId === 'select lang') {
+            if (interaction.customId === 'settings_prefix_lang') {
                 const { menu_select_lang } = require('../interaction_elements/select menu/select_lang.js');
                 await menu_select_lang(interaction);
             };

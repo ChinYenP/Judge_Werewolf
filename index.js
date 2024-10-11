@@ -87,7 +87,6 @@ myEmitter.on('getCommands', async (callback) => {
 });
 
 myEmitter.on('deleteMessage', async ({ channelId, messageId }) => {
-    console.log("received")
     client.channels.fetch(channelId).then(channel => {
         channel.messages.fetch(messageId).then(message => {
             message.delete();
