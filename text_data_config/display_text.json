@@ -59,7 +59,7 @@
         },
         "latency": {
             "eng": "Latency: ",
-            "malay": "Kependaman",
+            "malay": "Kependaman: ",
             "schi": "延迟: ",
             "tchi": "延遲: ",
             "yue": "延遲: "
