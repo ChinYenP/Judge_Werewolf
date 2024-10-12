@@ -20,8 +20,9 @@ async function settings_prefix_is_message_author(messageId, clientId) {
 
 async function settings_get_prefix(guildId) {
     if (prefix_confirm_collection.has(guildId)) {
-        return (prefix_confirm_collection.get(guildId));
+        return ([true, prefix_confirm_collection.get(guildId)]);
     };
+    return ([false]);
 };
 
 async function settings_prefix_delete_message(clientId) {
@@ -31,8 +32,9 @@ async function settings_prefix_delete_message(clientId) {
         const oldGuildId = prefix_client_to_message.get(clientId)[2];
         await settings_prefix_timeout_delete(oldMessageId, clientId, oldGuildId);
         await new Promise((resolve) => {
-            myEmitter.once('deleteMessageComplete', resolve); // Listen for the completion
-            myEmitter.emit('deleteMessage', { channelId: oldChannelId, messageId: oldMessageId });
+            const emit_complete = 'deleteMessageCompleteSettingsPrefixTImeout';
+            myEmitter.once(emit_complete, resolve); // Listen for the completion
+            myEmitter.emit('deleteMessage', { channelId: oldChannelId, messageId: oldMessageId, emit_complete: emit_complete });
         });
     };
 };
@@ -64,6 +66,7 @@ async function settings_prefix_timeout_delete(messageId, clientId, guildId) {
 async function shutdown_settings_prefix_timeout() {
     try {
         prefix_client_to_message.forEach(async (value, key) => {
+            console.log("prefix:" + key)
             await settings_prefix_delete_message(key);
         });
     } catch (err) {

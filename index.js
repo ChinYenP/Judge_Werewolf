@@ -86,7 +86,7 @@ myEmitter.on('getCommands', async (callback) => {
     callback(client.commands);
 });
 
-myEmitter.on('deleteMessage', async ({ channelId, messageId }) => {
+myEmitter.on('deleteMessage', async ({ channelId, messageId, emit_complete }) => {
     client.channels.fetch(channelId).then(channel => {
         channel.messages.fetch(messageId).then(message => {
             message.delete();
@@ -96,5 +96,5 @@ myEmitter.on('deleteMessage', async ({ channelId, messageId }) => {
     }).catch(error => {
         console.error('Error fetching channel:', error);
     });
-    myEmitter.emit('deleteMessageComplete');
+    myEmitter.emit(emit_complete);
 });

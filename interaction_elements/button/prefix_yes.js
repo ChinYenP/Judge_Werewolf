@@ -12,17 +12,29 @@ async function button_prefix_yes(interaction) {
 
     let display_text = '';
 
-    const prefix = await settings_get_prefix(interaction.guildId);
+    //Get prefix. If it is false, the message is not from current session.
+    const prefix_arr = await settings_get_prefix(interaction.guildId);
+    if (!prefix_arr[0]) {
+        const outdated_interaction_text = await get_display_text(['general.outdated_interaction'], interaction.user.id);
+        if (outdated_interaction_text.length !== 1) {
+            console.error('DSPY error at ./interaction_elements/button/prefix_yes.js, no1');
+            await interaction.message.edit({ content: 'Something has gone wrong during the code runtime: Error DSPY', components: [] });
+            return;
+        };
+        await interaction.message.edit({ content: outdated_interaction_text[0], components: [] });
+        return;
+    };
+    const prefix = prefix_arr[1];
 
     const sqlite_status = await sequelize_prefix_yes(interaction, prefix);
     if (sqlite_status[0] === 0) {
         display_text = await get_display_error_code(sqlite_status[1], interaction.user.id);
         if (display_text.length !== 1) {
-            console.error('DSPY error at ./interaction_elements/button/prefix_yes.js, no1');
+            console.error('DSPY error at ./interaction_elements/button/prefix_yes.js, no2');
             await interaction.message.edit({Content: 'Something has gone wrong during the code runtime: Error DSPY', Component: []});
             return;
         };
-        console.error(`${sqlite_status[1]  } error at ./interaction_elements/button/prefix_yes.js, no2`);
+        console.error(`${sqlite_status[1]  } error at ./interaction_elements/button/prefix_yes.js, no3`);
         await interaction.message.edit({Content: display_text[0], Component: []});
         return;
     };
@@ -30,7 +42,7 @@ async function button_prefix_yes(interaction) {
     //Success
     display_text = await get_display_text(['settings.server_settings.prefix.success'], interaction.user.id);
     if (display_text.length !== 1) {
-        console.error('DSPY error at ./interaction_elements/button/prefix_yes.js, no3');
+        console.error('DSPY error at ./interaction_elements/button/prefix_yes.js, no4');
         await interaction.message.edit({Content: 'Something has gone wrong during the code runtime: Error DSPY', Component: []});
         return;
     };

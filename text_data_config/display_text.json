@@ -41,6 +41,13 @@
                 "yue": "你冇管理員權限。"
             }
         },
+        "outdated_interaction": {
+            "eng": "Seems that you are trying to interact with outdated interaction (like a message).",
+            "malay": "Nampaknya anda cuba berinteraksi dengan interaksi lapuk (seperti mesej).",
+            "schi": "似乎您正在尝试与过时的交互(例如讯息)进行互动。",
+            "tchi": "似乎您正在嘗試與過時的交互(例如訊息)進行互動。",
+            "yue": "似乎你系度嘗試與過時嘅交互(例如訊息)進行互動。"
+        },
         "timeout_display": {
             "eng": "This command has a remaining cooldown of: ",
             "malay": "Perintah ini mempunyai baki penyejukan sebanyak: ",

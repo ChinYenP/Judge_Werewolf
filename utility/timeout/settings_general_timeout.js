@@ -22,8 +22,9 @@ async function settings_general_delete_message(clientId) {
         const oldChannelId = client_to_message.get(clientId)[1];
         await settings_general_timeout_delete(oldMessageId, clientId);
         await new Promise((resolve) => {
-            myEmitter.once('deleteMessageComplete', resolve); // Listen for the completion
-            myEmitter.emit('deleteMessage', { channelId: oldChannelId, messageId: oldMessageId });
+            const emit_complete = 'deleteMessageCompleteSettingsGeneralTImeout';
+            myEmitter.once(emit_complete, resolve); // Listen for the completion
+            myEmitter.emit('deleteMessage', { channelId: oldChannelId, messageId: oldMessageId, emit_complete: emit_complete });
         });
     };
 };
@@ -53,6 +54,7 @@ async function settings_general_timeout_delete(messageId, clientId) {
 async function shutdown_settings_general_timeout() {
     try {
         client_to_message.forEach(async (value, key) => {
+            console.log("general:" + key)
             await settings_general_delete_message(key);
         });
     } catch (err) {
