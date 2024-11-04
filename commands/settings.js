@@ -118,7 +118,7 @@ module.exports = {
 
         //For general settings
         await general_settings(message);
-
+        return;
     },
 
 };
@@ -171,7 +171,7 @@ async function general_settings(message) {
     
     const Content = `${display_arr[0]}\n\n${display_arr[1] + allowed_symbol_text}`;
     const bot_reply = await message.reply({ content: Content, components: [rowLang] });
-    settings_general_timeout_set(bot_reply.id, message.author.id, message.channelId, time_sec, message_timeout, bot_reply);
+    await settings_general_timeout_set(bot_reply.id, message.author.id, message.channelId, time_sec, message_timeout, bot_reply);
 
     async function message_timeout(bot_reply) {
         const timeout_content = `${display_arr[0]}\n\n${display_arr[1] + allowed_symbol_text}\n\n${`${display_arr[3] + time_sec  }s`}`;
@@ -209,9 +209,9 @@ async function prefix_settings(message, args) {
         .addComponents(yes_button, no_button);
     
     const bot_reply = await message.reply({ content: display_arr[0] + args[1], components: [rowButton] });
-    await settings_prefix_timeout_set(args[1], bot_reply.id, message.author.id, message.channelId, message.guildId, time_sec, message_timeout, bot_reply);
+    await settings_prefix_timeout_set(args[1], bot_reply.id, message.author.id, message.channelId, message.guildId, time_sec, message_prefix_timeout, bot_reply);
 
-    async function message_timeout(bot_reply) {
+    async function message_prefix_timeout(bot_reply) {
         const timeout_content = `${display_arr[0] + args[1]  }\n\n${`${display_arr[3] + time_sec  }s`}`;
         await bot_reply.edit({ content: timeout_content, components: [] });
     };

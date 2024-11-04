@@ -40,15 +40,14 @@ async function settings_prefix_delete_message(clientId) {
 };
 
 async function settings_prefix_timeout_set(prefix, messageId, clientId, channelId, guildId, time_sec, timeout_execute, execute_param_arr) {
-
     if (prefix_timeouts.has(messageId)) {
         await settings_prefix_timeout_delete(messageId, clientId);
     };
 
     //Set timer while add data to database:
-    prefix_timeouts.set(messageId, [clientId, setTimeout(() => {
-        timeout_execute(execute_param_arr);
-        settings_prefix_timeout_delete(messageId, clientId);
+    prefix_timeouts.set(messageId, [clientId, setTimeout(async () => {
+        await timeout_execute(execute_param_arr);
+        await settings_prefix_timeout_delete(messageId, clientId);
     }, (time_sec * 1000))]);
     prefix_client_to_message.set(clientId, [messageId, channelId, guildId]);
     prefix_confirm_collection.set(guildId, prefix);
@@ -65,10 +64,9 @@ async function settings_prefix_timeout_delete(messageId, clientId, guildId) {
 
 async function shutdown_settings_prefix_timeout() {
     try {
-        prefix_client_to_message.forEach(async (value, key) => {
-            console.log("prefix:" + key)
+        for (const [key, value] of prefix_client_to_message) {
             await settings_prefix_delete_message(key);
-        });
+        };
     } catch (err) {
         console.error(err);
     };

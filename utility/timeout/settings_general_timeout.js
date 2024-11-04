@@ -30,15 +30,13 @@ async function settings_general_delete_message(clientId) {
 };
 
 async function settings_general_timeout_set(messageId, clientId, channelId, time_sec, timeout_execute, execute_param_arr) {
-
     if (timeouts.has(messageId)) {
         await settings_general_timeout_delete(messageId, clientId);
     };
-
     //Set timer while add data to database:
-    timeouts.set(messageId, [clientId, setTimeout(() => {
-        timeout_execute(execute_param_arr);
-        settings_general_timeout_delete(messageId, clientId);
+    timeouts.set(messageId, [clientId, setTimeout(async () => {
+        await timeout_execute(execute_param_arr);
+        await settings_general_timeout_delete(messageId, clientId);
     }, (time_sec * 1000))]);
     client_to_message.set(clientId, [messageId, channelId]);
 };
@@ -53,10 +51,9 @@ async function settings_general_timeout_delete(messageId, clientId) {
 
 async function shutdown_settings_general_timeout() {
     try {
-        client_to_message.forEach(async (value, key) => {
-            console.log("general:" + key)
+        for (const [key, value] of client_to_message) {
             await settings_general_delete_message(key);
-        });
+        };
     } catch (err) {
         console.error(err);
     };

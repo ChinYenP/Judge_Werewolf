@@ -87,14 +87,11 @@ myEmitter.on('getCommands', async (callback) => {
 });
 
 myEmitter.on('deleteMessage', async ({ channelId, messageId, emit_complete }) => {
-    client.channels.fetch(channelId).then(channel => {
-        channel.messages.fetch(messageId).then(message => {
-            message.delete();
-        }).catch(error => {
-            console.error('Error fetching message:', error);
-        });
-    }).catch(error => {
-        console.error('Error fetching channel:', error);
-    });
+    try {
+        const channel = await client.channels.fetch(channelId);
+        const message = await channel.messages.fetch(messageId);
+        await message.delete();
+    } catch (error) {
+    };
     myEmitter.emit(emit_complete);
 });
