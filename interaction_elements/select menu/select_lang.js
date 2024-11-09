@@ -1,16 +1,27 @@
 const { ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const db = require('../../database/sqlite_db.js');
-const { settings_general_timeout_set, settings_general_is_message_author } = require('../../utility/timeout/settings_general_timeout.js');
+const { general_is_outdated, general_timeout_set, general_is_message_author } = require('../../utility/timeout/general_timeout.js');
 const { get_display_text, get_display_error_code } = require('../../utility/get_display.js');
 const config = require('../../text_data_config/config.json');
 
 async function menu_select_lang(interaction) {
     
-    if (!(await settings_general_is_message_author(interaction.message.id, interaction.user.id))) {
+    if (!(await general_is_message_author(interaction.message.id, interaction.user.id))) {
         return;
     };
 
     console.log("Select menu: settings_prefix_lang");
+
+    // if (general_is_outdated) {
+    //     const outdated_interaction_text = await get_display_text(['general.outdated_interaction'], interaction.user.id);
+    //     if (outdated_interaction_text.length !== 1) {
+    //         console.error('DSPY error at ./interaction_elements/select menu/select_lang.js, no1');
+    //         await interaction.message.edit({ content: 'Something has gone wrong during the code runtime: Error DSPY', components: [] });
+    //         return;
+    //     };
+    //     await interaction.message.edit({ content: outdated_interaction_text[0], components: [] });
+    //     return;
+    // };
 
     let display_text = '';
 
@@ -20,11 +31,11 @@ async function menu_select_lang(interaction) {
     if (sqlite_status[0] === 0) {
         display_text = await get_display_error_code(sqlite_status[1], interaction.user.id);
         if (display_text.length !== 1) {
-            console.error('DSPY error at ./interaction_elements/select menu/select_lang.js, no1');
+            console.error('DSPY error at ./interaction_elements/select menu/select_lang.js, no2');
             await interaction.message.edit({Content: 'Something has gone wrong during the code runtime: Error DSPY', Component: []});
             return;
         };
-        console.error(`${sqlite_status[1]  } error at ./interaction_elements/select menu/select_lang.js, no2`);
+        console.error(`${sqlite_status[1]  } error at ./interaction_elements/select menu/select_lang.js, no3`);
         await interaction.message.edit({Content: display_text[0], Component: []});
         return;
     };
@@ -34,7 +45,7 @@ async function menu_select_lang(interaction) {
     const allowed_symbol_text = process.env.ALLOWED_PREFIX_CHARACTERS;
     display_text = await get_display_text(['settings.user_settings','settings.server_settings','settings.user_settings.placeholder_text.lang','settings.timeout'], interaction.user.id);
     if (display_text.length !== 4) {
-        console.error('DSPY error at ./interaction_elements/select menu/select_lang.js, no3');
+        console.error('DSPY error at ./interaction_elements/select menu/select_lang.js, no4');
         await interaction.message.edit({Content: 'Something has gone wrong during the code runtime: Error DSPY', Component: []});
         return;
     };
@@ -75,7 +86,7 @@ async function menu_select_lang(interaction) {
     const Content = `${display_text[0]}\n\n${display_text[1] + allowed_symbol_text}`;
     
     const update_msg = await interaction.message.edit({ content: Content, components: [rowLang], fetchReply: true });
-    await settings_general_timeout_set(update_msg.id, interaction.user.id, interaction.channelId, time_sec, interaction_timeout, update_msg);
+    await general_timeout_set("settings", update_msg.id, interaction.user.id, interaction.channelId, time_sec, interaction_timeout, update_msg);
 
     async function interaction_timeout(update_msg) {
         const timeout_content = `${display_text[0]}\n\n${display_text[1] + allowed_symbol_text}\n\n${display_text[3]}`;

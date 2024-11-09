@@ -2,7 +2,7 @@ const { ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } 
 const { prefix_validation } = require('../utility/validation/prefix_validation.js');
 const { get_display_text, get_display_error_code } = require('../utility/get_display.js');
 const { check_cooldown } = require('../utility/cooldown.js');
-const { settings_general_timeout_set, settings_general_delete_message } = require('../utility/timeout/settings_general_timeout.js');
+const { general_timeout_set, general_delete_message } = require('../utility/timeout/general_timeout.js');
 const { settings_prefix_timeout_set, settings_prefix_delete_message } = require('../utility/timeout/settings_prefix_timeout.js');
 const config = require('../text_data_config/config.json');
 
@@ -126,7 +126,7 @@ module.exports = {
 
 async function general_settings(message) {
 
-    await settings_general_delete_message(message.author.id);
+    await general_delete_message(message.author.id, "settings");
     const time_sec = config.timeout_sec.settings.user;
     const allowed_symbol_text = process.env.ALLOWED_PREFIX_CHARACTERS;
     const display_arr = await get_display_text(['settings.user_settings', 'settings.server_settings', 'settings.user_settings.placeholder_text.lang', 'settings.timeout'], message.author.id);
@@ -171,7 +171,7 @@ async function general_settings(message) {
     
     const Content = `${display_arr[0]}\n\n${display_arr[1] + allowed_symbol_text}`;
     const bot_reply = await message.reply({ content: Content, components: [rowLang] });
-    await settings_general_timeout_set(bot_reply.id, message.author.id, message.channelId, time_sec, message_timeout, bot_reply);
+    await general_timeout_set("settings", bot_reply.id, message.author.id, message.channelId, time_sec, message_timeout, bot_reply);
 
     async function message_timeout(bot_reply) {
         const timeout_content = `${display_arr[0]}\n\n${display_arr[1] + allowed_symbol_text}\n\n${`${display_arr[3] + time_sec  }s`}`;
