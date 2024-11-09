@@ -18,10 +18,10 @@ async function button_prefix_yes(interaction) {
         const outdated_interaction_text = await get_display_text(['general.outdated_interaction'], interaction.user.id);
         if (outdated_interaction_text.length !== 1) {
             console.error('DSPY error at ./interaction_elements/button/prefix_yes.js, no1');
-            await interaction.message.edit({ content: 'Something has gone wrong during the code runtime: Error DSPY', components: [] });
+            await interaction.update({ content: 'Something has gone wrong during the code runtime: Error DSPY', components: [] });
             return;
         };
-        await interaction.message.edit({ content: outdated_interaction_text[0], components: [] });
+        await interaction.update({ content: outdated_interaction_text[0], components: [] });
         return;
     };
     const prefix = prefix_arr[1];
@@ -31,11 +31,11 @@ async function button_prefix_yes(interaction) {
         display_text = await get_display_error_code(sqlite_status[1], interaction.user.id);
         if (display_text.length !== 1) {
             console.error('DSPY error at ./interaction_elements/button/prefix_yes.js, no2');
-            await interaction.message.edit({Content: 'Something has gone wrong during the code runtime: Error DSPY', Component: []});
+            await interaction.update({Content: 'Something has gone wrong during the code runtime: Error DSPY', Component: []});
             return;
         };
         console.error(`${sqlite_status[1]  } error at ./interaction_elements/button/prefix_yes.js, no3`);
-        await interaction.message.edit({Content: display_text[0], Component: []});
+        await interaction.update({Content: display_text[0], Component: []});
         return;
     };
 
@@ -43,10 +43,10 @@ async function button_prefix_yes(interaction) {
     display_text = await get_display_text(['settings.server_settings.prefix.success'], interaction.user.id);
     if (display_text.length !== 1) {
         console.error('DSPY error at ./interaction_elements/button/prefix_yes.js, no4');
-        await interaction.message.edit({Content: 'Something has gone wrong during the code runtime: Error DSPY', Component: []});
+        await interaction.update({Content: 'Something has gone wrong during the code runtime: Error DSPY', Component: []});
         return;
     };
-    await interaction.message.edit({ content: display_text[0] + prefix, components: []});
+    await interaction.update({ content: display_text[0] + prefix, components: []});
     await settings_prefix_timeout_delete(interaction.message.id, interaction.user.id, interaction.guildId);
     
 };

@@ -32,11 +32,11 @@ async function menu_select_lang(interaction) {
         display_text = await get_display_error_code(sqlite_status[1], interaction.user.id);
         if (display_text.length !== 1) {
             console.error('DSPY error at ./interaction_elements/select menu/select_lang.js, no2');
-            await interaction.message.edit({Content: 'Something has gone wrong during the code runtime: Error DSPY', Component: []});
+            await interaction.update({Content: 'Something has gone wrong during the code runtime: Error DSPY', Component: []});
             return;
         };
         console.error(`${sqlite_status[1]  } error at ./interaction_elements/select menu/select_lang.js, no3`);
-        await interaction.message.edit({Content: display_text[0], Component: []});
+        await interaction.update({Content: display_text[0], Component: []});
         return;
     };
 
@@ -46,7 +46,7 @@ async function menu_select_lang(interaction) {
     display_text = await get_display_text(['settings.user_settings','settings.server_settings','settings.user_settings.placeholder_text.lang','settings.timeout'], interaction.user.id);
     if (display_text.length !== 4) {
         console.error('DSPY error at ./interaction_elements/select menu/select_lang.js, no4');
-        await interaction.message.edit({Content: 'Something has gone wrong during the code runtime: Error DSPY', Component: []});
+        await interaction.update({Content: 'Something has gone wrong during the code runtime: Error DSPY', Component: []});
         return;
     };
     const rowLang = new ActionRowBuilder()
@@ -85,7 +85,7 @@ async function menu_select_lang(interaction) {
 
     const Content = `${display_text[0]}\n\n${display_text[1] + allowed_symbol_text}`;
     
-    const update_msg = await interaction.message.edit({ content: Content, components: [rowLang], fetchReply: true });
+    const update_msg = await interaction.update({ content: Content, components: [rowLang], fetchReply: true });
     await general_timeout_set("settings", update_msg.id, interaction.user.id, interaction.channelId, time_sec, interaction_timeout, update_msg);
 
     async function interaction_timeout(update_msg) {
