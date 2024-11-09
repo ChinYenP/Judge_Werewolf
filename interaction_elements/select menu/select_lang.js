@@ -12,16 +12,16 @@ async function menu_select_lang(interaction) {
 
     console.log("Select menu: settings_prefix_lang");
 
-    // if (general_is_outdated) {
-    //     const outdated_interaction_text = await get_display_text(['general.outdated_interaction'], interaction.user.id);
-    //     if (outdated_interaction_text.length !== 1) {
-    //         console.error('DSPY error at ./interaction_elements/select menu/select_lang.js, no1');
-    //         await interaction.message.edit({ content: 'Something has gone wrong during the code runtime: Error DSPY', components: [] });
-    //         return;
-    //     };
-    //     await interaction.message.edit({ content: outdated_interaction_text[0], components: [] });
-    //     return;
-    // };
+    if (await general_is_outdated(interaction.message.id)) {
+        const outdated_interaction_text = await get_display_text(['general.outdated_interaction'], interaction.user.id);
+        if (outdated_interaction_text.length !== 1) {
+            console.error('DSPY error at ./interaction_elements/select menu/select_lang.js, no1');
+            await interaction.message.edit({ content: 'Something has gone wrong during the code runtime: Error DSPY', components: [] });
+            return;
+        };
+        await interaction.message.edit({ content: outdated_interaction_text[0], components: [] });
+        return;
+    };
 
     let display_text = '';
 

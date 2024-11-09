@@ -7,10 +7,7 @@ const client_to_message = new Collection();
 //clientId -> [messageId, ...]
 
 async function general_is_outdated(messageId) {
-    if (timeouts.has(messageId)) {
-        return (false);
-    };
-    return (true);
+    return (!(timeouts.has(messageId)));
 };
 
 async function general_is_message_author(messageId, clientId) {
