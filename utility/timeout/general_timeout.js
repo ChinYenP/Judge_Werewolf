@@ -22,11 +22,11 @@ async function general_is_message_author(messageId, clientId) {
 
 async function general_delete_message(clientId, command) {
 
-    async function promise_handling(clientId, oldMessageId, oldChannelId) {
-        await general_timeout_delete(oldMessageId, clientId);
+    async function promise_handling(oldMessageId, oldChannelId) {
+        clearTimeout((timeouts.get(oldMessageId))[3]);
         await new Promise((resolve) => {
             const emit_complete = 'deleteMessageCompleteGeneralTimeout';
-            myEmitter.once(emit_complete, resolve); // Listen for the completion
+            myEmitter.on(emit_complete, resolve); // Listen for the completion
             myEmitter.emit('deleteMessage', { channelId: oldChannelId, messageId: oldMessageId, emit_complete: emit_complete });
         });
     };
@@ -37,7 +37,7 @@ async function general_delete_message(clientId, command) {
             for (let i = 0; i < client_to_message_arr.length; i++) {
                 let oldMessageId = client_to_message_arr[i];
                 let oldChannelId = (timeouts.get(oldMessageId))[0];
-                await promise_handling(clientId, oldMessageId, oldChannelId);
+                await promise_handling(oldMessageId, oldChannelId);
             };
             return;
         };
@@ -45,7 +45,7 @@ async function general_delete_message(clientId, command) {
             let oldMessageId = client_to_message_arr[i];
             if ((timeouts.get(oldMessageId))[1] == command) {
                 let oldChannelId = (timeouts.get(oldMessageId))[0];
-                await promise_handling(clientId, oldMessageId, oldChannelId);
+                await promise_handling(oldMessageId, oldChannelId);
                 return;
             };
         };

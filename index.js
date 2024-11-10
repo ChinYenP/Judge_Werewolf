@@ -87,6 +87,7 @@ myEmitter.on('getCommands', async (callback) => {
 });
 
 myEmitter.on('deleteMessage', async ({ channelId, messageId, emit_complete }) => {
+    console.log(messageId)
     try {
         const channel = await client.channels.fetch(channelId);
         const message = await channel.messages.fetch(messageId);
