@@ -10,7 +10,7 @@ async function menu_select_lang(interaction) {
         return;
     };
 
-    console.log("Select menu: settings_prefix_lang");
+    console.log("Select menu: settings_user_lang");
 
     if (await general_is_outdated(interaction.message.id)) {
         const outdated_interaction_text = await get_display_text(['general.outdated_interaction'], interaction.user.id);
@@ -52,7 +52,7 @@ async function menu_select_lang(interaction) {
     const rowLang = new ActionRowBuilder()
         .addComponents(
             new StringSelectMenuBuilder()
-                .setCustomId('settings_prefix_lang')
+                .setCustomId('settings_user_lang')
                 .setPlaceholder(display_text[2])
                 .addOptions(
                     {

@@ -80,19 +80,19 @@
         }
     },
     "help": {
-        "eng": "__List of Judge Werewolf bot's Commands (replace <...>)__\n\n**<prefix or mention bot> help** List down all commands.\n**<prefix or mention bot> ping** Replies with \"Pong\"!\n**<prefix or mention bot> settings <optional arguments>** List settings for user and server if contains no/wrong arguments. Apply server settings if contains correct arguments.",
-        "malay": "__Senarai Arahan Judge Werewolf bot (ganti <...>)__\n\n**<awalan atau sebutan bot> help** Senarai semua arahan.\n**<awalan atau sebutan bot> ping** Balas dengan \"Pong\"!\n**<awalan atau sebutan bot> settings <argumen pilihan>** Senaraikan tetapan untuk pengguna dan pelayan jika tidak mengandungi argumen / mengandungi argumen yang salah. Gunakan tetapan pelayan jika mengandungi argumen yang betul.",
-        "schi": "__列出 Judge Werewolf 机器人的指令 (替换 <...>)__\n\n**<旧前缀或提及机器人> help** 列出所有指令。\n**<旧前缀或提及机器人> ping** 回复\"乓\"!\n**<旧前缀或提及机器人> settings <可选参数>** 如果不包含/错误参数, 则列出用户和服务器的设置。如果包含正确的参数, 则应用服务器设置。",
-        "tchi": "__列出 Judge Werewolf 機器人的指令 (替換 <...>)__\n\n**<舊前綴或提及機器人> help** 列出所有指令。\n**<舊前綴或提及機器人> ping** 回覆\"乓\"!\n**<舊前綴或提及機器人> settings <可選參數>** 如果不包含/錯誤參數, 則列出用戶和服務器的設置。如果包含正確的參數, 則應用服務器設置。",
-        "yue": "__列出 Judge Werewolf 機械人嘅指令 (替換 <...>)__\n\n**<舊前綴或提及機器人> help** 列出所有指令。\n**<舊前綴或提及機器人> ping** 回覆\"乓\"!\n**<舊前綴或提及機器人> settings <可選參數>** 如果唔包含/錯誤參數, 就列出用戶同服務器嘅設置。如果包含正確嘅參數, 就應用服務器設置。"
+        "eng": "__List of Judge Werewolf bot's Commands (replace <...>)__\nYou may mention bot instead of using prefix.\n\n**jw help** List down all commands.\n**jw ping** Replies with \"Pong\"!\n**jw settings <optional arguments>** List settings for user and server if contains no/wrong arguments. Apply server settings if contains correct arguments.\n**jw create <optional ID>** Create and start a game. Insert appropriate ID to create a specific board quickly.",
+        "malay": "__Senarai Arahan Judge Werewolf bot (ganti <...>)__\nAnda boleh menggunakan set awalan atau bot sebutan.\n\n**jw help** Senarai semua arahan.\n**jw ping** Balas dengan \"Pong\"!\n**jw settings <argumen pilihan>** Senaraikan tetapan untuk pengguna dan pelayan jika tidak mengandungi argumen / mengandungi argumen yang salah. Gunakan tetapan pelayan jika mengandungi argumen yang betul.\n**jw create <optional ID>** Buat dan mulakan permainan. Masukkan ID yang sesuai untuk membuat papan tertentu dengan cepat.",
+        "schi": "__列出 Judge Werewolf 机器人的指令 (替换 <...>)__\n您可以使用前缀集或提及机器人。\n\n**jw help** 列出所有指令。\n**jw ping** 回复\"乓\"!\n**jw settings <可选参数>** 如果不包含/错误参数, 则列出用户和服务器的设置。如果包含正确的参数, 则应用服务器设置。\n**jw create <optional ID>** 创建并开始游戏。插入适当的ID即可快速创建特定的板。",
+        "tchi": "__列出 Judge Werewolf 機器人的指令 (替換 <...>)__\n您可以使用前綴集或提及機器人。\n\n**jw help** 列出所有指令。\n**jw ping** 回覆\"乓\"!\n**jw settings <可選參數>** 如果不包含/錯誤參數, 則列出用戶和服務器的設置。如果包含正確的參數, 則應用服務器設置。\n**jw create <optional ID>** 創建並開始遊戲。插入適當的ID即可快速建立特定的板。",
+        "yue": "__列出 Judge Werewolf 機械人嘅指令 (替換 <...>)__\n你可以使用前缀集或提及機器人。\n\n**jw help** 列出所有指令。\n**jw ping** 回覆\"乓\"!\n**jw settings <可選參數>** 如果唔包含/錯誤參數, 就列出用戶同服務器嘅設置。如果包含正確嘅參數, 就應用服務器設置。\n**jw create <optional ID>** 創建並開始遊戲。插入適當嘅ID即可趕建立特定嘅板。"
     },
     "settings": {
         "user_settings": {
-            "eng": "__User Settings__\n**Language** Set the language used for this bot. (Default: English)",
-            "malay": "__Tetapan Pengguna__\n**Bahasa** Tetapkan bahasa yang digunakan untuk bot ini. (Lalai: English)",
-            "schi": "__用户设置__\n**语言** 设置此机器人使用的语言。(预设: English)",
-            "tchi": "__用戶設置__\n**語言** 設置此機器人使用的語言。(預設: English)",
-            "yue": "__用戶設置__\n**語言**設置此機械人使用嘅語言。(預設: English)",
+            "eng": "__User Settings__\n**Language:** Set the language used for this bot. (Default: English)",
+            "malay": "__Tetapan Pengguna__\n**Bahasa:** Tetapkan bahasa yang digunakan untuk bot ini. (Lalai: English)",
+            "schi": "__用户设置__\n**语言:** 设置此机器人使用的语言。(预设: English)",
+            "tchi": "__用戶設置__\n**語言:** 設置此機器人使用的語言。(預設: English)",
+            "yue": "__用戶設置__\n**語言:** 設置此機械人使用嘅語言。(預設: English)",
             "placeholder_text": {
                 "lang": {
                     "eng": "Language: English",
@@ -105,11 +105,11 @@
             }
         },
         "server_settings": {
-            "eng": "__Server Settings (Administrator users can change these settings)__\n**Prefix** Set the prefix for all commands for this bot. (Default: jw)\nCommand (replace <...>): <old prefix or mention bot> settings prefix <new prefix>\nPrefix must have between 1 to 5 characters inclusive, and only contains the following characters:\n",
-            "malay": "__Tetapan Pelayan (Pengguna pentadbir boleh menukar tetapan ini)__\n**Awalan** Tetapkan awalan untuk semua arahan untuk bot ini. (Lalai: jw)\nArahan (ganti <...>): <awalan lama atau sebutan bot> settings prefix <awalan baharu>\nAwalan mesti mempunyai antara 1 hingga 5 aksara termasuk, dan hanya mengandungi aksara berikut:\n",
-            "schi": "__服务器设置 (管理员用户可以更改这些设置)__\n**前缀** 为此机器人设置所有命令的前缀。(预设: jw)\n指令(替换 <...>): <旧前缀或提及机器人> settings prefix <新前缀>\n前缀必须包含1到5个字符(含), 并且仅包含以下字符:\n",
-            "tchi": "__服務器設置 (管理員用戶可以更改這些設置)__\n**前綴** 爲此機器人設置所有命令的前綴。(預設: jw)\n指令(替換 <...>): <舊前綴或提及機器人> settings prefix <新前綴>\n前綴必須包含1到5個字符(含), 並且僅包含以下字符:\n",
-            "yue": "__服務器設置 (管理員用戶可以更改呢啲設置)__\n**前綴** 爲此機械人設置所有命令嘅前綴。(預設: jw)\n指令(替換 <...>): <舊前綴或提及機械人> settings prefix <新前綴>\n前綴一定要包含1到5個字元(含), 兼夾僅包含以下字元:\n",
+            "eng": "__Server Settings (Administrator users can change these settings)__\n**Prefix:**\nSet the prefix for all commands for this bot. (Default: jw)\nCommand (replace <...>): <old prefix or mention bot> settings prefix <new prefix>\nPrefix must have between 1 to 5 characters inclusive, and only contains the following characters:\n",
+            "malay": "__Tetapan Pelayan (Pengguna pentadbir boleh menukar tetapan ini)__\n**Awalan:**\nTetapkan awalan untuk semua arahan untuk bot ini. (Lalai: jw)\nArahan (ganti <...>): <awalan lama atau sebutan bot> settings prefix <awalan baharu>\nAwalan mesti mempunyai antara 1 hingga 5 aksara termasuk, dan hanya mengandungi aksara berikut:\n",
+            "schi": "__服务器设置 (管理员用户可以更改这些设置)__\n**前缀:**\n为此机器人设置所有命令的前缀。(预设: jw)\n指令(替换 <...>): <旧前缀或提及机器人> settings prefix <新前缀>\n前缀必须包含1到5个字符(含), 并且仅包含以下字符:\n",
+            "tchi": "__服務器設置 (管理員用戶可以更改這些設置)__\n**前綴:**\n爲此機器人設置所有命令的前綴。(預設: jw)\n指令(替換 <...>): <舊前綴或提及機器人> settings prefix <新前綴>\n前綴必須包含1到5個字符(含), 並且僅包含以下字符:\n",
+            "yue": "__服務器設置 (管理員用戶可以更改呢啲設置)__\n**前綴:**\n爲此機械人設置所有命令嘅前綴。(預設: jw)\n指令(替換 <...>): <舊前綴或提及機械人> settings prefix <新前綴>\n前綴一定要包含1到5個字元(含), 兼夾僅包含以下字元:\n",
             "prefix": {
                 "invalid_prefix": {
                     "eng": "Your new prefix is invalid.\nNote that prefix must have between 1 to 5 characters inclusive, and only contains the following characters:\n",
@@ -168,6 +168,64 @@
             "schi": "在不活动后将禁用设置调整: ",
             "tchi": "在不活動後將禁用設置調整: ",
             "yue": "喺唔活動後將停用設置較: "
+        }
+    },
+    "create": {
+        "initial": {
+            "eng": "__Create a Game Board (Progress 1/3)__\n\n**Number of Players:** The more players there are in a board, the harder the game will be.\nBetween 6 to 12 players inclusive.\n\n**Preset or Custom:**\nPreset - There will be wide selection of preset boards to be played.\nCustom - You may choose any combinations of roles you want.",
+            "malay": "__Buat Papan Permainan (Kemajuan 1/3)__\n\n**Bilangan Pemain:** Semakin ramai pemain dalam papan, semakin sukar permainan tersebut.\nTermasuk antara 6 hingga 12 pemain.\n\n* *Pratetap atau Tersuai:**\nPratetap - Terdapat pelbagai pilihan papan pratetap untuk dimainkan.\nTersuai - Anda boleh memilih mana-mana gabungan peranan yang anda mahukan.",
+            "schi": "__创建游戏板子(进度 1/3)__\n\n**玩家数量:** 板子中的玩家越多, 游戏就越难。\n6 到 12 名玩家（含）。\n\n**预设或自定义:**\n预设 - 将有多种预设板可供选择。\n自定义 - 您可以选择所需角色的任意组合。",
+            "tchi": "__創建遊戲板子(進度 1/3)__\n\n**玩家數量:** 板子中的玩家越多, 遊戲就越難。\n6 到 12 名玩家（含）。\n\n**預設或自定義:**\n預設 - 將有多種預設板可供選擇。\n自定義 - 您可以選擇所需角色的任意組合。",
+            "yue": "__創建遊戲板(進度1/3)__\n\n**玩家數量:** 板中嘅玩家多, 遊戲就越難。\n6到12名玩家(含)。\n\n**預設或自定義:**\n預設 - 將有多種預設板可供選擇。\n自定義 - 你可以選擇所使角色嘅任意組合。",
+            "select_num_player": {
+                "eng": "Number of Players",
+                "malay": "Bilangan Pemain",
+                "schi": "玩家数量",
+                "tchi": "玩家數量",
+                "yue": "玩家數量"
+            },
+            "placeholder_preset_custom": {
+                "eng": "Preset or Custom",
+                "malay": "Pratetap atau Tersuai",
+                "schi": "预设或自定义",
+                "tchi": "預設或自定義",
+                "yue": "預設或自定義"
+            },
+            "preset": {
+                "eng": "Preset",
+                "malay": "Pratetap",
+                "schi": "预设",
+                "tchi": "預設",
+                "yue": "預設"
+            },
+            "custom": {
+                "eng": "Custom",
+                "malay": "Tersuai",
+                "schi": "自定义",
+                "tchi": "自定義",
+                "yue": "自定義"
+            },
+            "button_next": {
+                "eng": "Next",
+                "malay": "Seterusnya",
+                "schi": "下一个",
+                "tchi": "下一個",
+                "yue": "下一個"
+            },
+            "button_cancel": {
+                "eng": "Cancel",
+                "malay": "Batalkan",
+                "schi": "取消",
+                "tchi": "取消",
+                "yue": "取消"
+            }
+        },
+        "timeout": {
+            "eng": "Create game are disabled after inactivity: ",
+            "malay": "Buat permainan dilumpuhkan selepas tidak aktif: ",
+            "schi": "在不活动后将禁用创建游戏: ",
+            "tchi": "在不活動後將禁用創建遊戲: ",
+            "yue": "喺唔活動後將停用创建游戏: "
         }
     }
 }

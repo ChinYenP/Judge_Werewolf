@@ -131,14 +131,14 @@ async function general_settings(message) {
     const allowed_symbol_text = process.env.ALLOWED_PREFIX_CHARACTERS;
     const display_arr = await get_display_text(['settings.user_settings', 'settings.server_settings', 'settings.user_settings.placeholder_text.lang', 'settings.timeout'], message.author.id);
     if (display_arr.length !== 4) {
-        console.error('DSPY error at ./commands/ping.js, no11');
+        console.error('DSPY error at ./commands/create.js, no11');
         await message.reply('Something has gone wrong during the code runtime: Error DSPY');
         return;
     };
     const rowLang = new ActionRowBuilder()
         .addComponents(
             new StringSelectMenuBuilder()
-                .setCustomId('settings_prefix_lang')
+                .setCustomId('settings_user_lang')
                 .setPlaceholder(display_arr[2])
                 .addOptions(
                     {
@@ -212,7 +212,7 @@ async function prefix_settings(message, args) {
     await settings_prefix_timeout_set(args[1], bot_reply.id, message.author.id, message.channelId, message.guildId, time_sec, message_prefix_timeout, bot_reply);
 
     async function message_prefix_timeout(bot_reply) {
-        const timeout_content = `${display_arr[0] + args[1]  }\n\n${`${display_arr[3] + time_sec  }s`}`;
+        const timeout_content = `${display_arr[0] + args[1]}\n\n${display_arr[3] + time_sec}s`;
         await bot_reply.edit({ content: timeout_content, components: [] });
     };
 

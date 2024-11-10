@@ -6,11 +6,17 @@
             "server": {
                 "prefix": 15
             }
+        },
+        "create": {
+            "initial": 30,
+            "role and rule": 30,
+            "confirm": 30
         }
     },
     "cooldown_sec": {
         "help": 5,
         "ping": 5,
-        "settings": 10
+        "settings": 10,
+        "create": 5
     }
 }
