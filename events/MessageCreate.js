@@ -1,8 +1,8 @@
 const { Events } = require('discord.js');
-const db = require('../database/sqlite_db.js');
 const { prefix_validation } = require('../utility/validation/prefix_validation.js');
-const config = require('../text_data_config/config.json');
 const { get_display_error_code } = require('../utility/get_display.js');
+const db = require('../database/sqlite_db.js');
+const config = require('../text_data_config/config.json');
 
 module.exports = {
     name: Events.MessageCreate,
@@ -20,7 +20,7 @@ module.exports = {
             preset_prefix = config.default_prefix;
         };
         //Validate prefix
-        if (!(prefix_validation(preset_prefix))) {
+        if (!(await prefix_validation(preset_prefix))) {
             await message.reply(await get_display_error_code('C3', message.author.id));
             console.error('C3 error at ./events/MessageCreate.js, no1');
         };

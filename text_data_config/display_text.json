@@ -86,6 +86,22 @@
         "tchi": "__列出 Judge Werewolf 機器人的指令 (替換 <...>)__\n您可以使用前綴集或提及機器人。\n\n**jw help** 列出所有指令。\n**jw ping** 回覆\"乓\"!\n**jw settings <可選參數>** 如果不包含/錯誤參數, 則列出用戶和服務器的設置。如果包含正確的參數, 則應用服務器設置。\n**jw create <optional ID>** 創建並開始遊戲。插入適當的ID即可快速建立特定的板。",
         "yue": "__列出 Judge Werewolf 機械人嘅指令 (替換 <...>)__\n你可以使用前缀集或提及機器人。\n\n**jw help** 列出所有指令。\n**jw ping** 回覆\"乓\"!\n**jw settings <可選參數>** 如果唔包含/錯誤參數, 就列出用戶同服務器嘅設置。如果包含正確嘅參數, 就應用服務器設置。\n**jw create <optional ID>** 創建並開始遊戲。插入適當嘅ID即可趕建立特定嘅板。"
     },
+    "prefix": {
+        "current_prefix": {
+            "eng": "This server's current prefix: ",
+            "malay": "Awalan semasa pelayan ini: ",
+            "schi": "该伺服器当前的前缀: ",
+            "tchi": "該伺服器当前的前綴: ",
+            "yue": "該服務器當前嘅前綴: "
+        },
+        "instruction": {
+            "eng": "This bot's default prefix is: jw\nHowever, use your server's current prefix instead.\nYou may mention the bot instead of using prefix.",
+            "malay": "Bahasa: Bahasa Melayu",
+            "schi": "此机器人的默认前缀是: jw\n但是, 请使用您服务器的当前前缀。\n您可以提及该机器人而不是使用前缀。",
+            "tchi": "此機器人的預設前綴是: jw\n但是, 請使用您伺服器的當前前綴。\n您可以提及該機器人而不是使用前綴。",
+            "yue": "此機械人嘅默認前綴係: jw\n但是, 請使用你服務器嘅當前前綴。\n你可以提及該機械人而唔係使用前綴。"
+        }
+    },
     "settings": {
         "user_settings": {
             "eng": "__User Settings__\n**Language:** Set the language used for this bot. (Default: English)",

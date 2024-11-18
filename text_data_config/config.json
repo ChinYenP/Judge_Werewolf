@@ -17,6 +17,7 @@
         "help": 5,
         "ping": 5,
         "settings": 10,
-        "create": 5
+        "create": 5,
+        "prefix": 5
     }
 }
