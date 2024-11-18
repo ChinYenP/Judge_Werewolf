@@ -20,8 +20,6 @@ async function readAndProcessFiles() {
     // Read the directory contents
     let file_arr = await fs.promises.readdir(directory_path);
 
-    console.log(file_arr)
-
     const filePromises = file_arr.map(async (file) => {
         const filePath = await path.join(directory_path, file);
         const stats = await fs.promises.stat(filePath);
