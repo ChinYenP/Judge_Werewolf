@@ -1,5 +1,5 @@
 const { Collection } = require('discord.js');
-const myEmitter = require('../../emitter.js');
+const myEmitter = require('../emitter.js');
 
 const prefix_timeouts = new Collection();
 //messageId -> [userId, setTimeout instance]

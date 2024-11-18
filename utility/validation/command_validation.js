@@ -1,4 +1,4 @@
-const myEmitter = require('../../emitter.js');
+const myEmitter = require('../emitter.js');
 
 //You should not fail this normally...
 async function command_validation(command) {

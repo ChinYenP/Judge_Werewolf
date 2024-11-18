@@ -75,7 +75,7 @@ client.login(process.env.TOKEN);
 
 
 //Event emmitter:
-const myEmitter = require('./emitter.js');
+const myEmitter = require('./utility/emitter.js');
 
 myEmitter.on('getWebsocketLatency', async (callback) => {
     const ws_latency_event = await client.ws.ping;

@@ -1,6 +1,6 @@
 // Require Sequelize
 const Sequelize = require('sequelize');
-const myEmitter = require('../emitter.js');
+const myEmitter = require('../utility/emitter.js');
 
 //Connect Database: SQLite
 const sequelize = new Sequelize({
