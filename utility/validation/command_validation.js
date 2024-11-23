@@ -2,6 +2,7 @@ const myEmitter = require('../emitter.js');
 
 //You should not fail this normally...
 async function command_validation(command) {
+    if (command === 'overall') return (true);
     try {
         const getCommandsPromise = new Promise((resolve) => {
             myEmitter.emit('getCommands', resolve);

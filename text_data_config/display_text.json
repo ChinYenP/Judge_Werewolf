@@ -9,6 +9,13 @@
                 "yue": "代碼運行時出咗啲問題: 錯誤"
             }
         },
+        "command_not_exist": {
+            "eng": "This command does not exist: ",
+            "malay": "Perintah ini tidak wujud: ",
+            "schi": "该命令不存在: ",
+            "tchi": "該命令不存在: ",
+            "yue": "呢個命令唔存在: "
+        },
         "command_args_error": {
             "less_args": {
                 "eng": " requires more arguments.",
