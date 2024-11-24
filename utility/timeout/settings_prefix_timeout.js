@@ -64,7 +64,7 @@ async function settings_prefix_timeout_delete(messageId, clientId, guildId) {
 
 async function shutdown_settings_prefix_timeout() {
     try {
-        for (const [key, value] of prefix_client_to_message) {
+        for (const [key] of prefix_client_to_message) {
             await settings_prefix_delete_message(key);
         };
     } catch (err) {
@@ -72,4 +72,9 @@ async function shutdown_settings_prefix_timeout() {
     };
 };
 
-module.exports = { shutdown_settings_prefix_timeout, settings_prefix_timeout_set, settings_get_prefix, settings_prefix_is_message_author, settings_prefix_delete_message, settings_prefix_timeout_delete };
+module.exports = { shutdown_settings_prefix_timeout,
+    settings_prefix_timeout_set,
+    settings_get_prefix,
+    settings_prefix_is_message_author,
+    settings_prefix_delete_message,
+    settings_prefix_timeout_delete };

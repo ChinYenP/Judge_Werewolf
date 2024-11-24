@@ -31,20 +31,20 @@ async function general_delete_message(clientId, command) {
         });
     };
 
-    let client_to_message_arr = await client_to_message.get(clientId);
+    const client_to_message_arr = await client_to_message.get(clientId);
     if (client_to_message.has(clientId)) {
-        if (command == "") {
+        if (command === '') {
             for (let i = 0; i < client_to_message_arr.length; i++) {
-                let oldMessageId = client_to_message_arr[i];
-                let oldChannelId = (timeouts.get(oldMessageId))[0];
+                const oldMessageId = client_to_message_arr[i];
+                const oldChannelId = (timeouts.get(oldMessageId))[0];
                 await promise_handling(oldMessageId, oldChannelId);
             };
             return;
         };
         for (let i = 0; i < client_to_message_arr.length; i++) {
-            let oldMessageId = client_to_message_arr[i];
-            if ((timeouts.get(oldMessageId))[1] == command) {
-                let oldChannelId = (timeouts.get(oldMessageId))[0];
+            const oldMessageId = client_to_message_arr[i];
+            if ((timeouts.get(oldMessageId))[1] === command) {
+                const oldChannelId = (timeouts.get(oldMessageId))[0];
                 await promise_handling(oldMessageId, oldChannelId);
                 return;
             };
@@ -72,11 +72,11 @@ async function general_timeout_delete(messageId, clientId) {
     if (timeouts.has(messageId)) {
         clearTimeout((timeouts.get(messageId))[3]);
         timeouts.delete(messageId);
-        let client_to_message_arr = client_to_message.get(clientId);
+        const client_to_message_arr = client_to_message.get(clientId);
         for (let i = 0; i < client_to_message_arr.length; i++) {
-            if (client_to_message_arr[i] == messageId) {
+            if (client_to_message_arr[i] === messageId) {
                 client_to_message_arr.splice(i, 1);
-                if (client_to_message_arr.length == 0) {
+                if (client_to_message_arr.length === 0) {
                     client_to_message.delete(clientId);
                 };
                 return;
@@ -87,8 +87,8 @@ async function general_timeout_delete(messageId, clientId) {
 
 async function shutdown_general_timeout() {
     try {
-        for (const [key, value] of client_to_message) {
-            await general_delete_message(key, "");
+        for (const [key] of client_to_message) {
+            await general_delete_message(key, '');
         };
     } catch (err) {
         console.error(err);

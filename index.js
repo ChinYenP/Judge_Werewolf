@@ -51,7 +51,7 @@ for (const file of eventFiles) {
 };
 
 // Graceful shutdown
-const { shutdown_cleanup } = require('./shutdown_cleanup.js')
+const { shutdown_cleanup } = require('./shutdown_cleanup.js');
 async function shutdown(signal) {
     console.log(`${signal} received: shutting down gracefully...`);
     await shutdown_cleanup();
@@ -92,6 +92,7 @@ myEmitter.on('deleteMessage', async ({ channelId, messageId, emit_complete }) =>
         const message = await channel.messages.fetch(messageId);
         await message.delete();
     } catch (error) {
+        console.error(error);
     };
     myEmitter.emit(emit_complete);
 });

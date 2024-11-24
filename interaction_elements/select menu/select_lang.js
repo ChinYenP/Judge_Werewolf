@@ -10,7 +10,7 @@ async function menu_select_lang(interaction) {
         return;
     };
 
-    console.log("Select menu: settings_user_lang");
+    console.log('Select menu: settings_user_lang');
 
     if (await general_is_outdated(interaction.message.id)) {
         const outdated_interaction_text = await get_display_text(['general.outdated_interaction'], interaction.user.id);
@@ -86,7 +86,7 @@ async function menu_select_lang(interaction) {
     const Content = `${display_text[0]}\n\n${display_text[1] + allowed_symbol_text}`;
     
     const update_msg = await interaction.update({ content: Content, components: [rowLang], fetchReply: true });
-    await general_timeout_set("settings", update_msg.id, interaction.user.id, interaction.channelId, time_sec, interaction_timeout, update_msg);
+    await general_timeout_set('settings', update_msg.id, interaction.user.id, interaction.channelId, time_sec, interaction_timeout, update_msg);
 
     async function interaction_timeout(update_msg) {
         const timeout_content = `${display_text[0]}\n\n${display_text[1] + allowed_symbol_text}\n\n${display_text[3]}`;

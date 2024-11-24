@@ -1,5 +1,4 @@
 const { ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { prefix_validation } = require('../utility/validation/prefix_validation.js');
 const { get_display_text, get_display_error_code } = require('../utility/get_display.js');
 const { check_cooldown } = require('../utility/cooldown.js');
 const { general_timeout_set, general_delete_message } = require('../utility/timeout/general_timeout.js');
@@ -70,16 +69,18 @@ module.exports = {
 
         //For general create
         await general_create(message);
-        return;
+        
     },
 };
 
 
 async function general_create(message) {
 
-    await general_delete_message(message.author.id, "create");
+    await general_delete_message(message.author.id, 'create');
     const time_sec = config.timeout_sec.create.initial;
-    const display_arr = await get_display_text(['create.initial', 'create.initial.select_num_player', 'create.initial.placeholder_preset_custom', 'create.initial.preset', 'create.initial.custom', 'create.initial.button_next', 'create.initial.button_cancel', 'create.timeout'], message.author.id);
+    const display_arr = await get_display_text(['create.initial', 'create.initial.select_num_player',
+        'create.initial.placeholder_preset_custom', 'create.initial.preset', 'create.initial.custom',
+        'create.initial.button_next', 'create.initial.button_cancel', 'create.timeout'], message.author.id);
     if (display_arr.length !== 8) {
         console.error('DSPY error at ./commands/create.js, no11');
         await message.reply('Something has gone wrong during the code runtime: Error DSPY');
@@ -162,7 +163,7 @@ async function general_create(message) {
         .addComponents(cancel_button, next_button);
     
     const bot_reply = await message.reply({ content: display_arr[0], components: [rowNumPlayer, rowPresetCustom, rowButton] });
-    await general_timeout_set("create", bot_reply.id, message.author.id, message.channelId, time_sec, message_timeout, bot_reply);
+    await general_timeout_set('create', bot_reply.id, message.author.id, message.channelId, time_sec, message_timeout, bot_reply);
 
     async function message_timeout(bot_reply) {
         const timeout_content = `${display_arr[0]}\n\n${display_arr[7] + time_sec}s`;

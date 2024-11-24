@@ -9,6 +9,8 @@ module.exports = {
     name: Events.MessageCreate,
     async execute(message) {
 
+        let display_arr = '';
+
         //Check cooldown
         const cooldown_arr = await check_cooldown(message.author.id, 'overall', config.cooldown_sec.overall);
         switch (cooldown_arr[0]) {
@@ -78,11 +80,11 @@ module.exports = {
             console.error('C3 error at ./events/MessageCreate.js, no7');
         };
         const commandName = args.shift().toLowerCase();
-        if (commandName.length == 0) return;
+        if (commandName.length === 0) return;
 
         const command = message.client.commands.get(commandName);    
         if (!command) {
-            let display_arr = await get_display_text(['general.command_not_exist'], message.author.id);
+            display_arr = await get_display_text(['general.command_not_exist'], message.author.id);
             if (display_arr.length !== 1) {
                 console.error('DSPY error at ./events/MessageCreate.js, no8');
                 await message.reply('Something has gone wrong during the code runtime: Error DSPY');

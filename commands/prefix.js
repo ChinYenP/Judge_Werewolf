@@ -70,7 +70,7 @@ module.exports = {
             return;
         };
 
-        await message.reply(display_arr[0] + prefix + '\n' + display_arr[1]);
+        await message.reply(`${display_arr[0] + prefix  }\n${  display_arr[1]}`);
     },
 
 };

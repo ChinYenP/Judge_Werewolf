@@ -6,11 +6,11 @@ const path = require('path');
 require('dotenv').config();
 
 let n = 10;
-if (process.argv.length == 3) {
+if (process.argv.length === 3) {
     n = parseInt(process.argv[2]);
 };
 if (isNaN(n) || n < 0) {
-    console.error("Invalid value for n. It must be a positive integer.");
+    console.error('Invalid value for n. It must be a positive integer.');
     process.exit(1); // Exit the process with an error code
 };
 
@@ -18,13 +18,11 @@ const directory_path = process.env.DBBACKUPFOLDER;
 
 async function readAndProcessFiles() {
     // Read the directory contents
-    let file_arr = await fs.promises.readdir(directory_path);
+    const file_arr = await fs.promises.readdir(directory_path);
 
     const filePromises = file_arr.map(async (file) => {
         const filePath = await path.join(directory_path, file);
         const stats = await fs.promises.stat(filePath);
-        console.log(filePath)
-        console.log(stats.mtime)
         return ({file_path: filePath, modification_time: stats.mtime});
     });
 

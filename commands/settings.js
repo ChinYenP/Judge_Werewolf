@@ -118,7 +118,7 @@ module.exports = {
 
         //For general settings
         await general_settings(message);
-        return;
+        
     },
 
 };
@@ -126,7 +126,7 @@ module.exports = {
 
 async function general_settings(message) {
 
-    await general_delete_message(message.author.id, "settings");
+    await general_delete_message(message.author.id, 'settings');
     const time_sec = config.timeout_sec.settings.user;
     const allowed_symbol_text = process.env.ALLOWED_PREFIX_CHARACTERS;
     const display_arr = await get_display_text(['settings.user_settings', 'settings.server_settings', 'settings.user_settings.placeholder_text.lang', 'settings.timeout'], message.author.id);
@@ -171,7 +171,7 @@ async function general_settings(message) {
     
     const Content = `${display_arr[0]}\n\n${display_arr[1] + allowed_symbol_text}`;
     const bot_reply = await message.reply({ content: Content, components: [rowLang] });
-    await general_timeout_set("settings", bot_reply.id, message.author.id, message.channelId, time_sec, message_timeout, bot_reply);
+    await general_timeout_set('settings', bot_reply.id, message.author.id, message.channelId, time_sec, message_timeout, bot_reply);
 
     async function message_timeout(bot_reply) {
         const timeout_content = `${display_arr[0]}\n\n${display_arr[1] + allowed_symbol_text}\n\n${`${display_arr[3] + time_sec  }s`}`;
