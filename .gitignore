@@ -6,3 +6,4 @@ database.sqlite
 package-lock.json
 *.log
 eslint.config.mjs
+sequelize_cli/

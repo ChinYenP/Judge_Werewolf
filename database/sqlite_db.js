@@ -23,7 +23,7 @@ const USER_SETTINGS = sequelize.define('USER_SETTINGS', {
         primaryKey: true,
     },
     lang: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM('eng', 'malay', 'schi', 'tchi', 'yue'),
         allowNull: false,
         defaultValue: 'eng'
     }
@@ -41,7 +41,7 @@ const SERVER_SETTINGS = sequelize.define('SERVER_SETTINGS', {
     prefix: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 'bat'
+        defaultValue: 'jw'
     }
 },{
     freezeTableName: true,
@@ -61,6 +61,47 @@ const COMMAND_COOLDOWN = sequelize.define('COMMAND_COOLDOWN', {
     expired_date: {
         type: Sequelize.BIGINT,
         allowNull: false,
+    }
+},{
+    freezeTableName: true,
+    timestamps: false
+});
+
+const GAME_MATCH = sequelize.define('GAME_MATCH', {
+    clientId: {
+        type: Sequelize.STRING,
+        primaryKey: true
+    },
+    status: {
+        type: Sequelize.ENUM('create_initial', 'create_roles', 'create_final', 'night', 'day_vote', 'result'),
+        allowNull: false,
+        defaultValue: 'create_initial'
+    },
+    num_players: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        validate: {
+            min: 6,
+            max: 12
+        }
+    },
+    consecutive_no_death: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        validate: {
+            min: 0,
+            max: 4
+        }
+    },
+    players_role: {
+        type: Sequelize.JSON,
+        allowNull: false,
+        defaultValue: []
+    },
+    players_info: {
+        type: Sequelize.JSON,
+        allowNull: false,
+        defaultValue: []
     }
 },{
     freezeTableName: true,

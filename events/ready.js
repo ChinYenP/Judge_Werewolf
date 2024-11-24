@@ -27,6 +27,12 @@ module.exports = {
             throw new Error(`Failed to create database backup: ${ error}`);
         };
 
+        await db.sequelize.authenticate().then(() => {
+            console.log('Database connection established!');
+        }).catch((error) => {
+            throw new Error(`Unable to connect to the database: ${ error}`);
+        });
+
         await db.sequelize.sync(/*{force: true}*/).then(() => {
             console.log('Database created in ready.js successfully!');
         }).catch((error) => {
