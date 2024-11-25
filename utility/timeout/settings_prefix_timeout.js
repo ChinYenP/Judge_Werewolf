@@ -8,6 +8,10 @@ const prefix_client_to_message = new Collection();
 const prefix_confirm_collection = new Collection();
 //guildId -> prefix
 
+async function settings_prefix_timeout_has_messageId(messageId) {
+    return (prefix_timeouts.has(messageId));
+};
+
 async function settings_prefix_is_message_author(messageId, clientId) {
     if (prefix_timeouts.has(messageId)) {
         if ((prefix_timeouts.get(messageId))[0] === clientId) {
@@ -16,6 +20,10 @@ async function settings_prefix_is_message_author(messageId, clientId) {
         return (false);
     };
     return (true);
+};
+
+async function settings_prefix_timeouts_message_get_clientId(messageId) {
+    return ((prefix_timeouts.get(messageId))[0]);
 };
 
 async function settings_get_prefix(guildId) {
@@ -68,7 +76,9 @@ async function shutdown_settings_prefix_timeout(bot_client_instance) {
     };
 };
 
-module.exports = { shutdown_settings_prefix_timeout,
+module.exports = { settings_prefix_timeout_has_messageId,
+    settings_prefix_timeouts_message_get_clientId,
+    shutdown_settings_prefix_timeout,
     settings_prefix_timeout_set,
     settings_get_prefix,
     settings_prefix_is_message_author,

@@ -7,7 +7,13 @@ const client_to_message = new Collection();
 //clientId -> [messageId, ...]
 
 async function general_is_outdated(messageId) {
+    console.log(timeouts)
+    console.log(timeouts.has(messageId))
     return (!(timeouts.has(messageId)));
+};
+
+async function timeouts_message_get_clientId(messageId) {
+    return ((timeouts.get(messageId))[2]);
 };
 
 async function general_is_message_author(messageId, clientId) {
@@ -57,7 +63,7 @@ async function general_timeout_set(command, messageId, clientId, channelId, time
         (client_to_message.get(clientId)).push(messageId);
     } else {
         client_to_message.set(clientId, [messageId]);
-    }
+    };
 };
 
 async function general_timeout_delete(messageId, clientId) {
@@ -87,4 +93,5 @@ async function shutdown_general_timeout(bot_client_instance) {
     };
 };
 
-module.exports = { general_is_outdated, shutdown_general_timeout, general_timeout_set, general_is_message_author, general_delete_message };
+module.exports = { timeouts_message_get_clientId, general_is_outdated, shutdown_general_timeout,
+    general_timeout_set, general_timeout_delete, general_is_message_author, general_delete_message };
