@@ -1,5 +1,5 @@
 const { Collection } = require('discord.js');
-const myEmitter = require('../emitter.js');
+const { delete_message } = require('../delete_message.js');
 
 const prefix_timeouts = new Collection();
 //messageId -> [userId, setTimeout instance]
@@ -25,17 +25,13 @@ async function settings_get_prefix(guildId) {
     return ([false]);
 };
 
-async function settings_prefix_delete_message(clientId) {
+async function settings_prefix_delete_message(clientId, bot_client_instance) {
     if (prefix_client_to_message.has(clientId)) {
         const oldMessageId = prefix_client_to_message.get(clientId)[0];
         const oldChannelId = prefix_client_to_message.get(clientId)[1];
         const oldGuildId = prefix_client_to_message.get(clientId)[2];
         await settings_prefix_timeout_delete(oldMessageId, clientId, oldGuildId);
-        await new Promise((resolve) => {
-            const emit_complete = 'deleteMessageCompleteSettingsPrefixTImeout';
-            myEmitter.once(emit_complete, resolve); // Listen for the completion
-            myEmitter.emit('deleteMessage', { channelId: oldChannelId, messageId: oldMessageId, emit_complete: emit_complete });
-        });
+        await delete_message(oldMessageId, oldChannelId, bot_client_instance);
     };
 };
 
@@ -62,10 +58,10 @@ async function settings_prefix_timeout_delete(messageId, clientId, guildId) {
     };
 };
 
-async function shutdown_settings_prefix_timeout() {
+async function shutdown_settings_prefix_timeout(bot_client_instance) {
     try {
         for (const [key] of prefix_client_to_message) {
-            await settings_prefix_delete_message(key);
+            await settings_prefix_delete_message(key, bot_client_instance);
         };
     } catch (err) {
         console.error(err);

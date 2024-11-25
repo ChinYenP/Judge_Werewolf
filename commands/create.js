@@ -13,7 +13,7 @@ module.exports = {
         let display_arr = '';
 
         //Check cooldown
-        const cooldown_arr = await check_cooldown(message.author.id, 'create', config.cooldown_sec.create);
+        const cooldown_arr = await check_cooldown(message.author.id, 'create', config.cooldown_sec.create, message.client);
         switch (cooldown_arr[0]) {
             case 0:
                 display_arr = await get_display_text(['general.timeout_display'], message.author.id);
@@ -76,7 +76,7 @@ module.exports = {
 
 async function general_create(message) {
 
-    await general_delete_message(message.author.id, 'create');
+    await general_delete_message(message.author.id, 'create', message.client);
     const time_sec = config.timeout_sec.create.initial;
     const display_arr = await get_display_text(['create.initial', 'create.initial.select_num_player',
         'create.initial.placeholder_preset_custom', 'create.initial.preset', 'create.initial.custom',

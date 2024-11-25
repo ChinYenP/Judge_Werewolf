@@ -12,7 +12,7 @@ module.exports = {
         let display_arr = '';
 
         //Check cooldown
-        const cooldown_arr = await check_cooldown(message.author.id, 'ping', config.cooldown_sec.ping);
+        const cooldown_arr = await check_cooldown(message.author.id, 'ping', config.cooldown_sec.ping, message.client);
         switch (cooldown_arr[0]) {
             case 0:
                 display_arr = await get_display_text(['general.timeout_display'], message.author.id);
@@ -49,20 +49,6 @@ module.exports = {
 
         const sent = await message.reply({ content: 'Pinging...', fetchReply: true });
         const latency = sent.createdTimestamp - message.createdTimestamp;
-        
-        let ws_latency = 0;
-        try {
-            const getWebsocketLatencyPromise = new Promise((resolve) => {
-                myEmitter.emit('getWebsocketLatency', resolve);
-            });
-            // Call the function and log the latency
-            getWebsocketLatencyPromise.then((ws_latency_event) => {
-                ws_latency = ws_latency_event;
-            });
-        } catch (error) {
-            console.error(error);
-            return;
-        };
 
         display_arr = await get_display_text(['ping.pong', 'ping.latency', 'ping.ws_latency'], message.author.id);
         if (display_arr.length !== 3) {
@@ -70,7 +56,7 @@ module.exports = {
             await message.reply('Something has gone wrong during the code runtime: Error DSPY');
             return;
         };
-        const text = `${display_arr[0]}\n${display_arr[1]}${latency}ms\n${display_arr[2]}${ws_latency}ms`;
+        const text = `${display_arr[0]}\n${display_arr[1]}${latency}ms\n${display_arr[2]}${message.client.ws.ping}ms`;
 
         try {
             await sent.edit(text);

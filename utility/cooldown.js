@@ -1,7 +1,7 @@
 const db = require('../database/sqlite_db.js');
 const { command_validation } = require('./validation/command_validation.js');
 
-async function check_cooldown(clientId, command, time_sec) {
+async function check_cooldown(clientId, command, time_sec, bot_client_instance) {
 
     /*Return array:
     [0, <float>] - cooldown is not over, next element represents remaining time.
@@ -10,7 +10,7 @@ async function check_cooldown(clientId, command, time_sec) {
     */
 
     //Check command
-    if (!(await command_validation(command))) {
+    if (!(await command_validation(command, bot_client_instance))) {
         return ([2, 'C4']);
     };
 
@@ -24,13 +24,13 @@ async function check_cooldown(clientId, command, time_sec) {
             return ([0, parseFloat((expired_date - date_now) / 1000)]);
         };
     };
-    return (await update_cooldown(clientId, command, time_sec));
+    return (await update_cooldown(clientId, command, time_sec, bot_client_instance));
 };
 
-async function update_cooldown(clientId, command, time_sec) {
+async function update_cooldown(clientId, command, time_sec, bot_client_instance) {
 
     //Check command
-    if (!(await command_validation(command))) {
+    if (!(await command_validation(command, bot_client_instance))) {
         return ([2, 'C4']);
     };
 

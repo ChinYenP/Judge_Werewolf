@@ -15,7 +15,7 @@ module.exports = {
         let display_arr = '';
 
         //Check cooldown
-        const cooldown_arr = await check_cooldown(message.author.id, 'settings', config.cooldown_sec.settings);
+        const cooldown_arr = await check_cooldown(message.author.id, 'settings', config.cooldown_sec.settings, message.client);
         switch (cooldown_arr[0]) {
             case 0:
                 display_arr = await get_display_text(['general.timeout_display'], message.author.id);
@@ -126,7 +126,7 @@ module.exports = {
 
 async function general_settings(message) {
 
-    await general_delete_message(message.author.id, 'settings');
+    await general_delete_message(message.author.id, 'settings', message.client);
     const time_sec = config.timeout_sec.settings.user;
     const allowed_symbol_text = process.env.ALLOWED_PREFIX_CHARACTERS;
     const display_arr = await get_display_text(['settings.user_settings', 'settings.server_settings', 'settings.user_settings.placeholder_text.lang', 'settings.timeout'], message.author.id);
@@ -183,7 +183,7 @@ async function general_settings(message) {
 
 async function prefix_settings(message, args) {
 
-    await settings_prefix_delete_message(message.author.id);
+    await settings_prefix_delete_message(message.author.id, message.client);
     const time_sec = config.timeout_sec.settings.server.prefix;
     const display_arr = await get_display_text(['settings.server_settings.prefix.confirmation',
         'settings.server_settings.prefix.button_yes',

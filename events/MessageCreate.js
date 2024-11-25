@@ -12,7 +12,7 @@ module.exports = {
         let display_arr = '';
 
         //Check cooldown
-        const cooldown_arr = await check_cooldown(message.author.id, 'overall', config.cooldown_sec.overall);
+        const cooldown_arr = await check_cooldown(message.author.id, 'overall', config.cooldown_sec.overall, message.client);
         switch (cooldown_arr[0]) {
             case 0:
                 display_arr = await get_display_text(['general.timeout_display'], message.author.id);

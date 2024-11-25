@@ -1,5 +1,5 @@
 const { Collection } = require('discord.js');
-const myEmitter = require('../emitter.js');
+const { delete_message } = require('../delete_message.js');
 
 const timeouts = new Collection();
 //messageId -> [channelId, command, clientId, setTimeout instance]
@@ -20,24 +20,15 @@ async function general_is_message_author(messageId, clientId) {
     return (true);
 };
 
-async function general_delete_message(clientId, command) {
-
-    async function promise_handling(oldMessageId, oldChannelId) {
-        clearTimeout((timeouts.get(oldMessageId))[3]);
-        await new Promise((resolve) => {
-            const emit_complete = 'deleteMessageCompleteGeneralTimeout';
-            myEmitter.on(emit_complete, resolve); // Listen for the completion
-            myEmitter.emit('deleteMessage', { channelId: oldChannelId, messageId: oldMessageId, emit_complete: emit_complete });
-        });
-    };
-
+async function general_delete_message(clientId, command, bot_client_instance) {
     const client_to_message_arr = await client_to_message.get(clientId);
     if (client_to_message.has(clientId)) {
         if (command === '') {
             for (let i = 0; i < client_to_message_arr.length; i++) {
                 const oldMessageId = client_to_message_arr[i];
                 const oldChannelId = (timeouts.get(oldMessageId))[0];
-                await promise_handling(oldMessageId, oldChannelId);
+                // await promise_handling(oldMessageId, oldChannelId);
+                await delete_message(oldMessageId, oldChannelId, bot_client_instance);
             };
             return;
         };
@@ -45,7 +36,8 @@ async function general_delete_message(clientId, command) {
             const oldMessageId = client_to_message_arr[i];
             if ((timeouts.get(oldMessageId))[1] === command) {
                 const oldChannelId = (timeouts.get(oldMessageId))[0];
-                await promise_handling(oldMessageId, oldChannelId);
+                // await promise_handling(oldMessageId, oldChannelId);
+                await delete_message(oldMessageId, oldChannelId, bot_client_instance);
                 return;
             };
         };
@@ -85,10 +77,10 @@ async function general_timeout_delete(messageId, clientId) {
     };
 };
 
-async function shutdown_general_timeout() {
+async function shutdown_general_timeout(bot_client_instance) {
     try {
         for (const [key] of client_to_message) {
-            await general_delete_message(key, '');
+            await general_delete_message(key, '', bot_client_instance);
         };
     } catch (err) {
         console.error(err);

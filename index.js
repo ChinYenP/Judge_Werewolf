@@ -54,7 +54,7 @@ for (const file of eventFiles) {
 const { shutdown_cleanup } = require('./shutdown_cleanup.js');
 async function shutdown(signal) {
     console.log(`${signal} received: shutting down gracefully...`);
-    await shutdown_cleanup();
+    await shutdown_cleanup(client);
     await client.destroy(); // Close Discord connection
     process.exit(0); // Exit after cleanup
 };
@@ -72,27 +72,3 @@ process.on('uncaughtException', async (err) => {
 
 // Log in to Discord with your client's token
 client.login(process.env.TOKEN);
-
-
-//Event emmitter:
-const myEmitter = require('./utility/emitter.js');
-
-myEmitter.on('getWebsocketLatency', async (callback) => {
-    const ws_latency_event = await client.ws.ping;
-    callback(ws_latency_event);
-});
-
-myEmitter.on('getCommands', async (callback) => {
-    callback(client.commands);
-});
-
-myEmitter.on('deleteMessage', async ({ channelId, messageId, emit_complete }) => {
-    try {
-        const channel = await client.channels.fetch(channelId);
-        const message = await channel.messages.fetch(messageId);
-        await message.delete();
-    } catch (error) {
-        console.error(error);
-    };
-    myEmitter.emit(emit_complete);
-});
