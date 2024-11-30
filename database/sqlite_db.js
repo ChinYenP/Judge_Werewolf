@@ -66,15 +66,59 @@ const COMMAND_COOLDOWN = sequelize.define('COMMAND_COOLDOWN', {
     timestamps: false
 });
 
+const GAME_CREATE = sequelize.define('GAME_CREATE', {
+    clientId: {
+        type: Sequelize.STRING,
+        primaryKey: true
+    },
+    status: {
+        type: Sequelize.ENUM('create_initial', 'create_roles', 'create_final'),
+        allowNull: false,
+        defaultValue: 'create_initial'
+    },
+    num_players: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        validate: {
+            min: 6,
+            max: 12
+        }
+    },
+    sheriff: {
+        type: Sequelize.BOOLEAN,
+        allowNull: true,
+    },
+    players_role: {
+        type: Sequelize.JSON,
+        allowNull: true,
+        defaultValue: []
+    },
+},{
+    freezeTableName: true,
+    timestamps: false
+});
+
 const GAME_MATCH = sequelize.define('GAME_MATCH', {
     clientId: {
         type: Sequelize.STRING,
         primaryKey: true
     },
     status: {
-        type: Sequelize.ENUM('create_initial', 'create_roles', 'create_final', 'night', 'day_vote', 'result'),
+        type: Sequelize.ENUM('night', 'sheriff', 'hunter', 'day_ability', 'day_vote', 'result'),
         allowNull: false,
-        defaultValue: 'create_initial'
+        defaultValue: 'night'
+    },
+    num_days: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        validate: {
+            min: 0
+        }
+    },
+    sheriff: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
     },
     num_players: {
         type: Sequelize.INTEGER,
@@ -110,10 +154,12 @@ const GAME_MATCH = sequelize.define('GAME_MATCH', {
 async function shutdown_sqlite_db()  {
     try {
         await COMMAND_COOLDOWN.truncate();
+        await GAME_CREATE.truncate();
+        await GAME_MATCH.truncate();
     } catch (err) {
         console.error(err);
     };
 };
 
 
-module.exports = { shutdown_sqlite_db, sequelize, USER_SETTINGS, SERVER_SETTINGS, COMMAND_COOLDOWN, GAME_MATCH };
+module.exports = { shutdown_sqlite_db, sequelize, USER_SETTINGS, SERVER_SETTINGS, COMMAND_COOLDOWN, GAME_CREATE, GAME_MATCH };
