@@ -12,8 +12,6 @@ module.exports = {
     async execute(message, args) {
         console.log(`Create command ran, args: ${args}`);
 
-        let display_arr = '';
-
         const clientId = message.author.id;
         if (!await check_cooldown(clientId, this.name, this.cooldown_sec, message.client, message)) {
             return;

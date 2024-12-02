@@ -10,7 +10,7 @@ module.exports = {
 
     name: 'settings',
     cooldown_sec: config.cooldown_sec.settings,
-    timeouut: true,
+    timeout: true,
     async execute(message, args) {
         console.log(`Settings command ran, args: ${args}`);
 
