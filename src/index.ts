@@ -1,19 +1,13 @@
-console.trace('index.ts executed');
-
 // Require the necessary discord.js classes
-import * as dotenv from 'dotenv';
-dotenv.config(); //Must be at very top!
+import 'dotenv/config';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { Client, Interaction, Message, GatewayIntentBits, Collection } from 'discord.js';
 
-console.log(process.env.DBSTORAGE)
-
 //Global variable: __dirname
 global.__dirname = dirname(fileURLToPath(import.meta.url));
-console.log(__dirname);
 
 // Extend the Client class to include a `commands` property
 class MyClient extends Client {

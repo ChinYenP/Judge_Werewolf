@@ -1,5 +1,3 @@
-console.trace('type_guard.ts executed');
-
 import { Channel, TextChannel, Client } from 'discord.js';
 import { MyClient } from '../index';
 

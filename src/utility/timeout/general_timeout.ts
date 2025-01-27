@@ -1,5 +1,3 @@
-console.trace('general_timeout.ts executed');
-
 import { Collection, Message } from 'discord.js';
 import { delete_message } from '../delete_message.js';
 import { Client } from 'discord.js';

@@ -1,5 +1,3 @@
-console.trace('delete_message.ts executed');
-
 import { Message, Channel, TextChannel, Client } from 'discord.js';
 import { isMyClient } from '../declare_type/type_guard.js';
 

@@ -1,5 +1,3 @@
-console.trace('sqlite_db.ts executed');
-
 // Require Sequelize
 import { DataTypes, Sequelize, Model, InferAttributes, InferCreationAttributes } from 'sequelize';
 
@@ -10,8 +8,6 @@ const sequelize = new Sequelize({
     //logging: (msg) => console.log(msg),
     storage: process.env.DBSTORAGE,
 });
-
-console.log('path: ', process.env.DBSTORAGE)
 
 
 interface UserSettingsInstance extends Model<InferAttributes<UserSettingsInstance>, InferCreationAttributes<UserSettingsInstance>> {
@@ -211,9 +207,6 @@ async function shutdown_sqlite_db()  {
         console.error(err);
     };
 };
-
-console.log('next sqlite_db.ts');
-
 
 export { shutdown_sqlite_db, sequelize,
     UserSettingsInstance, USER_SETTINGS,

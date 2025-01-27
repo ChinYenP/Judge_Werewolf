@@ -3,8 +3,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as dotenv from 'dotenv';
-dotenv.config();
+import 'dotenv/config';
 
 let n: number = 10;
 if (process.argv.length === 3) {
