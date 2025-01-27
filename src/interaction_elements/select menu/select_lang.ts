@@ -1,0 +1,135 @@
+import { StringSelectMenuInteraction, ActionRowBuilder, StringSelectMenuBuilder, Message } from 'discord.js';
+import { UserSettingsInstance, USER_SETTINGS } from '../../database/sqlite_db.js';
+import { general_is_outdated, general_timeout_set, general_is_message_author } from '../../utility/timeout/general_timeout.js';
+import { get_display_text, get_display_error_code } from '../../utility/get_display.js';
+import { config } from '../../text_data_config/config.js';
+
+async function menu_select_lang(interaction: StringSelectMenuInteraction): Promise<void> {
+    
+    if (!(await general_is_message_author(interaction.message.id, interaction.user.id))) {
+        return;
+    }
+
+    console.log('Select menu: settings_user_lang');
+
+    if (await general_is_outdated(interaction.message.id)) {
+        const outdated_interaction_text: string[] = await get_display_text(['general.outdated_interaction'], interaction.user.id);
+        if (outdated_interaction_text.length !== 1) {
+            console.error('DSPY error at ./interaction_elements/select menu/select_lang.js, no1');
+            await interaction.message.edit({ content: config['display_error'], components: [] });
+            return;
+        }
+        await interaction.message.edit({ content: outdated_interaction_text[0] ?? config['display_error'], components: [] });
+        return;
+    }
+
+    let display_arr: string[] = [];
+
+    if (interaction.values[0] === undefined) return;
+    if (!(['eng', 'malay', 'schi', 'tchi', 'yue'].includes(interaction.values[0]))) return;
+    const lang: t_languages = interaction.values[0] as t_languages;
+    //Do sequelize thing here while get output text
+    const sqlite_status: [number, string] | [number] = await sequelize_select_lang(interaction, lang);
+
+    if (sqlite_status[0] === 0) {
+        display_arr = await get_display_error_code(sqlite_status[1]!, interaction.user.id);
+        if (display_arr.length !== 1) {
+            console.error('DSPY error at ./interaction_elements/select menu/select_lang.js, no2');
+            await interaction.update({content: config['display_error'], components: []});
+            return;
+        }
+        console.error(`${sqlite_status[1]  } error at ./interaction_elements/select menu/select_lang.js, no3`);
+        await interaction.update({content: display_arr[0] ?? config['display_error'], components: []});
+        return;
+    }
+
+    //Success
+    const time_sec: number = config['timeout_sec'].settings.user;
+    const allowed_symbol_text: string = process.env.ALLOWED_PREFIX_CHARACTERS;
+    display_arr = await get_display_text(['settings.user_settings','settings.server_settings','settings.user_settings.placeholder_text.lang','settings.timeout'], interaction.user.id);
+    if (display_arr.length !== 4) {
+        console.error('DSPY error at ./interaction_elements/select menu/select_lang.js, no4');
+        await interaction.update({content: config['display_error'] ?? config['display_error'], components: []});
+        return;
+    }
+    const rowLang: ActionRowBuilder<StringSelectMenuBuilder> = new ActionRowBuilder<StringSelectMenuBuilder>()
+        .addComponents(
+            new StringSelectMenuBuilder()
+                .setCustomId('settings_user_lang')
+                .setPlaceholder(display_arr[2] ?? config['display_error'])
+                .addOptions(
+                    {
+                        label: 'English',
+                        description: 'English',
+                        value: 'eng',
+                    },
+                    {
+                        label: 'Bahasa Melayu',
+                        description: 'Malay',
+                        value: 'malay'
+                    },
+                    {
+                        label: '简体中文',
+                        description: 'Simplified Chinese',
+                        value: 'schi',
+                    },
+                    {
+                        label: '繁體中文',
+                        description: 'Traditional Chinese',
+                        value: 'tchi',
+                    },
+                    {
+                        label: '粵語',
+                        description: 'Cantonese',
+                        value: 'yue',
+                    }
+                )
+        )
+
+    const Content: string = `${display_arr[0]}\n\n${display_arr[1] + allowed_symbol_text}`;
+    
+    const update_msg: Message = await interaction.update({ content: Content, components: [rowLang], fetchReply: true });
+    await general_timeout_set('settings', update_msg.id, interaction.user.id, interaction.channelId, time_sec, interaction_timeout, update_msg);
+
+    async function interaction_timeout(update_msg: Message): Promise<void> {
+        const timeout_content = `${display_arr[0]}\n\n${display_arr[1] + allowed_symbol_text}\n\n${display_arr[3]}`;
+        await update_msg.edit({ content: `${timeout_content + time_sec  }s`, components: [] });
+    }
+}
+
+
+async function sequelize_select_lang(interaction: StringSelectMenuInteraction, value: t_languages): (Promise<[number, string] | [number]>) {
+
+    /*
+    [1] - success.
+    [0, <str>] - error encountered, next element represents error code.
+    */
+
+    // equivalent to: SELECT * FROM tags WHERE name = 'tagName' LIMIT 1;
+    const settings: UserSettingsInstance | null = await USER_SETTINGS.findOne({ where: { clientId: interaction.user.id } });
+
+    if (settings !== null) {
+        //clientId exist, update data:
+        // equivalent to: UPDATE SETTINGS (lang) values (?) WHERE clientId='?';
+        const [affectedCount] = await USER_SETTINGS.update({ lang: value }, { where: { clientId: interaction.user.id } });
+        if (affectedCount > 0) {
+            return [1];
+        }
+        return [0, 'D3'];
+    }
+    //clientId not exist, create new data:
+    try {
+        // equivalent to: INSERT INTO SETTINGS (clientId, lang, hardMode) values (?, ?, ?);
+        await USER_SETTINGS.create({
+            clientId: interaction.user.id,
+            lang: value,
+        })
+        return [1];
+    }
+    catch (error) {
+        console.log(error);
+        return [0, 'D1'];
+    }
+}
+
+export { menu_select_lang }
