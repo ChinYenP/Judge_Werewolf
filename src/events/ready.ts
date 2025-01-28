@@ -1,5 +1,3 @@
-console.trace('ready.ts executed');
-
 import { Events, Client } from 'discord.js';
 import { sequelize } from '../database/sqlite_db.js';
 import * as fs from 'fs';

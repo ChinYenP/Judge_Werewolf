@@ -33,7 +33,7 @@ async function check_cooldown(clientId: string, command: string, time_sec: numbe
                 await msg_interact_instance.reply(config['display_error']);
                 return (false);
             }
-            await msg_interact_instance.reply(`${(display_arr[0] ?? config['display_error']) + (Number(expired_date - BigInt(date_now)) / 1000)}s`);
+            await msg_interact_instance.reply(`${(display_arr[0] ?? config['display_error']) + String((Number(expired_date) - date_now) / 1000)}s`);
             return (false);
         }
     }
