@@ -1,4 +1,4 @@
-//Usage (replace <>): node clean_db_backup.js <n: unsigned int>
+//Usage (replace <>): node built/database/clean_db_backup.js <n: unsigned int>
 //Function: Delete all backup files except n most recent files.
 
 import * as fs from 'fs';
