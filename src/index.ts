@@ -36,8 +36,7 @@ const commandsPath: string = path.join(__dirname, 'commands');
 const commandFiles: string[] = (fs.readdirSync(commandsPath)).filter((file: string) => file.endsWith('.js'));
 
 for (const file of commandFiles) {
-    const filePath: string = path.join(commandsPath, file);
-    const fileUrl: string = new URL(`file://${filePath}`).href;
+    const fileUrl: string = new URL(`file://${path.join(commandsPath, file)}`).href;
     const command: CommandModule = (await import(fileUrl)).default;
     // Set a new item in the Collection with the key as the command name and the value as the exported module
     client.commands.set(command.name, command);
@@ -48,8 +47,7 @@ const eventsPath: string = path.join(__dirname, './events');
 const eventFiles: string[] = fs.readdirSync(eventsPath).filter((file: string) => file.endsWith('.js'));
 
 for (const file of eventFiles) {
-    const filePath: string = path.join(eventsPath, file);
-    const fileUrl: string = new URL(`file://${filePath}`).href;
+    const fileUrl: string = new URL(`file://${path.join(eventsPath, file)}`).href;
     const event: EventModule = (await import(fileUrl)).default;
     if (event.once) {
         client.once(event.name, async (...args: [Message | Interaction | Client]) => await event.execute(...args));
