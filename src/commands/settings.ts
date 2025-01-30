@@ -2,7 +2,7 @@ import { Message, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, Butt
 import { prefix_validation } from '../utility/validation/prefix_validation.js';
 import { get_display_text, get_display_error_code } from '../utility/get_display.js';
 import { check_cooldown } from '../utility/cooldown.js';
-import { general_timeout_set, general_delete_message } from '../utility/timeout/general_timeout.js';
+import { general_timeout_set, general_delete_message } from '../utility/timeout.js';
 import { config } from '../text_data_config/config.js';
 import { isMyClient, isTextChannel } from '../declare_type/type_guard.js';
 import { TempPrefixSettingInstance, TEMP_PREFIX_SETTINGS } from '../database/sqlite_db.js';

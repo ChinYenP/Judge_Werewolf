@@ -1,7 +1,7 @@
 import { Collection, Message } from 'discord.js';
-import { delete_message } from '../delete_message.js';
+import { delete_message } from './delete_message.js';
 import { Client } from 'discord.js';
-import { isMyClient } from '../../declare_type/type_guard.js';
+import { isMyClient } from '../declare_type/type_guard.js';
 
 const timeouts = new Collection<string, [string, string, string, NodeJS.Timeout]>();
 //messageId -> [channelId, command, clientId, setTimeout instance]
@@ -47,7 +47,7 @@ async function general_delete_message(clientId: string, command: t_cooldown, bot
                 const timeoutEntry: [string, string, string, NodeJS.Timeout] | undefined = timeouts.get(oldMessageId);
                 if (timeoutEntry === undefined) continue;
                 const oldChannelId: string = timeoutEntry[0];
-                // await promise_handling(oldMessageId, oldChannelId);
+                await general_timeout_delete(oldMessageId, clientId);
                 await delete_message(oldMessageId, oldChannelId, bot_client_instance);
             }
             return;
@@ -59,6 +59,7 @@ async function general_delete_message(clientId: string, command: t_cooldown, bot
             if (timeoutEntry === undefined) continue;
             if (timeoutEntry[1] === command) {
                 const oldChannelId: string = timeoutEntry[0];
+                await general_timeout_delete(oldMessageId, clientId);
                 await delete_message(oldMessageId, oldChannelId, bot_client_instance);
                 return;
             }

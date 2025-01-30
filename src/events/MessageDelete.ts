@@ -1,18 +1,18 @@
 import { Message, Events } from 'discord.js';
-import { general_is_outdated, timeouts_message_get_clientId, general_timeout_delete } from '../utility/timeout/general_timeout.js';
+import { general_is_outdated, /*timeouts_message_get_clientId, general_timeout_delete*/ } from '../utility/timeout.js';
 import { isTextChannel } from '../declare_type/type_guard.js';
-import { TempPrefixSettingInstance, TEMP_PREFIX_SETTINGS } from '../database/sqlite_db.js'
+/*import { TempPrefixSettingInstance, TEMP_PREFIX_SETTINGS } from '../database/sqlite_db.js'
 import { get_display_error_code } from '../utility/get_display.js';
-import { config } from '../text_data_config/config.js';
+import { config } from '../text_data_config/config.js';*/
 
 export default {
     name: Events.MessageDelete,
     once: false,
     async execute(message: Message): Promise<void> {
-        if (message.author.id !== message.client.user.id) return;
+        if (message.author.id === message.client.user.id) return;
         if (!isTextChannel(message.channel)) return;
         if (await general_is_outdated(message.id)) return;
-        
+        /*
         await general_timeout_delete(message.id, await timeouts_message_get_clientId(message.id));
         await message.channel.send("Test: delete message solved.");
 
@@ -33,6 +33,6 @@ export default {
                 await message.reply({content: display_arr[0] ?? config['display_error'], components: []});
                 return;
             }
-        }
+        }*/
     }
 }

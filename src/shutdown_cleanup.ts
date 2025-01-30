@@ -1,4 +1,4 @@
-import { shutdown_general_timeout } from './utility/timeout/general_timeout.js';
+import { shutdown_general_timeout } from './utility/timeout.js';
 import { shutdown_sqlite_db } from './database/sqlite_db.js';
 import { Client } from 'discord.js';
 import { isMyClient } from './declare_type/type_guard.js';

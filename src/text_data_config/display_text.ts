@@ -249,6 +249,13 @@ const display_text: DisplayTextType = {
             "schi": "在不活动后将禁用创建游戏: ",
             "tchi": "在不活動後將禁用創建遊戲: ",
             "yue": "喺唔活動後將停用创建游戏: "
+        },
+        "cancel": {
+            "eng": "Cancelled game creation.",
+            "malay": "Pembuatan permainan dibatalkan.",
+            "schi": "取消游戏创建。",
+            "tchi": "取消遊戲創建。",
+            "yue": "取消遊戲創建。"
         }
     }
 }

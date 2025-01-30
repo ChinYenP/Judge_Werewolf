@@ -1,6 +1,6 @@
-import { StringSelectMenuInteraction, ActionRowBuilder, StringSelectMenuBuilder, Message } from 'discord.js';
+import { StringSelectMenuInteraction, ActionRowBuilder, StringSelectMenuBuilder, Message, InteractionCallbackResource } from 'discord.js';
 import { UserSettingsInstance, USER_SETTINGS } from '../../database/sqlite_db.js';
-import { general_is_outdated, general_timeout_set, general_is_message_author } from '../../utility/timeout/general_timeout.js';
+import { general_is_outdated, general_timeout_set, general_is_message_author } from '../../utility/timeout.js';
 import { get_display_text, get_display_error_code } from '../../utility/get_display.js';
 import { config } from '../../text_data_config/config.js';
 
@@ -10,16 +10,16 @@ async function menu_select_lang(interaction: StringSelectMenuInteraction): Promi
         return;
     }
 
-    console.log('Select menu: settings_user_lang');
+    console.log('settings_general: select_lang');
 
     if (await general_is_outdated(interaction.message.id)) {
         const outdated_interaction_text: string[] = await get_display_text(['general.outdated_interaction'], interaction.user.id);
         if (outdated_interaction_text.length !== 1) {
-            console.error('DSPY error at ./interaction_elements/select menu/select_lang.js, no1');
-            await interaction.message.edit({ content: config['display_error'], components: [] });
+            console.error('DSPY error at ./utility/settings_general/select_lang.js, no1');
+            await interaction.update({ content: config['display_error'], components: [] });
             return;
         }
-        await interaction.message.edit({ content: outdated_interaction_text[0] ?? config['display_error'], components: [] });
+        await interaction.update({ content: outdated_interaction_text[0] ?? config['display_error'], components: [] });
         return;
     }
 
@@ -32,13 +32,13 @@ async function menu_select_lang(interaction: StringSelectMenuInteraction): Promi
     const sqlite_status: [number, string] | [number] = await sequelize_select_lang(interaction, lang);
 
     if (sqlite_status[0] === 0) {
-        display_arr = await get_display_error_code(sqlite_status[1]!, interaction.user.id);
+        display_arr = await get_display_error_code(sqlite_status[1] ?? config['display_error'], interaction.user.id);
         if (display_arr.length !== 1) {
-            console.error('DSPY error at ./interaction_elements/select menu/select_lang.js, no2');
+            console.error('DSPY error at ./utility/settings_general/select_lang.js, no2');
             await interaction.update({content: config['display_error'], components: []});
             return;
         }
-        console.error(`${sqlite_status[1]  } error at ./interaction_elements/select menu/select_lang.js, no3`);
+        console.error(`${sqlite_status[1]  } error at ./utility/settings_general/select_lang.js, no3`);
         await interaction.update({content: display_arr[0] ?? config['display_error'], components: []});
         return;
     }
@@ -48,7 +48,7 @@ async function menu_select_lang(interaction: StringSelectMenuInteraction): Promi
     const allowed_symbol_text: string = process.env.ALLOWED_PREFIX_CHARACTERS;
     display_arr = await get_display_text(['settings.user_settings','settings.server_settings','settings.user_settings.placeholder_text.lang','settings.timeout'], interaction.user.id);
     if (display_arr.length !== 4) {
-        console.error('DSPY error at ./interaction_elements/select menu/select_lang.js, no4');
+        console.error('DSPY error at ./utility/settings_general/select_lang.js, no4');
         await interaction.update({content: config['display_error'] ?? config['display_error'], components: []});
         return;
     }
@@ -88,7 +88,8 @@ async function menu_select_lang(interaction: StringSelectMenuInteraction): Promi
 
     const Content: string = `${display_arr[0]}\n\n${display_arr[1] + allowed_symbol_text}`;
     
-    const update_msg: Message = await interaction.update({ content: Content, components: [rowLang], fetchReply: true });
+    const update_msg_resource: InteractionCallbackResource = (await interaction.update({ content: Content, components: [rowLang], withResponse: true })).resource as InteractionCallbackResource;
+    const update_msg: Message = update_msg_resource.message as Message;
     await general_timeout_set('settings', update_msg.id, interaction.user.id, interaction.channelId, time_sec, interaction_timeout, update_msg);
 
     async function interaction_timeout(update_msg: Message): Promise<void> {

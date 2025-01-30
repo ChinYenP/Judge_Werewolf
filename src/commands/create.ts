@@ -1,9 +1,10 @@
 import { Message, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
-import { get_display_text } from '../utility/get_display.js';
+import { get_display_text, get_display_error_code } from '../utility/get_display.js';
 import { check_cooldown } from '../utility/cooldown.js';
-import { general_timeout_set, general_delete_message } from '../utility/timeout/general_timeout.js';
+import { general_timeout_set, general_delete_message } from '../utility/timeout.js';
 import { isMyClient } from '../declare_type/type_guard.js';
 import { config } from '../text_data_config/config.js';
+import { GameCreateInstance, GAME_CREATE } from '../database/sqlite_db.js';
 
 export default {
 
@@ -50,6 +51,47 @@ async function general_create(message: Message): Promise<void> {
     if (!isMyClient(message.client)) return;
     await general_delete_message(message.author.id, 'create', message.client);
     const time_sec: number = config['timeout_sec'].create.initial;
+
+    let num_player_selected: number = -1;
+    let preset_selected: number = -1;
+    const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: message.author.id } });
+
+    if (settings !== null) {
+        if (settings.num_players !== null) {
+            num_player_selected = settings.num_players;
+        }
+        if (settings.is_preset !== null) {
+            if (settings.is_preset == true) {
+                preset_selected = 1;
+            } else {
+                preset_selected = 0;
+            }
+        }
+    } else {
+        try {
+            await GAME_CREATE.create({
+                clientId: message.author.id,
+                status: 'initial',
+                num_players: null,
+                is_preset: null,
+                sheriff: null,
+                players_role: null
+            })
+        }
+        catch (error) {
+            console.log(error);
+            const display_arr: string[] = await get_display_error_code('D1', message.author.id);
+            if (display_arr.length !== 1) {
+                console.error('DSPY error at ./commands/create.js, no1');
+                await message.reply({content: config['display_error'], components: []});
+                return;
+            }
+            console.error(`D3 error at ./commands/create.js, no2`);
+            await message.reply({content: display_arr[0] ?? config['display_error'], components: []});
+            return;
+        }
+    }
+
     const display_arr: string[] = await get_display_text(['create.initial', 'create.initial.select_num_player',
         'create.initial.placeholder_preset_custom', 'create.initial.preset', 'create.initial.custom',
         'create.initial.button_next', 'create.initial.button_cancel', 'create.timeout'], message.author.id);
@@ -63,37 +105,44 @@ async function general_create(message: Message): Promise<void> {
                     {
                         label: '6',
                         description: 'Six',
-                        value: '6'
+                        value: '6',
+                        default: (num_player_selected == 6)
                     },
                     {
                         label: '7',
                         description: 'Seven',
-                        value: '7'
+                        value: '7',
+                        default: (num_player_selected == 7)
                     },
                     {
                         label: '8',
                         description: 'Eight',
-                        value: '8'
+                        value: '8',
+                        default: (num_player_selected == 8)
                     },
                     {
                         label: '9',
                         description: 'Nine',
-                        value: '9'
+                        value: '9',
+                        default: (num_player_selected == 9)
                     },
                     {
                         label: '10',
                         description: 'Ten',
-                        value: '10'
+                        value: '10',
+                        default: (num_player_selected == 10)
                     },
                     {
                         label: '11',
                         description: 'Eleven',
-                        value: '11'
+                        value: '11',
+                        default: (num_player_selected == 11)
                     },
                     {
                         label: '12',
                         description: 'Twelve',
-                        value: '12'
+                        value: '12',
+                        default: (num_player_selected == 12)
                     }
                 )
         )
@@ -106,12 +155,14 @@ async function general_create(message: Message): Promise<void> {
                     {
                         label: display_arr[3] ?? config['display_error'],
                         description: 'Preset',
-                        value: 'preset'
+                        value: 'preset',
+                        default: (preset_selected == 1)
                     },
                     {
                         label: display_arr[4] ?? config['display_error'],
                         description: 'Custom',
-                        value: 'custom'
+                        value: 'custom',
+                        default: (preset_selected == 0)
                     }
                 )
         )
@@ -133,6 +184,23 @@ async function general_create(message: Message): Promise<void> {
     await general_timeout_set('create', bot_reply.id, message.author.id, message.channelId, time_sec, message_timeout, bot_reply);
 
     async function message_timeout(bot_reply: Message): Promise<void> {
+        const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: message.author.id } });
+        if (settings !== null) {
+            try {
+                await GAME_CREATE.destroy({ where: { clientId: message.author.id } });
+            } catch (error) {
+                console.error(error);
+                const display_arr: string[] = await get_display_error_code('D2', message.author.id);
+                if (display_arr.length !== 1) {
+                    console.error('DSPY error at ./commands/create.js, no3');
+                    await message.reply({content: config['display_error'], components: []});
+                    return;
+                }
+                console.error(`D3 error at ./commands/create.js, no4`);
+                await message.reply({content: display_arr[0] ?? config['display_error'], components: []});
+                return;
+            }
+        }
         const timeout_content: string = `${display_arr[0]?? config['display_error']}\n\n${(display_arr[7] ?? config['display_error']) + time_sec.toString()}s`;
         await bot_reply.edit({ content: timeout_content, components: [] });
     }

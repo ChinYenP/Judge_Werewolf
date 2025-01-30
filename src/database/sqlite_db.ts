@@ -97,9 +97,10 @@ const COMMAND_COOLDOWN = sequelize.define<CommandCooldownInstance>('COMMAND_COOL
 interface GameCreateInstance extends Model<InferAttributes<GameCreateInstance>, InferCreationAttributes<GameCreateInstance>> {
     clientId: string;
     status: t_create_status;
-    num_players: number;
-    sheriff: boolean;
-    players_role: string[];
+    num_players: number | null;
+    is_preset: boolean | null;
+    sheriff: boolean | null;
+    players_role: string[] | null;
 };
 const GAME_CREATE = sequelize.define<GameCreateInstance>('GAME_CREATE', {
     clientId: {
@@ -113,11 +114,15 @@ const GAME_CREATE = sequelize.define<GameCreateInstance>('GAME_CREATE', {
     },
     num_players: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         validate: {
             min: 6,
             max: 12
         }
+    },
+    is_preset: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
     },
     sheriff: {
         type: DataTypes.BOOLEAN,

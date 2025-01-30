@@ -1,4 +1,4 @@
-import { general_timeout_delete, general_is_message_author } from '../../utility/timeout/general_timeout.js';
+import { general_timeout_delete, general_is_message_author } from '../../utility/timeout.js';
 import { get_display_text, get_display_error_code } from '../../utility/get_display.js';
 import { ButtonInteraction } from 'discord.js';
 import { config } from '../../text_data_config/config.js';
@@ -11,7 +11,7 @@ async function button_prefix_yes(interaction: ButtonInteraction): Promise<void> 
     }
     if (interaction.guildId === null) return;
 
-    console.log('Button: prefix yes');
+    console.log('settings_prefix: button_yes');
 
     
 
@@ -20,7 +20,7 @@ async function button_prefix_yes(interaction: ButtonInteraction): Promise<void> 
     if (!prefix_arr[0]) {
         const outdated_interaction_text = await get_display_text(['general.outdated_interaction'], interaction.user.id);
         if (outdated_interaction_text.length !== 1) {
-            console.error('DSPY error at ./interaction_elements/button/prefix_yes.js, no1');
+            console.error('DSPY error at ./utility/settings_prefix/button_yes.js, no1');
             await interaction.update({ content: config['display_error'], components: [] });
             return;
         }
@@ -32,7 +32,7 @@ async function button_prefix_yes(interaction: ButtonInteraction): Promise<void> 
 
     const sqlite_status: [number, string] | [number] = await sequelize_prefix_yes(interaction, prefix);
     if (sqlite_status[0] === 0) {
-        console.error(`${sqlite_status[1]  } error at ./interaction_elements/button/prefix_yes.js, no3`);
+        console.error(`${sqlite_status[1]  } error at ./utility/settings_prefix/button_yes.js, no3`);
         await interaction.update({content: (await get_display_error_code(sqlite_status[1]!, interaction.user.id))[0] ?? config['display_error'], components: []});
         return;
     }
@@ -40,7 +40,7 @@ async function button_prefix_yes(interaction: ButtonInteraction): Promise<void> 
     //Success
     display_arr = await get_display_text(['settings.server_settings.prefix.success'], interaction.user.id);
     if (display_arr.length !== 1) {
-        console.error('DSPY error at ./interaction_elements/button/prefix_yes.js, no4');
+        console.error('DSPY error at ./utility/settings_prefix/button_yes.js, no4');
         await interaction.update({content: config['display_error'], components: []});
         return;
     };
@@ -66,7 +66,7 @@ async function sequelize_prefix_yes(interaction: ButtonInteraction, prefix: stri
     */
 
     if (interaction.guildId === null) {
-        console.log('message.guildId should exists: ./interaction_elements/button/prefix_yes.js');
+        console.log('message.guildId should exists: ./utility/settings_prefix/button_yes.js');
         return [0, 'U'];
     }
 
@@ -77,9 +77,9 @@ async function sequelize_prefix_yes(interaction: ButtonInteraction, prefix: stri
         } catch (error) {
             const display_arr: string[] = await get_display_error_code('D2', interaction.user.id);
             if (display_arr.length !== 1) {
-                console.error('DSPY error at ./utility/button/prefix_no.js, no2');
+                console.error('DSPY error at ./utility/settings_prefix/button_yes.js, no2');
             } else {
-                console.error(`D3 error at ./utility/button/prefix_no.js, no3`);
+                console.error(`D3 error at ./utility/settings_prefix/button_yes.js, no3`);
             }
         }
     }
