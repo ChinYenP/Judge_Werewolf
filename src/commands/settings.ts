@@ -6,6 +6,7 @@ import { general_timeout_set, general_delete_message } from '../utility/timeout.
 import { config } from '../text_data_config/config.js';
 import { isMyClient, isTextChannel } from '../declare_type/type_guard.js';
 import { TempPrefixSettingInstance, TEMP_PREFIX_SETTINGS } from '../database/sqlite_db.js';
+import { ui_user_settings } from '../common_ui/user_settings.js';
 
 export default {
 
@@ -103,53 +104,11 @@ async function general_settings(message: Message): Promise<void> {
     if (!isMyClient(message.client)) return;
     await general_delete_message(message.author.id, 'settings', message.client);
     const time_sec: number = config['timeout_sec'].settings.user;
-    const allowed_symbol_text: string = process.env.ALLOWED_PREFIX_CHARACTERS;
-    const display_arr: string[] = await get_display_text(['settings.user_settings', 'settings.server_settings', 'settings.user_settings.placeholder_text.lang', 'settings.timeout'], message.author.id);
-    if (display_arr.length !== 4) {
-        console.error('DSPY error at ./commands/create.js, no11');
-        await message.reply(config['display_error']);
-        return;
-    }
-    const rowLang: ActionRowBuilder<StringSelectMenuBuilder> = new ActionRowBuilder<StringSelectMenuBuilder>()
-        .addComponents(
-            new StringSelectMenuBuilder()
-                .setCustomId('settings_user_lang')
-                .setPlaceholder(display_arr[2] ?? config['display_error'])
-                .addOptions(
-                    {
-                        label: 'English',
-                        description: 'English',
-                        value: 'eng',
-                    },
-                    {
-                        label: 'Bahasa Melayu',
-                        description: 'Malay',
-                        value: 'malay'
-                    },
-                    {
-                        label: '简体中文',
-                        description: 'Simplified Chinese',
-                        value: 'schi',
-                    },
-                    {
-                        label: '繁體中文',
-                        description: 'Traditional Chinese',
-                        value: 'tchi',
-                    },
-                    {
-                        label: '粵語',
-                        description: 'Cantonese',
-                        value: 'yue',
-                    }
-                )
-        )
-    
-    const Content: string = `${display_arr[0] ?? config['display_error']}\n\n${(display_arr[1] ?? config['display_error']) + allowed_symbol_text}`;
+    const [rowLang, Content, timeout_content]: [ActionRowBuilder<StringSelectMenuBuilder>, string, string] = await ui_user_settings(message.author.id, time_sec);
     const bot_reply: Message = await message.reply({ content: Content, components: [rowLang] });
     await general_timeout_set('settings', bot_reply.id, message.author.id, message.channelId, time_sec, message_timeout, bot_reply);
 
     async function message_timeout(bot_reply: Message): Promise<void> {
-        const timeout_content: string = `${display_arr[0] ?? config['display_error']}\n\n${(display_arr[1] ?? config['display_error']) + allowed_symbol_text}\n\n${(display_arr[3] ?? config['display_error']) + time_sec.toString()}s`;
         await bot_reply.edit({ content: timeout_content, components: [] });
     }
 

@@ -3,6 +3,7 @@ import { UserSettingsInstance, USER_SETTINGS } from '../../database/sqlite_db.js
 import { general_is_outdated, general_timeout_set, general_is_message_author } from '../../utility/timeout.js';
 import { get_display_text, get_display_error_code } from '../../utility/get_display.js';
 import { config } from '../../text_data_config/config.js';
+import { ui_user_settings } from '../../common_ui/user_settings.js';
 
 async function menu_select_lang(interaction: StringSelectMenuInteraction): Promise<void> {
     
@@ -45,56 +46,13 @@ async function menu_select_lang(interaction: StringSelectMenuInteraction): Promi
 
     //Success
     const time_sec: number = config['timeout_sec'].settings.user;
-    const allowed_symbol_text: string = process.env.ALLOWED_PREFIX_CHARACTERS;
-    display_arr = await get_display_text(['settings.user_settings','settings.server_settings','settings.user_settings.placeholder_text.lang','settings.timeout'], interaction.user.id);
-    if (display_arr.length !== 4) {
-        console.error('DSPY error at ./utility/settings_general/select_lang.js, no4');
-        await interaction.update({content: config['display_error'] ?? config['display_error'], components: []});
-        return;
-    }
-    const rowLang: ActionRowBuilder<StringSelectMenuBuilder> = new ActionRowBuilder<StringSelectMenuBuilder>()
-        .addComponents(
-            new StringSelectMenuBuilder()
-                .setCustomId('settings_user_lang')
-                .setPlaceholder(display_arr[2] ?? config['display_error'])
-                .addOptions(
-                    {
-                        label: 'English',
-                        description: 'English',
-                        value: 'eng',
-                    },
-                    {
-                        label: 'Bahasa Melayu',
-                        description: 'Malay',
-                        value: 'malay'
-                    },
-                    {
-                        label: '简体中文',
-                        description: 'Simplified Chinese',
-                        value: 'schi',
-                    },
-                    {
-                        label: '繁體中文',
-                        description: 'Traditional Chinese',
-                        value: 'tchi',
-                    },
-                    {
-                        label: '粵語',
-                        description: 'Cantonese',
-                        value: 'yue',
-                    }
-                )
-        )
-
-    const Content: string = `${display_arr[0]}\n\n${display_arr[1] + allowed_symbol_text}`;
-    
+    const [rowLang, Content, timeout_content]: [ActionRowBuilder<StringSelectMenuBuilder>, string, string] = await ui_user_settings(interaction.user.id, time_sec);
     const update_msg_resource: InteractionCallbackResource = (await interaction.update({ content: Content, components: [rowLang], withResponse: true })).resource as InteractionCallbackResource;
     const update_msg: Message = update_msg_resource.message as Message;
     await general_timeout_set('settings', update_msg.id, interaction.user.id, interaction.channelId, time_sec, interaction_timeout, update_msg);
 
     async function interaction_timeout(update_msg: Message): Promise<void> {
-        const timeout_content = `${display_arr[0]}\n\n${display_arr[1] + allowed_symbol_text}\n\n${display_arr[3]}`;
-        await update_msg.edit({ content: `${timeout_content + time_sec  }s`, components: [] });
+        await update_msg.edit({ content: timeout_content, components: [] });
     }
 }
 
