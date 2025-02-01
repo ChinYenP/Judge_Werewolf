@@ -5,13 +5,13 @@ import { get_display_text, get_display_error_code } from '../../utility/get_disp
 import { config } from '../../text_data_config/config.js';
 import { ui_create_initial } from '../../common_ui/create/initial.js';
 
-async function select_create_initial_preset_custom(interaction: StringSelectMenuInteraction): Promise<void> {
+async function select_create_initial_game_rule(interaction: StringSelectMenuInteraction): Promise<void> {
     
     if (!(await general_is_message_author(interaction.message.id, interaction.user.id))) {
         return;
     }
 
-    console.log('create_initial: select_preset_custom');
+    console.log('create_initial: select_game_rule');
 
     if (await general_is_outdated(interaction.message.id)) {
         const outdated_interaction_text: string[] = await get_display_text(['general.outdated_interaction'], interaction.user.id);
@@ -25,24 +25,25 @@ async function select_create_initial_preset_custom(interaction: StringSelectMenu
     }
 
     if (interaction.values[0] === undefined) return;
-    if (!(['preset', 'custom'].includes(interaction.values[0]))) return;
+    if (!(['kill_all', 'kill_either'].includes(interaction.values[0]))) return;
 
     //Do sequelize thing here while get output text
     let num_player_selected: number = -1;
     let preset_selected: number = -1;
     let game_rule_selected: number = -1;
-    let new_is_preset: boolean = true;
-    if (interaction.values[0] === 'preset') {
-        preset_selected = 1;
-    } else if (interaction.values[0] === 'custom') {
-        preset_selected = 0;
-        new_is_preset = false;
+    let new_game_rule: t_game_rule;
+    if (interaction.values[0] === 'kill_all') {
+        game_rule_selected = 0;
+        new_game_rule = 'kill_all';
+    } else {
+        game_rule_selected = 1;
+        new_game_rule = 'kill_either';
     }
     const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: interaction.user.id } });
 
     if (settings !== null) {
         //Update first
-        const [affectedCount] = await GAME_CREATE.update({ is_preset: new_is_preset }, { where: { clientId: interaction.user.id } });
+        const [affectedCount] = await GAME_CREATE.update({ game_rule: new_game_rule }, { where: { clientId: interaction.user.id } });
         if (affectedCount <= 0) {
             const display_arr: string[] = await get_display_error_code('D3', interaction.user.id);
             if (display_arr.length !== 1) {
@@ -58,11 +59,11 @@ async function select_create_initial_preset_custom(interaction: StringSelectMenu
         if (settings.num_players !== null) {
             num_player_selected = settings.num_players;
         }
-        if (settings.game_rule !== null) {
-            if (settings.game_rule === 'kill_all') {
-                game_rule_selected = 0;
-            } else if (settings.game_rule === 'kill_either') {
-                game_rule_selected = 1;
+        if (settings.is_preset !== null) {
+            if (settings.is_preset == true) {
+                preset_selected = 1;
+            } else {
+                preset_selected = 0;
             }
         }
     } else {
@@ -71,10 +72,10 @@ async function select_create_initial_preset_custom(interaction: StringSelectMenu
                 clientId: interaction.user.id,
                 status: 'initial',
                 num_players: null,
-                is_preset: new_is_preset,
+                is_preset: null,
                 sheriff: null,
                 players_role: null,
-                game_rule: null
+                game_rule: new_game_rule
             })
         }
         catch (error) {
@@ -121,4 +122,4 @@ async function select_create_initial_preset_custom(interaction: StringSelectMenu
     }
 }
 
-export { select_create_initial_preset_custom }
+export { select_create_initial_game_rule }

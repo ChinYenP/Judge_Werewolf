@@ -40,7 +40,7 @@ async function ui_user_settings(clientId: string, time_sec: number): Promise<[Ac
         )
     
     const Content: string = `${display_arr[0] ?? config['display_error']}\n\n${(display_arr[1] ?? config['display_error']) + allowed_symbol_text}`;
-    const timeout_content: string = `${display_arr[0] ?? config['display_error']}\n\n${(display_arr[1] ?? config['display_error']) + allowed_symbol_text}\n\n${(display_arr[3] ?? config['display_error']) + time_sec.toString()}s`;
+    const timeout_content: string = `${Content}\n\n${(display_arr[3] ?? config['display_error']) + time_sec.toString()}s`;
     return ([rowLang, Content, timeout_content]);
 }
 

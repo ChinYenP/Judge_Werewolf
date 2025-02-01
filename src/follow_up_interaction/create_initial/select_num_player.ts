@@ -3,7 +3,7 @@ import { GameCreateInstance, GAME_CREATE } from '../../database/sqlite_db.js';
 import { general_is_outdated, general_timeout_set, general_is_message_author } from '../../utility/timeout.js';
 import { get_display_text, get_display_error_code } from '../../utility/get_display.js';
 import { config } from '../../text_data_config/config.js';
-import { ui_create_initial } from '../../common_ui/create_initial.js';
+import { ui_create_initial } from '../../common_ui/create/initial.js';
 
 async function select_create_initial_num_player(interaction: StringSelectMenuInteraction): Promise<void> {
     
@@ -31,6 +31,7 @@ async function select_create_initial_num_player(interaction: StringSelectMenuInt
     //Do sequelize thing here while get output text
     let num_player_selected: number = -1;
     let preset_selected: number = -1;
+    let game_rule_selected: number = -1;
     const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: interaction.user.id } });
 
     if (settings !== null) {
@@ -56,6 +57,13 @@ async function select_create_initial_num_player(interaction: StringSelectMenuInt
                 preset_selected = 0;
             }
         }
+        if (settings.game_rule !== null) {
+            if (settings.game_rule === 'kill_all') {
+                game_rule_selected = 0;
+            } else if (settings.game_rule === 'kill_either') {
+                game_rule_selected = 1;
+            }
+        }
     } else {
         try {
             await GAME_CREATE.create({
@@ -64,7 +72,8 @@ async function select_create_initial_num_player(interaction: StringSelectMenuInt
                 num_players: new_num_player,
                 is_preset: null,
                 sheriff: null,
-                players_role: null
+                players_role: null,
+                game_rule: null
             })
         }
         catch (error) {
@@ -83,7 +92,8 @@ async function select_create_initial_num_player(interaction: StringSelectMenuInt
 
     //Success
     const time_sec: number = config['timeout_sec'].create.initial;
-    const [ActionRowArr, Content, timeout_content]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], string, string] = await ui_create_initial(interaction.user.id, time_sec, num_player_selected, preset_selected);
+    const [ActionRowArr, Content, timeout_content]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], string, string]
+        = await ui_create_initial(interaction.user.id, time_sec, num_player_selected, preset_selected, game_rule_selected);
     const update_msg_resource: InteractionCallbackResource = (await interaction.update({ content: Content, components: ActionRowArr, withResponse: true })).resource as InteractionCallbackResource;
     const update_msg: Message = update_msg_resource.message as Message;
     await general_timeout_set('create', update_msg.id, interaction.user.id, update_msg.channelId, time_sec, message_timeout, update_msg);

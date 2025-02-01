@@ -5,7 +5,7 @@ import { general_timeout_set, general_delete_message } from '../utility/timeout.
 import { isMyClient } from '../declare_type/type_guard.js';
 import { config } from '../text_data_config/config.js';
 import { GameCreateInstance, GAME_CREATE } from '../database/sqlite_db.js';
-import { ui_create_initial } from '../common_ui/create_initial.js';
+import { ui_create_initial } from '../common_ui/create/initial.js';
 
 export default {
 
@@ -55,6 +55,7 @@ async function general_create(message: Message): Promise<void> {
 
     let num_player_selected: number = -1;
     let preset_selected: number = -1;
+    let game_rule_selected: number = -1;
     const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: message.author.id } });
 
     if (settings !== null) {
@@ -62,10 +63,17 @@ async function general_create(message: Message): Promise<void> {
             num_player_selected = settings.num_players;
         }
         if (settings.is_preset !== null) {
-            if (settings.is_preset == true) {
+            if (settings.is_preset === true) {
                 preset_selected = 1;
             } else {
                 preset_selected = 0;
+            }
+        }
+        if (settings.game_rule !== null) {
+            if (settings.game_rule === 'kill_all') {
+                game_rule_selected = 0;
+            } else if (settings.game_rule === 'kill_either') {
+                game_rule_selected = 1;
             }
         }
     } else {
@@ -76,7 +84,8 @@ async function general_create(message: Message): Promise<void> {
                 num_players: null,
                 is_preset: null,
                 sheriff: null,
-                players_role: null
+                players_role: null,
+                game_rule: null
             })
         }
         catch (error) {
@@ -93,7 +102,8 @@ async function general_create(message: Message): Promise<void> {
         }
     }
 
-    const [ActionRowArr, Content, timeout_content]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], string, string] = await ui_create_initial(message.author.id, time_sec, num_player_selected, preset_selected);
+    const [ActionRowArr, Content, timeout_content]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], string, string]
+        = await ui_create_initial(message.author.id, time_sec, num_player_selected, preset_selected, game_rule_selected);
     const bot_reply: Message = await message.reply({ content: Content, components: ActionRowArr });
     await general_timeout_set('create', bot_reply.id, message.author.id, message.channelId, time_sec, message_timeout, bot_reply);
 

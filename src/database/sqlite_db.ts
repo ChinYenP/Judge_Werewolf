@@ -101,6 +101,7 @@ interface GameCreateInstance extends Model<InferAttributes<GameCreateInstance>, 
     is_preset: boolean | null;
     sheriff: boolean | null;
     players_role: string[] | null;
+    game_rule: t_game_rule | null;
 };
 const GAME_CREATE = sequelize.define<GameCreateInstance>('GAME_CREATE', {
     clientId: {
@@ -133,6 +134,10 @@ const GAME_CREATE = sequelize.define<GameCreateInstance>('GAME_CREATE', {
         allowNull: true,
         defaultValue: []
     },
+    game_rule: {
+        type: DataTypes.ENUM('kill_all', 'kill_either'),
+        allowNull: true,
+    }
 },{
     freezeTableName: true,
     timestamps: false

@@ -9,8 +9,8 @@ const config: ConfigType = {
         },
         "create": {
             "initial": 30,
-            "role and rule": 30,
-            "confirm": 30
+            "roles": 30,
+            "final": 30
         }
     },
     "cooldown_sec": {

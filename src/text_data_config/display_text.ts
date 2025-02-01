@@ -228,6 +228,41 @@ const display_text: DisplayTextType = {
                 "tchi": "自定義",
                 "yue": "自定義"
             },
+            "placeholder_game_rule": {
+                "eng": "Game Rule",
+                "malay": "Peraturan Permainan",
+                "schi": "游戏规则",
+                "tchi": "遊戲規則",
+                "yue": "遊戲規則"
+            },
+            "kill_all": {
+                "eng": "Kill All",
+                "malay": "Bunuh Semua",
+                "schi": "屠城",
+                "tchi": "屠城",
+                "yue": "屠城"
+            },
+            "kill_all_description": {
+                "eng": "Werewolves win if all villagers and god identities are dead",
+                "malay": "Serigala menang jika semua penduduk kampung dan identiti tuhan mati",
+                "schi": "如果所有村民和神职都死了, 狼人获胜",
+                "tchi": "如果所有村民和神職都死了, 狼人獲勝",
+                "yue": "如果所有村民同神職都死咗，狼人獲勝"
+            },
+            "kill_either": {
+                "eng": "Kill Either",
+                "malay": "Bunuh Salah Satu",
+                "schi": "屠边",
+                "tchi": "屠邊",
+                "yue": "屠邊"
+            },
+            "kill_either_description": {
+                "eng": "Werewolves win if either all villagers or all god identities are dead",
+                "malay": "Serigala menang jika salah satu penduduk kampung atau identiti tuhan mati",
+                "schi": "如果所有村民或神职中的任何一方死了，狼人获胜",
+                "tchi": "如果所有村民或神職中的任何一方死了，狼人獲勝",
+                "yue": "如果所有村民或神職當中嘅任何一方死咗，狼人獲勝"
+            },
             "button_next": {
                 "eng": "Next",
                 "malay": "Seterusnya",

@@ -1,4 +1,4 @@
-import { general_timeout_delete, general_is_message_author } from '../../utility/timeout.js';
+import { general_is_outdated, general_timeout_delete, general_is_message_author } from '../../utility/timeout.js';
 import { get_display_text, get_display_error_code } from '../../utility/get_display.js';
 import { ButtonInteraction } from 'discord.js';
 import { config } from '../../text_data_config/config.js';
@@ -13,14 +13,23 @@ async function button_prefix_yes(interaction: ButtonInteraction): Promise<void> 
 
     console.log('settings_prefix: button_yes');
 
-    
+    if (await general_is_outdated(interaction.message.id)) {
+        const outdated_interaction_text: string[] = await get_display_text(['general.outdated_interaction'], interaction.user.id);
+        if (outdated_interaction_text.length !== 1) {
+            console.error('DSPY error at ./utility/settings_prefix/button_yes.js, no1');
+            await interaction.update({ content: config['display_error'], components: [] });
+            return;
+        }
+        await interaction.update({ content: outdated_interaction_text[0] ?? config['display_error'], components: [] });
+        return;
+    }
 
     //Get prefix. If it is false, the message is not from current session.
     const prefix_arr: [boolean, string] = await get_prefix(interaction.guildId);
     if (!prefix_arr[0]) {
         const outdated_interaction_text = await get_display_text(['general.outdated_interaction'], interaction.user.id);
         if (outdated_interaction_text.length !== 1) {
-            console.error('DSPY error at ./utility/settings_prefix/button_yes.js, no1');
+            console.error('DSPY error at ./utility/settings_prefix/button_yes.js, no5');
             await interaction.update({ content: config['display_error'], components: [] });
             return;
         }
