@@ -3,6 +3,7 @@ import { get_display_text, get_display_error_code } from '../utility/get_display
 import { config } from '../text_data_config/config.js';
 import { Message } from 'discord.js';
 import { isMyClient } from '../declare_type/type_guard.js';
+import { EmbedBuilder } from 'discord.js';
 
 export default {
 
@@ -18,22 +19,37 @@ export default {
             return;
         }
 
-        let sent: Message = await message.reply({ content: 'Pinging...'});
+        const [ping_text, pong_text, latency_text, ws_latency_text]: string[]
+            = await get_display_text(['ping.ping', 'ping.pong', 'ping.latency', 'ping.ws_latency'], message.author.id);
+
+        const pingEmbed = new EmbedBuilder()
+            .setColor(config['embed_hex_color'])
+            .setTitle(ping_text ?? config['display_error'])
+            .setTimestamp()
+
+        let sent: Message = await message.reply({ embeds: [pingEmbed] });
         sent = await sent.fetch();
         const latency: number = sent.createdTimestamp - message.createdTimestamp;
 
-        const display_arr: string[] = await get_display_text(['ping.pong', 'ping.latency', 'ping.ws_latency'], message.author.id);
-        if (display_arr.length !== 3) {
-            console.error('DSPY error at ./commands/ping.js, no6');
-            await message.reply(config['display_error']);
-            return;
-        }
-        const text: string = `${display_arr[0] ?? config['display_error']}\n${display_arr[1] ?? config['display_error']}${latency.toString()}ms\n${display_arr[2] ?? config['display_error']}${message.client.ws.ping.toString()}ms`;
-
+        const pongEmbed = new EmbedBuilder()
+            .setColor(config['embed_hex_color'])
+            .setTitle(`${ping_text ?? config['display_error']}${pong_text ?? config['display_error']}`)
+            .addFields(
+                {
+                    name: latency_text ?? config['display_error'],
+                    value: `${latency.toString()} ms`
+                },
+                {
+                    name: ws_latency_text ?? config['display_error'],
+                    value: `${message.client.ws.ping.toString()} ms`
+                }
+            )
+            .setTimestamp()
+        
         try {
-            await sent.edit(text);
-        } catch (err) {
-            console.error(err);
+            await sent.edit({ embeds: [pongEmbed] });
+        } catch (error) {
+            console.error(error);
             await message.reply((await get_display_error_code('M1', message.author.id))[0] ?? config['display_error']);
         }
     }

@@ -32,16 +32,9 @@ export default {
         //Validate prefix
         if (!(await prefix_validation(prefix))) {
             await message.reply((await get_display_error_code('C3', message.author.id))[0] ?? config['display_error']);
-            console.error('C3 error at ./commands/prefix.js, no6');
         }
 
         const display_arr: string[] = await get_display_text(['prefix.current_prefix', 'prefix.instruction'], message.author.id);
-        if (display_arr.length !== 2) {
-            console.error('DSPY error at ./commands/help.js, no7');
-            await message.reply(config['display_error']);
-            return;
-        }
-
         await message.reply(`${(display_arr[0] ?? config['display_error']) + prefix }\n${display_arr[1] ?? config['display_error']}`);
     }
 

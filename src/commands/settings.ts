@@ -2,7 +2,7 @@ import { Message, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, Butt
 import { prefix_validation } from '../utility/validation/prefix_validation.js';
 import { get_display_text, get_display_error_code } from '../utility/get_display.js';
 import { check_cooldown } from '../utility/cooldown.js';
-import { general_timeout_set, general_delete_message } from '../utility/timeout.js';
+import { timeout_set, timeout_delete_message } from '../utility/timeout.js';
 import { config } from '../text_data_config/config.js';
 import { isMyClient, isTextChannel } from '../declare_type/type_guard.js';
 import { TempPrefixSettingInstance, TEMP_PREFIX_SETTINGS } from '../database/sqlite_db.js';
@@ -28,22 +28,12 @@ export default {
         if (args.length === 1) {
             //Too less arguments
             const less_args_text: string[] = await get_display_text(['general.command_args_error.less_args'], message.author.id);
-            if (less_args_text.length !== 1) {
-                console.error('DSPY error at ./commands/settings.js, no6');
-                await message.reply(config['display_error']);
-                return;
-            }
             await message.reply(`settings${less_args_text[0] ?? config['display_error']}`);
             return;
         }
         if (args.length > 2) {
             //Too much arguments
             const much_args_text: string[] = await get_display_text(['general.command_args_error.much_args'], message.author.id);
-            if (much_args_text.length !== 1) {
-                console.error('DSPY error at ./commands/settings.js, no7');
-                await message.reply(config['display_error']);
-                return;
-            }
             await message.reply(`settings${much_args_text[0] ?? config['display_error']}`);
             return;
         }
@@ -51,11 +41,6 @@ export default {
         if (args.length === 2 && !(message.member.permissionsIn(message.channel).has('Administrator'))) {
             //No permission for server settings
             const not_administrator_text: string[] = await get_display_text(['general.permission_error.not_administrator'], message.author.id);
-            if (not_administrator_text.length !== 1) {
-                console.error('DSPY error at ./commands/settings.js, no8');
-                await message.reply(config['display_error']);
-                return;
-            }
             await message.reply(`settings${not_administrator_text[0] ?? config['display_error']}`);
             return;
         }
@@ -71,22 +56,12 @@ export default {
                 }
                 //Invalid argument for prefix
                 const invalid_prefix_text: string[] = await get_display_text(['settings.server_settings.prefix.invalid_prefix'], message.author.id);
-                if (invalid_prefix_text.length !== 1) {
-                    console.error('DSPY error at ./commands/settings.js, no9');
-                    await message.reply(config['display_error']);
-                    return;
-                }
                 const allow_characters: string = process.env.ALLOWED_PREFIX_CHARACTERS;
                 await message.reply((invalid_prefix_text[0] ?? config['display_error']) + allow_characters);
                 return;
             }
             //Does not match any server settings
             const args_error_text: string[] = await get_display_text(['general.command_args_error.wrong_args'], message.author.id);
-            if (args_error_text.length !== 1) {
-                console.error('DSPY error at ./commands/settings.js, no10');
-                await message.reply(config['display_error']);
-                return;
-            }
             await message.reply(`settings${args_error_text[0] ?? config['display_error']}${args[0] ?? config['display_error']}`);
             return;
         }
@@ -102,11 +77,11 @@ export default {
 async function general_settings(message: Message): Promise<void> {
 
     if (!isMyClient(message.client)) return;
-    await general_delete_message(message.author.id, 'settings', message.client);
+    await timeout_delete_message(message.author.id, 'settings', message.client);
     const time_sec: number = config['timeout_sec'].settings.user;
     const [rowLang, Content, timeout_content]: [ActionRowBuilder<StringSelectMenuBuilder>, string, string] = await ui_user_settings(message.author.id, time_sec);
     const bot_reply: Message = await message.reply({ content: Content, components: [rowLang] });
-    await general_timeout_set('settings', bot_reply.id, message.author.id, message.channelId, time_sec, message_timeout, bot_reply);
+    await timeout_set('settings', bot_reply.id, message.author.id, message.channelId, time_sec, message_timeout, bot_reply);
 
     async function message_timeout(bot_reply: Message): Promise<void> {
         await bot_reply.edit({ content: timeout_content, components: [] });
@@ -120,17 +95,12 @@ async function prefix_settings(message: Message, args: string[]): Promise<void> 
     if (args[1] === undefined) return;
     if (!isMyClient(message.client)) return;
     if (message.guildId === null) return;
-    await general_delete_message(message.author.id, 'settings_prefix', message.client);
+    await timeout_delete_message(message.author.id, 'settings_prefix', message.client);
     const time_sec: number = config['timeout_sec'].settings.server.prefix;
     const display_arr: string[] = await get_display_text(['settings.server_settings.prefix.confirmation',
         'settings.server_settings.prefix.button_yes',
         'settings.server_settings.prefix.button_no',
         'settings.server_settings.prefix.timeout_text'], message.author.id);
-    if (display_arr.length !== 4) {
-        console.error('DSPY error at ./commands/ping.js, no12');
-        await message.reply(config['display_error']);
-        return;
-    }
 
     const new_prefix = args[1];
 
@@ -139,14 +109,7 @@ async function prefix_settings(message: Message, args: string[]): Promise<void> 
     if (settings !== null) {
         const [affectedCount] = await TEMP_PREFIX_SETTINGS.update({ prefix: new_prefix }, { where: { guildId: message.guildId } });
         if (affectedCount <= 0) {
-            const display_arr: string[] = await get_display_error_code('D3', message.author.id);
-            if (display_arr.length !== 1) {
-                console.error('DSPY error at ./commands/settings.js, no13');
-                await message.reply({content: config['display_error'], components: []});
-                return;
-            }
-            console.error(`D3 error at ./commands/settings.js, no14`);
-            await message.reply({content: display_arr[0] ?? config['display_error'], components: []});
+            await message.reply({content: (await get_display_error_code('D3', message.author.id)) ?? config['display_error'], components: []});
             return;
         }
     }
@@ -159,14 +122,7 @@ async function prefix_settings(message: Message, args: string[]): Promise<void> 
     }
     catch (error) {
         console.log(error);
-        const display_arr: string[] = await get_display_error_code('D1', message.author.id);
-        if (display_arr.length !== 1) {
-            console.error('DSPY error at ./commands/settings.js, no15');
-            await message.reply({content: config['display_error'], components: []});
-            return;
-        }
-        console.error(`D3 error at ./commands/settings.js, no16`);
-        await message.reply({content: display_arr[0] ?? config['display_error'], components: []});
+        await message.reply({content: (await get_display_error_code('D1', message.author.id)) ?? config['display_error'], components: []});
         return;
     }
 
@@ -184,7 +140,7 @@ async function prefix_settings(message: Message, args: string[]): Promise<void> 
         .addComponents(yes_button, no_button);
     
     const bot_reply: Message = await message.reply({ content: (display_arr[0] ?? config['display_error']) + new_prefix, components: [rowButton] });
-    await general_timeout_set(bot_reply.id, message.author.id, message.channelId, message.guildId, time_sec, message_prefix_timeout, bot_reply);
+    await timeout_set(bot_reply.id, message.author.id, message.channelId, message.guildId, time_sec, message_prefix_timeout, bot_reply);
 
     async function message_prefix_timeout(bot_reply: Message): Promise<void> {
         if (message.guildId !== null) {
@@ -194,19 +150,12 @@ async function prefix_settings(message: Message, args: string[]): Promise<void> 
                     await TEMP_PREFIX_SETTINGS.destroy({ where: { guildId: message.guildId } });
                 } catch (error) {
                     console.error(error);
-                    const display_arr: string[] = await get_display_error_code('D2', message.author.id);
-                    if (display_arr.length !== 1) {
-                        console.error('DSPY error at ./commands/settings.js, no17');
-                        await message.reply({content: config['display_error'], components: []});
-                        return;
-                    }
-                    console.error(`D3 error at ./commands/settings.js, no18`);
-                    await message.reply({content: display_arr[0] ?? config['display_error'], components: []});
+                    await message.reply({content: (await get_display_error_code('D2', message.author.id)) ?? config['display_error'], components: []});
                     return;
                 }
             }
         } else {
-            console.log('message.guildId should exists: ./commands/settings.js');
+            console.error('message.guildId should exists.');
         }
         const timeout_content: string = `${(display_arr[0] ?? config['display_error']) + (args[1] ?? config['display_error'])}\n\n${(display_arr[3] ?? config['display_error']) + time_sec.toString()}s`;
         await bot_reply.edit({ content: timeout_content, components: [] });

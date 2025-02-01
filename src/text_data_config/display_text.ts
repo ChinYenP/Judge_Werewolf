@@ -64,6 +64,13 @@ const display_text: DisplayTextType = {
         }
     },
     "ping": {
+        "ping": {
+            "eng": "Ping...",
+            "malay": "Ping...",
+            "schi": "乒...",
+            "tchi": "乒...",
+            "yue": "乒..."
+        },
         "pong": {
             "eng": "Pong!",
             "malay": "Pong!",
@@ -72,18 +79,18 @@ const display_text: DisplayTextType = {
             "yue": "乓!"
         },
         "latency": {
-            "eng": "Latency: ",
-            "malay": "Kependaman: ",
-            "schi": "延迟: ",
-            "tchi": "延遲: ",
-            "yue": "延遲: "
+            "eng": "Message Latency",
+            "malay": "Kependaman Mesej",
+            "schi": "信息延迟",
+            "tchi": "訊息延遲",
+            "yue": "訊息延遲"
         },
         "ws_latency": {
-            "eng": "Websocket Latency: ",
-            "malay": "Kependaman Soket Web: ",
-            "schi": "Websocket延迟: ",
-            "tchi": "Websocket延遲: ",
-            "yue": "Websocket延遲: "
+            "eng": "Websocket Latency",
+            "malay": "Kependaman Websocket",
+            "schi": "Websocket延迟",
+            "tchi": "Websocket延遲",
+            "yue": "Websocket延遲"
         }
     },
     "help": {

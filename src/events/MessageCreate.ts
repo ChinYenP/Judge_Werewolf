@@ -28,8 +28,7 @@ export default {
         }
         //Validate prefix
         if (!(await prefix_validation(preset_prefix))) {
-            await message.reply((await get_display_error_code('C3', message.author.id))[0] ?? config['display_error']);
-            console.error('C3 error at ./events/MessageCreate.js, no6');
+            await message.reply((await get_display_error_code('C3', message.author.id)) ?? config['display_error']);
         }
 
         // Check if the message starts with the prefix or sent by a bot
@@ -49,8 +48,7 @@ export default {
         } else if (message.content.startsWith(clientMention)) {
             args = message.content.slice(clientMention.length).trim().split(/ +/);
         } else {
-            await message.reply((await get_display_error_code('C3', message.author.id))[0] ?? config['display_error']);
-            console.error('C3 error at ./events/MessageCreate.js, no7');
+            await message.reply((await get_display_error_code('C3', message.author.id)) ?? config['display_error']);
         }
         let commandName: string | undefined = args.shift();
         if (commandName === undefined) return;
@@ -59,11 +57,6 @@ export default {
         const command: CommandModule | undefined = message.client.commands.get(commandName);    
         if (!command) {
             display_arr = await get_display_text(['general.command_not_exist'], message.author.id);
-            if (display_arr.length !== 1) {
-                console.error('DSPY error at ./events/MessageCreate.js, no8');
-                await message.reply(config['display_error']);
-                return;
-            }
             await message.reply(display_arr[0] + commandName);
             console.error(`No command matching ${commandName} was found.`);
             return;
@@ -73,7 +66,6 @@ export default {
             await command.execute(message, args);
         } catch (error) {
             await message.reply((await get_display_error_code('C2', message.author.id))[0] ?? config['display_error']);
-            console.error('C2 error at ./events/MessageCreate.js, no9');
             console.error(error);
         }
     }

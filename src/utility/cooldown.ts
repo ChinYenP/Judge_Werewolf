@@ -9,14 +9,7 @@ async function check_cooldown(clientId: string, command: string, time_sec: numbe
 
     //Check command
     if (!(await command_validation(command, bot_client_instance))) {
-        const display_arr: string[] = await get_display_error_code('C4', clientId);
-        if (display_arr.length !== 1) {
-            console.error(`DSPY error at ${command} in cooldown.js, no1`);
-            await msg_interact_instance.reply(config['display_error']);
-            return (false);
-        }
-        console.error(`C4 error at ${command} in cooldown.js, no2`);
-        await msg_interact_instance.reply(display_arr[0] ?? config['display_error']);
+        await msg_interact_instance.reply((await get_display_error_code('C4', clientId)) ?? config['display_error']);
         return (false);
     }
 
@@ -28,11 +21,6 @@ async function check_cooldown(clientId: string, command: string, time_sec: numbe
         const date_now: number = Date.now();
         if (date_now < expired_date) {
             const display_arr: string[] = await get_display_text(['general.timeout_display'], clientId);
-            if (display_arr.length !== 1) {
-                console.error(`DSPY error at ${command} in cooldown.js, no3`);
-                await msg_interact_instance.reply(config['display_error']);
-                return (false);
-            }
             await msg_interact_instance.reply(`${(display_arr[0] ?? config['display_error']) + String((Number(expired_date) - date_now) / 1000)}s`);
             return (false);
         }
@@ -45,14 +33,7 @@ async function update_cooldown(clientId: string, command: string, time_sec: numb
     if (!isMyClient(bot_client_instance)) return (false);
     //Check command
     if (!(await command_validation(command, bot_client_instance))) {
-        const display_arr: string[] = await get_display_error_code('C4', clientId);
-        if (display_arr.length !== 1) {
-            console.error(`DSPY error at ${command} in cooldown.js, no4`);
-            await msg_interact_instance.reply(config['display_error']);
-            return (false);
-        }
-        console.error(`c$error at ${command} in cooldown.js, no5`);
-        await msg_interact_instance.reply(display_arr[0] ?? config['display_error']);
+        await msg_interact_instance.reply((await get_display_error_code('C4', clientId)) ?? config['display_error']);
         return (false);
     }
 
@@ -66,14 +47,7 @@ async function update_cooldown(clientId: string, command: string, time_sec: numb
         if (affectedCount > 0) {
             return (true);
         }
-        const display_arr: string[] = await get_display_error_code('D3', clientId);
-            if (display_arr.length !== 1) {
-                console.error(`DSPY error at ${command} in cooldown.js, no6`);
-                await msg_interact_instance.reply(config['display_error']);
-                return (false);
-            }
-            console.error(`D3 error at ${command} in cooldown.js, no7`);
-            await msg_interact_instance.reply(display_arr[0] ?? config['display_error']);
+        await msg_interact_instance.reply((await get_display_error_code('D3', clientId)) ?? config['display_error']);
         return (false);
     }
     //Data not exist
@@ -88,14 +62,7 @@ async function update_cooldown(clientId: string, command: string, time_sec: numb
     }
     catch (error) {
         console.log(error);
-        const display_arr: string[] = await get_display_error_code('D1', clientId);
-        if (display_arr.length !== 1) {
-            console.error(`DSPY error at ${command} in cooldown.js, no8`);
-            await msg_interact_instance.reply(config['display_error']);
-            return (false);
-        }
-        console.error(`D1 error at ${command} in cooldown.js, no9`);
-        await msg_interact_instance.reply(display_arr[0] ?? config['display_error']);
+        await msg_interact_instance.reply((await get_display_error_code('D1', clientId)) ?? config['display_error']);
         return (false);
     }
 }

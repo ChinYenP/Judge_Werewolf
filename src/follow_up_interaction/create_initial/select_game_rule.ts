@@ -1,25 +1,20 @@
 import { StringSelectMenuInteraction, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, Message, InteractionCallbackResource } from 'discord.js';
 import { GameCreateInstance, GAME_CREATE } from '../../database/sqlite_db.js';
-import { general_is_outdated, general_timeout_set, general_is_message_author } from '../../utility/timeout.js';
+import { interaction_is_outdated, timeout_set, is_interaction_owner } from '../../utility/timeout.js';
 import { get_display_text, get_display_error_code } from '../../utility/get_display.js';
 import { config } from '../../text_data_config/config.js';
 import { ui_create_initial } from '../../common_ui/create/initial.js';
 
 async function select_create_initial_game_rule(interaction: StringSelectMenuInteraction): Promise<void> {
     
-    if (!(await general_is_message_author(interaction.message.id, interaction.user.id))) {
+    if (!(await is_interaction_owner(interaction.message.id, interaction.user.id))) {
         return;
     }
 
     console.log('create_initial: select_game_rule');
 
-    if (await general_is_outdated(interaction.message.id)) {
+    if (await interaction_is_outdated(interaction.message.id)) {
         const outdated_interaction_text: string[] = await get_display_text(['general.outdated_interaction'], interaction.user.id);
-        if (outdated_interaction_text.length !== 1) {
-            console.error('DSPY error at ./utility/create_initial/select_preset_custom.js, no1');
-            await interaction.update({ content: config['display_error'], components: [] });
-            return;
-        }
         await interaction.update({ content: outdated_interaction_text[0] ?? config['display_error'], components: [] });
         return;
     }
@@ -45,14 +40,7 @@ async function select_create_initial_game_rule(interaction: StringSelectMenuInte
         //Update first
         const [affectedCount] = await GAME_CREATE.update({ game_rule: new_game_rule }, { where: { clientId: interaction.user.id } });
         if (affectedCount <= 0) {
-            const display_arr: string[] = await get_display_error_code('D3', interaction.user.id);
-            if (display_arr.length !== 1) {
-                console.error('DSPY error at ./utility/create_initial/select_preset_custom.js, no2');
-                await interaction.message.edit({content: config['display_error'], components: []});
-                return;
-            }
-            console.error(`D3 error at ./utility/create_initial/select_preset_custom.js, no3`);
-            await interaction.update({content: display_arr[0] ?? config['display_error'], components: []});
+            await interaction.update({content: (await get_display_error_code('D3', interaction.user.id)) ?? config['display_error'], components: []});
             return;
         }
         //Set default selection
@@ -80,14 +68,7 @@ async function select_create_initial_game_rule(interaction: StringSelectMenuInte
         }
         catch (error) {
             console.log(error);
-            const display_arr: string[] = await get_display_error_code('D1', interaction.user.id);
-            if (display_arr.length !== 1) {
-                console.error('DSPY error at ./utility/create_initial/select_preset_custom.js, no4');
-                await interaction.update({content: config['display_error'], components: []});
-                return;
-            }
-            console.error(`D3 error at ./utility/create_initial/select_preset_custom.js, no5`);
-            await interaction.update({content: display_arr[0] ?? config['display_error'], components: []});
+            await interaction.update({content: (await get_display_error_code('D1', interaction.user.id)) ?? config['display_error'], components: []});
             return;
         }
     }
@@ -98,7 +79,7 @@ async function select_create_initial_game_rule(interaction: StringSelectMenuInte
         = await ui_create_initial(interaction.user.id, time_sec, num_player_selected, preset_selected, game_rule_selected);
     const update_msg_resource: InteractionCallbackResource = (await interaction.update({ content: Content, components: ActionRowArr, withResponse: true })).resource as InteractionCallbackResource;
     const update_msg: Message = update_msg_resource.message as Message;
-    await general_timeout_set('create', update_msg.id, interaction.user.id, update_msg.channelId, time_sec, message_timeout, update_msg);
+    await timeout_set('create', update_msg.id, interaction.user.id, update_msg.channelId, time_sec, message_timeout, update_msg);
 
     async function message_timeout(update_msg: Message): Promise<void> {
         const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: interaction.user.id } });
@@ -107,14 +88,7 @@ async function select_create_initial_game_rule(interaction: StringSelectMenuInte
                 await GAME_CREATE.destroy({ where: { clientId: interaction.user.id } });
             } catch (error) {
                 console.error(error);
-                const display_arr: string[] = await get_display_error_code('D2', interaction.user.id);
-                if (display_arr.length !== 1) {
-                    console.error('DSPY error at ./utility/create_initial/select_num_player.js, no6');
-                    await update_msg.edit({content: config['display_error'], components: []});
-                    return;
-                }
-                console.error(`D3 error at ./utility/create_initial/select_num_player.js, no7`);
-                await update_msg.edit({content: display_arr[0] ?? config['display_error'], components: []});
+                await update_msg.edit({content: (await get_display_error_code('D2', interaction.user.id)) ?? config['display_error'], components: []});
                 return;
             }
         }

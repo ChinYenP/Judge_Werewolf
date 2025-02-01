@@ -1,4 +1,4 @@
-import { general_is_outdated, general_timeout_delete, general_is_message_author } from '../../utility/timeout.js';
+import { interaction_is_outdated, timeout_delete, is_interaction_owner } from '../../utility/timeout.js';
 import { get_display_text, get_display_error_code } from '../../utility/get_display.js';
 import { ButtonInteraction } from 'discord.js';
 import { config } from '../../text_data_config/config.js';
@@ -6,20 +6,15 @@ import { ServerSettingsInstance, SERVER_SETTINGS, TempPrefixSettingInstance, TEM
 
 async function button_prefix_yes(interaction: ButtonInteraction): Promise<void> {
 
-    if (!(await general_is_message_author(interaction.message.id, interaction.user.id))) {
+    if (!(await is_interaction_owner(interaction.message.id, interaction.user.id))) {
         return;
     }
     if (interaction.guildId === null) return;
 
     console.log('settings_prefix: button_yes');
 
-    if (await general_is_outdated(interaction.message.id)) {
+    if (await interaction_is_outdated(interaction.message.id)) {
         const outdated_interaction_text: string[] = await get_display_text(['general.outdated_interaction'], interaction.user.id);
-        if (outdated_interaction_text.length !== 1) {
-            console.error('DSPY error at ./utility/settings_prefix/button_yes.js, no1');
-            await interaction.update({ content: config['display_error'], components: [] });
-            return;
-        }
         await interaction.update({ content: outdated_interaction_text[0] ?? config['display_error'], components: [] });
         return;
     }
@@ -28,11 +23,6 @@ async function button_prefix_yes(interaction: ButtonInteraction): Promise<void> 
     const prefix_arr: [boolean, string] = await get_prefix(interaction.guildId);
     if (!prefix_arr[0]) {
         const outdated_interaction_text = await get_display_text(['general.outdated_interaction'], interaction.user.id);
-        if (outdated_interaction_text.length !== 1) {
-            console.error('DSPY error at ./utility/settings_prefix/button_yes.js, no5');
-            await interaction.update({ content: config['display_error'], components: [] });
-            return;
-        }
         await interaction.update({ content: outdated_interaction_text[0] ?? config['display_error'], components: [] });
         return;
     }
@@ -48,13 +38,8 @@ async function button_prefix_yes(interaction: ButtonInteraction): Promise<void> 
 
     //Success
     display_arr = await get_display_text(['settings.server_settings.prefix.success'], interaction.user.id);
-    if (display_arr.length !== 1) {
-        console.error('DSPY error at ./utility/settings_prefix/button_yes.js, no4');
-        await interaction.update({content: config['display_error'], components: []});
-        return;
-    };
     await interaction.update({ content: (display_arr[0] ?? config['display_error']) + prefix, components: []});
-    await general_timeout_delete(interaction.message.id, interaction.user.id);
+    await timeout_delete(interaction.message.id, interaction.user.id);
     
 };
 
@@ -84,12 +69,8 @@ async function sequelize_prefix_yes(interaction: ButtonInteraction, prefix: stri
         try {
             await TEMP_PREFIX_SETTINGS.destroy({ where: { guildId: interaction.guildId } });
         } catch (error) {
-            const display_arr: string[] = await get_display_error_code('D2', interaction.user.id);
-            if (display_arr.length !== 1) {
-                console.error('DSPY error at ./utility/settings_prefix/button_yes.js, no2');
-            } else {
-                console.error(`D3 error at ./utility/settings_prefix/button_yes.js, no3`);
-            }
+            console.error(error);
+            await interaction.update({content: (await get_display_error_code('D2', interaction.user.id)) ?? config['display_error'], components: []});
         }
     }
 

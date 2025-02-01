@@ -1,5 +1,6 @@
 const config: ConfigType = {
     "default_prefix": "jw",
+    "embed_hex_color": 0x00aaff,
     "timeout_sec": {
         "settings": {
             "user": 30,
