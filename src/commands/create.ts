@@ -11,8 +11,6 @@ export default {
 
     name: 'create',
     cooldown_sec: config['cooldown_sec'].create,
-    timeout: true,
-    timeout_sec: config['timeout_sec'].create.initial,
     async execute(message: Message, args: string[]): Promise<void> {
         console.log(`Create command ran, args: ${args.join(", ")}`);
 

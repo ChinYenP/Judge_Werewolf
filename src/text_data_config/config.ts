@@ -1,4 +1,5 @@
 const config: ConfigType = {
+    "display_error": "Something has gone wrong during the code runtime: Error DSPY",
     "default_prefix": "jw",
     "embed_hex_color": 0x00aaff,
     "timeout_sec": {
@@ -21,8 +22,7 @@ const config: ConfigType = {
         "settings": 10,
         "create": 5,
         "prefix": 5
-    },
-    "display_error": "Something has gone wrong during the code runtime: Error DSPY"
+    }
 }
 
 export { config }

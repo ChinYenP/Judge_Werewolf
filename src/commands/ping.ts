@@ -9,7 +9,6 @@ export default {
 
     name: 'ping',
     cooldown_sec: config['cooldown_sec'].ping,
-    timeout: false,
     async execute(message: Message, args: string[]): Promise<void> {
         console.log(`Ping command ran, args: ${args.join(", ")}`);
 
@@ -31,7 +30,7 @@ export default {
         sent = await sent.fetch();
         const latency: number = sent.createdTimestamp - message.createdTimestamp;
 
-        const pongEmbed = new EmbedBuilder()
+        const pongEmbed: EmbedBuilder = new EmbedBuilder()
             .setColor(config['embed_hex_color'])
             .setTitle(`${ping_text ?? config['display_error']}${pong_text ?? config['display_error']}`)
             .addFields(

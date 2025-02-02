@@ -1,4 +1,4 @@
-import { StringSelectMenuInteraction, ActionRowBuilder, StringSelectMenuBuilder, Message, InteractionCallbackResource } from 'discord.js';
+import { StringSelectMenuInteraction, ActionRowBuilder, StringSelectMenuBuilder, Message, InteractionCallbackResource, EmbedBuilder } from 'discord.js';
 import { UserSettingsInstance, USER_SETTINGS } from '../../database/sqlite_db.js';
 import { interaction_is_outdated, timeout_set, is_interaction_owner } from '../../utility/timeout.js';
 import { get_display_text, get_display_error_code } from '../../utility/get_display.js';
@@ -33,13 +33,13 @@ async function menu_select_lang(interaction: StringSelectMenuInteraction): Promi
 
     //Success
     const time_sec: number = config['timeout_sec'].settings.user;
-    const [rowLang, Content, timeout_content]: [ActionRowBuilder<StringSelectMenuBuilder>, string, string] = await ui_user_settings(interaction.user.id, time_sec);
-    const update_msg_resource: InteractionCallbackResource = (await interaction.update({ content: Content, components: [rowLang], withResponse: true })).resource as InteractionCallbackResource;
+    const [rowLang, userEmbed, serverEmbed, timeoutEmbed]: [ActionRowBuilder<StringSelectMenuBuilder>, EmbedBuilder, EmbedBuilder, EmbedBuilder] = await ui_user_settings(interaction.user.id, time_sec);
+    const update_msg_resource: InteractionCallbackResource = (await interaction.update({ embeds: [userEmbed, serverEmbed], components: [rowLang], withResponse: true })).resource as InteractionCallbackResource;
     const update_msg: Message = update_msg_resource.message as Message;
     await timeout_set('settings', update_msg.id, interaction.user.id, interaction.channelId, time_sec, interaction_timeout, update_msg);
 
     async function interaction_timeout(update_msg: Message): Promise<void> {
-        await update_msg.edit({ content: timeout_content, components: [] });
+        await update_msg.edit({ embeds: [userEmbed, serverEmbed, timeoutEmbed], components: [] });
     }
 }
 

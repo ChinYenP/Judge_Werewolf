@@ -1,4 +1,4 @@
-import { Message, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { Message, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 import { prefix_validation } from '../utility/validation/prefix_validation.js';
 import { get_display_text, get_display_error_code } from '../utility/get_display.js';
 import { check_cooldown } from '../utility/cooldown.js';
@@ -12,8 +12,6 @@ export default {
 
     name: 'settings',
     cooldown_sec: config['cooldown_sec'].settings,
-    timeout: true,
-    timeout_sec: config['timeout_sec'].settings,
     async execute(message: Message, args: string[]): Promise<void> {
         console.log(`Settings command ran, args: ${args.join(", ")}`);
 
@@ -27,21 +25,18 @@ export default {
         //Check arguments
         if (args.length === 1) {
             //Too less arguments
-            const less_args_text: string[] = await get_display_text(['general.command_args_error.less_args'], message.author.id);
-            await message.reply(`settings${less_args_text[0] ?? config['display_error']}`);
+            await message.reply(`settings ${(await get_display_text(['general.command_args_error.less_args'], clientId))[0] ?? config['display_error']}`);
             return;
         }
         if (args.length > 2) {
-            //Too much arguments
-            const much_args_text: string[] = await get_display_text(['general.command_args_error.much_args'], message.author.id);
-            await message.reply(`settings${much_args_text[0] ?? config['display_error']}`);
+            //Too much arguments;
+            await message.reply(`settings ${(await get_display_text(['general.command_args_error.much_args'], clientId))[0] ?? config['display_error']}`);
             return;
         }
         //Check administrator permission
         if (args.length === 2 && !(message.member.permissionsIn(message.channel).has('Administrator'))) {
             //No permission for server settings
-            const not_administrator_text: string[] = await get_display_text(['general.permission_error.not_administrator'], message.author.id);
-            await message.reply(`settings${not_administrator_text[0] ?? config['display_error']}`);
+            await message.reply(`settings ${(await get_display_text(['general.permission_error.not_administrator'], clientId))[0] ?? config['display_error']}`);
             return;
         }
 
@@ -55,14 +50,12 @@ export default {
                     return;
                 }
                 //Invalid argument for prefix
-                const invalid_prefix_text: string[] = await get_display_text(['settings.server_settings.prefix.invalid_prefix'], message.author.id);
-                const allow_characters: string = process.env.ALLOWED_PREFIX_CHARACTERS;
-                await message.reply((invalid_prefix_text[0] ?? config['display_error']) + allow_characters);
+                const [ invalid_prefix_text ]: string[] = await get_display_text(['settings.server_settings.prefix.invalid_prefix'], clientId);
+                await message.reply(`${invalid_prefix_text ?? config['display_error']}${process.env.ALLOWED_PREFIX_CHARACTERS}`);
                 return;
             }
             //Does not match any server settings
-            const args_error_text: string[] = await get_display_text(['general.command_args_error.wrong_args'], message.author.id);
-            await message.reply(`settings${args_error_text[0] ?? config['display_error']}${args[0] ?? config['display_error']}`);
+            await message.reply(`settings ${(await get_display_text(['general.command_args_error.wrong_args'], clientId)) ?? config['display_error']}${args[0] ?? config['display_error']}`);
             return;
         }
 
@@ -79,12 +72,12 @@ async function general_settings(message: Message): Promise<void> {
     if (!isMyClient(message.client)) return;
     await timeout_delete_message(message.author.id, 'settings', message.client);
     const time_sec: number = config['timeout_sec'].settings.user;
-    const [rowLang, Content, timeout_content]: [ActionRowBuilder<StringSelectMenuBuilder>, string, string] = await ui_user_settings(message.author.id, time_sec);
-    const bot_reply: Message = await message.reply({ content: Content, components: [rowLang] });
+    const [rowLang, userEmbed, serverEmbed, timeoutEmbed]: [ActionRowBuilder<StringSelectMenuBuilder>, EmbedBuilder, EmbedBuilder, EmbedBuilder] = await ui_user_settings(message.author.id, time_sec);
+    const bot_reply: Message = await message.reply({ embeds: [userEmbed, serverEmbed], components: [rowLang] });
     await timeout_set('settings', bot_reply.id, message.author.id, message.channelId, time_sec, message_timeout, bot_reply);
 
     async function message_timeout(bot_reply: Message): Promise<void> {
-        await bot_reply.edit({ content: timeout_content, components: [] });
+        await bot_reply.edit({ embeds: [userEmbed, serverEmbed, timeoutEmbed], components: [] });
     }
 
 }
@@ -97,7 +90,8 @@ async function prefix_settings(message: Message, args: string[]): Promise<void> 
     if (message.guildId === null) return;
     await timeout_delete_message(message.author.id, 'settings_prefix', message.client);
     const time_sec: number = config['timeout_sec'].settings.server.prefix;
-    const display_arr: string[] = await get_display_text(['settings.server_settings.prefix.confirmation',
+    const [confirmation_text, yes_text, no_text, timeout_text]: string[]
+        = await get_display_text(['settings.server_settings.prefix.confirmation',
         'settings.server_settings.prefix.button_yes',
         'settings.server_settings.prefix.button_no',
         'settings.server_settings.prefix.timeout_text'], message.author.id);
@@ -128,18 +122,18 @@ async function prefix_settings(message: Message, args: string[]): Promise<void> 
 
     const yes_button: ButtonBuilder = new ButtonBuilder()
         .setCustomId('settings_prefix_yes')
-        .setLabel(display_arr[1] ?? config['display_error'])
+        .setLabel(yes_text ?? config['display_error'])
         .setStyle(ButtonStyle.Success);
 
     const no_button: ButtonBuilder = new ButtonBuilder()
         .setCustomId('settings_prefix_no')
-        .setLabel(display_arr[2] ?? config['display_error'])
+        .setLabel(no_text ?? config['display_error'])
         .setStyle(ButtonStyle.Secondary);
     
     const rowButton = new ActionRowBuilder<ButtonBuilder>()
         .addComponents(yes_button, no_button);
     
-    const bot_reply: Message = await message.reply({ content: (display_arr[0] ?? config['display_error']) + new_prefix, components: [rowButton] });
+    const bot_reply: Message = await message.reply({ content: (confirmation_text ?? config['display_error']) + new_prefix, components: [rowButton] });
     await timeout_set(bot_reply.id, message.author.id, message.channelId, message.guildId, time_sec, message_prefix_timeout, bot_reply);
 
     async function message_prefix_timeout(bot_reply: Message): Promise<void> {
@@ -157,7 +151,7 @@ async function prefix_settings(message: Message, args: string[]): Promise<void> 
         } else {
             console.error('message.guildId should exists.');
         }
-        const timeout_content: string = `${(display_arr[0] ?? config['display_error']) + (args[1] ?? config['display_error'])}\n\n${(display_arr[3] ?? config['display_error']) + time_sec.toString()}s`;
+        const timeout_content: string = `${confirmation_text ?? config['display_error']}${new_prefix}\n\n${timeout_text ?? config['display_error']}${time_sec.toString()}s`;
         await bot_reply.edit({ content: timeout_content, components: [] });
     }
 

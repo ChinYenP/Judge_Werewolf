@@ -3,12 +3,12 @@ import { get_display_text, get_display_error_code } from '../utility/get_display
 import { config } from '../text_data_config/config.js';
 import { Message } from 'discord.js';
 import { isMyClient } from '../declare_type/type_guard.js';
+import { EmbedBuilder } from 'discord.js';
 
 export default {
 
     name: 'help',
     cooldown_sec: config['cooldown_sec'].help,
-    timeout: false,
     async execute(message: Message, args: string[]): Promise<void> {
         console.log(`Help command ran, args: ${args.join(", ")}`);
 
@@ -18,10 +18,41 @@ export default {
             return;
         }
 
-        const [help_text]: string[] = await get_display_text(['help'], clientId);
+        const [optional_arguments_text, title_text, title_description_text, help_description_text,
+            prefix_description_text, ping_description_text, settings_description_text, create_description_text, optional_ID_text]: string[]
+            = await get_display_text(['help.optional_arguments', 'help.title', 'help.title_description', 'help.help_description',
+            'help.prefix_description', 'help.ping_description', 'help.settings_description', 'help.create_description', 'help.optional_ID'], clientId);
+
+        const helpEmbed: EmbedBuilder = new EmbedBuilder()
+            .setColor(config['embed_hex_color'])
+            .setTitle(title_text ?? config['display_error'])
+            .setDescription(title_description_text ?? config['display_error'])
+            .addFields(
+                {
+                    name: 'jw help',
+                    value: help_description_text ?? config['display_error']
+                },
+                {
+                    name: 'jw prefix',
+                    value: prefix_description_text ?? config['display_error']
+                },
+                {
+                    name: 'jw ping',
+                    value: ping_description_text ?? config['display_error']
+                },
+                {
+                    name: `jw settings <${optional_arguments_text}>`,
+                    value: settings_description_text ?? config['display_error']
+                },
+                {
+                    name: `jw create <${optional_ID_text}>`,
+                    value: create_description_text ?? config['display_error']
+                }
+            )
+            .setTimestamp()
 
         try {
-            await message.reply(help_text ?? config['display_error']);
+            await message.reply({ embeds: [helpEmbed] });
         } catch (error) {
             console.error(error);
             await message.reply((await get_display_error_code('M1', message.author.id))[0] ?? config['display_error']);

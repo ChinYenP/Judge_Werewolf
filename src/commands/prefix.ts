@@ -2,7 +2,7 @@ import { check_cooldown } from '../utility/cooldown.js';
 import { get_display_text, get_display_error_code } from '../utility/get_display.js';
 import { prefix_validation } from '../utility/validation/prefix_validation.js';
 import { config } from '../text_data_config/config.js';
-import { Message } from 'discord.js';
+import { Message, EmbedBuilder } from 'discord.js';
 import { ServerSettingsInstance, SERVER_SETTINGS } from '../database/sqlite_db.js';
 import { isMyClient } from '../declare_type/type_guard.js';
 
@@ -10,7 +10,6 @@ export default {
 
     name: 'prefix',
     cooldown_sec: config['cooldown_sec'].prefix,
-    timeout: false,
     async execute(message: Message, args: string[]): Promise<void> {
         console.log(`Prefix command ran, args: ${args.join(", ")}`);
 
@@ -34,8 +33,34 @@ export default {
             await message.reply((await get_display_error_code('C3', message.author.id))[0] ?? config['display_error']);
         }
 
-        const display_arr: string[] = await get_display_text(['prefix.current_prefix', 'prefix.instruction'], message.author.id);
-        await message.reply(`${(display_arr[0] ?? config['display_error']) + prefix }\n${display_arr[1] ?? config['display_error']}`);
+        const [title_text, current_prefix_text, default_prefix_text, instruction_text]: string[]
+            = await get_display_text(['prefix.title', 'prefix.current_prefix', 'prefix.default_prefix', 'prefix.instruction'], message.author.id);
+        
+        const prefixEmbed: EmbedBuilder = new EmbedBuilder()
+            .setColor(config['embed_hex_color'])
+            .setTitle(title_text ?? config['display_error'])
+            .addFields(
+                {
+                    name: current_prefix_text ?? config['display_error'],
+                    value: prefix
+                },
+                {
+                    name: default_prefix_text ?? config['display_error'],
+                    value: 'jw'
+                },
+                {
+                    name: '\u200b',
+                    value: instruction_text ?? config['display_error']
+                }
+            )
+            .setTimestamp()
+
+            try {
+                await message.reply({ embeds: [prefixEmbed] });
+            } catch (error) {
+                console.error(error);
+                await message.reply((await get_display_error_code('M1', message.author.id))[0] ?? config['display_error']);
+            }
     }
 
 }
