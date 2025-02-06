@@ -6,18 +6,18 @@ import { ServerSettingsInstance, SERVER_SETTINGS, TempPrefixSettingInstance, TEM
 
 async function button_prefix_yes(interaction: ButtonInteraction): Promise<void> {
 
+    if (await interaction_is_outdated(interaction.message.id)) {
+        const outdated_interaction_text: string[] = await get_display_text(['general.outdated_interaction'], interaction.user.id);
+        await interaction.update({ content: outdated_interaction_text[0] ?? config['display_error'], components: [] });
+        return;
+    }
+
     if (!(await is_interaction_owner(interaction.message.id, interaction.user.id))) {
         return;
     }
     if (interaction.guildId === null) return;
 
     console.log('settings_prefix: button_yes');
-
-    if (await interaction_is_outdated(interaction.message.id)) {
-        const outdated_interaction_text: string[] = await get_display_text(['general.outdated_interaction'], interaction.user.id);
-        await interaction.update({ content: outdated_interaction_text[0] ?? config['display_error'], components: [] });
-        return;
-    }
 
     //Get prefix. If it is false, the message is not from current session.
     const prefix_arr: [boolean, string] = await get_prefix(interaction.guildId);
@@ -38,7 +38,7 @@ async function button_prefix_yes(interaction: ButtonInteraction): Promise<void> 
 
     //Success
     display_arr = await get_display_text(['settings.server_settings.prefix.success'], interaction.user.id);
-    await interaction.update({ content: (display_arr[0] ?? config['display_error']) + prefix, components: []});
+    await interaction.update({ content: (display_arr[0] ?? config['display_error']) + prefix, components: [], embeds: []});
     await timeout_delete(interaction.message.id, interaction.user.id);
     
 };

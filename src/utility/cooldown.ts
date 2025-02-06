@@ -20,7 +20,7 @@ async function check_cooldown(clientId: string, command: string, time_sec: numbe
         const expired_date: bigint = settings.expired_date;
         const date_now: number = Date.now();
         if (date_now < expired_date) {
-            const display_arr: string[] = await get_display_text(['general.timeout_display'], clientId);
+            const display_arr: string[] = await get_display_text(['general.cooldown_display'], clientId);
             await msg_interact_instance.reply(`${(display_arr[0] ?? config['display_error']) + String((Number(expired_date) - date_now) / 1000)}s`);
             return (false);
         }

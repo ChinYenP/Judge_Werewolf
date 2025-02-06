@@ -55,12 +55,19 @@ const display_text: DisplayTextType = {
             "tchi": "似乎您正在嘗試與過時的交互(例如訊息)進行互動。",
             "yue": "似乎你系度嘗試與過時嘅交互(例如訊息)進行互動。"
         },
-        "timeout_display": {
+        "cooldown_display": {
             "eng": "This command has a remaining cooldown of: ",
             "malay": "Perintah ini mempunyai baki penyejukan sebanyak: ",
             "schi": "该命令的剩余冷却时间为: ",
             "tchi": "該命令的剩餘冷卻時間為: ",
             "yue": "該命令嘅剩餘冷卻時間為: "
+        },
+        "timeout_title": {
+            "eng": "Timeout",
+            "malay": "Tamat Masa",
+            "schi": "超时",
+            "tchi": "超時",
+            "yue": "超時"
         }
     },
     "ping": {
@@ -225,6 +232,13 @@ const display_text: DisplayTextType = {
                     "tchi": "服務器設置 (管理員用戶可以更改這些設置)",
                     "yue": "服務器設置 (管理員用戶可以更改呢啲設置)"
                 },
+                "description": {
+                    "eng": "Administrator users can change these settings.",
+                    "malay": "Pengguna pentadbir boleh menukar tetapan ini.",
+                    "schi": "管理员用户可以更改这些设置。",
+                    "tchi": "管理員用戶可以更改這些設置。",
+                    "yue": "管理員用戶可以更改呢啲設置。"
+                },
                 "list": {
                     "prefix": {
                         "title": {
@@ -265,18 +279,43 @@ const display_text: DisplayTextType = {
         "server_settings": {
             "prefix": {
                 "invalid_prefix": {
-                    "eng": "Your new prefix is invalid.\nNote that prefix must have between 1 to 5 characters inclusive, and only contains the following characters:\n",
-                    "malay": "Awalan baharu anda tidak sah.\nPerhatikan bahawa awalan mesti mempunyai antara 1 hingga 5 aksara termasuk, dan hanya mengandungi aksara berikut:\n",
-                    "schi": "您的新前缀无效。\n注意前缀必须包含1到5个字符(含), 并且仅包含以下字符:\n",
-                    "tchi": "您的新前綴無效。\n注意前綴必須包含1到5個字符(含), 並且僅包含以下字符:\n",
-                    "yue": "您的新前綴無效。\n注意前綴一定要包含1到5個字元(含), 兼夾僅包含以下字元:\n"
+                    "title": {
+                        "eng": "Your new prefix is invalid.",
+                        "malay": "Awalan baharu anda tidak sah.",
+                        "schi": "您的新前缀无效。",
+                        "tchi": "您的新前綴無效。",
+                        "yue": "您的新前綴無效。"
+                    },
+                    "description": {
+                        "eng": "Note that prefix must have between 1 to 5 characters inclusive, and only contains the following characters:",
+                        "malay": "Perhatikan bahawa awalan mesti mempunyai antara 1 hingga 5 aksara termasuk, dan hanya mengandungi aksara berikut:",
+                        "schi": "注意前缀必须包含1到5个字符(含), 并且仅包含以下字符:",
+                        "tchi": "注意前綴必須包含1到5個字符(含), 並且僅包含以下字符:",
+                        "yue": "注意前綴一定要包含1到5個字元(含), 兼夾僅包含以下字元:"
+                    }
                 },
                 "confirmation": {
-                    "eng": "Are you sure you want to change this bot's prefix for this server?\nNew prefix: ",
-                    "malay": "Adakah anda pasti mahu menukar awalan bot ini untuk pelayan ini?\nAwalan baharu: ",
-                    "schi": "您确定要更改该服务器的机器人前缀吗? \n新前缀: ",
-                    "tchi": "您確定要更改該服務器的機器人前綴嗎? \n新前綴: ",
-                    "yue": "你肯定要更改該服務器嘅機械人前綴嗎? \n新前綴: "
+                    "title": {
+                        "eng": "Confirmation",
+                        "malay": "Pengesahan",
+                        "schi": "确认",
+                        "tchi": "確認",
+                        "yue": "確認"
+                    },
+                    "description": {
+                        "eng": "Are you sure you want to change this bot's prefix for this server?",
+                        "malay": "Adakah anda pasti mahu menukar awalan bot ini untuk pelayan ini?",
+                        "schi": "您确定要更改该服务器的机器人前缀吗?",
+                        "tchi": "您確定要更改該服務器的機器人前綴嗎?",
+                        "yue": "你肯定要更改該服務器嘅機械人前綴嗎?"
+                    },
+                    "new_prefix": {
+                        "eng": "New Prefix",
+                        "malay": "Awalan Baharu",
+                        "schi": "新前缀",
+                        "tchi": "新前綴",
+                        "yue": "新前綴"
+                    }
                 },
                 "button_yes": {
                     "eng": "Yes",
@@ -400,6 +439,9 @@ const display_text: DisplayTextType = {
                 "tchi": "取消",
                 "yue": "取消"
             }
+        },
+        "roles": {
+
         },
         "timeout": {
             "eng": "Create game are disabled after inactivity: ",

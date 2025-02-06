@@ -7,17 +7,17 @@ import { ui_create_roles } from '../../common_ui/create/roles.js';
 
 async function button_create_initial_next(interaction: ButtonInteraction): Promise<void> {
     
-    if (!(await is_interaction_owner(interaction.message.id, interaction.user.id))) {
-        return;
-    }
-
-    console.log('create_initial: button_next');
-
     if (await interaction_is_outdated(interaction.message.id)) {
         const outdated_interaction_text: string[] = await get_display_text(['general.outdated_interaction'], interaction.user.id);
         await interaction.update({ content: outdated_interaction_text[0] ?? config['display_error'], components: [] });
         return;
     }
+    
+    if (!(await is_interaction_owner(interaction.message.id, interaction.user.id))) {
+        return;
+    }
+
+    console.log('create_initial: button_next');
 
     const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: interaction.user.id } });
 

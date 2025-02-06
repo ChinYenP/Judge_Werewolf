@@ -7,17 +7,17 @@ import { ui_create_initial } from '../../common_ui/create/initial.js';
 
 async function select_create_initial_num_player(interaction: StringSelectMenuInteraction): Promise<void> {
     
-    if (!(await is_interaction_owner(interaction.message.id, interaction.user.id))) {
-        return;
-    }
-
-    console.log('create_initial: select_num_player');
-
     if (await interaction_is_outdated(interaction.message.id)) {
         const outdated_interaction_text: string[] = await get_display_text(['general.outdated_interaction'], interaction.user.id);
         await interaction.update({ content: outdated_interaction_text[0] ?? config['display_error'], components: [] });
         return;
     }
+    
+    if (!(await is_interaction_owner(interaction.message.id, interaction.user.id))) {
+        return;
+    }
+
+    console.log('create_initial: select_num_player');
 
     if (interaction.values[0] === undefined) return;
     if (!(['6', '7', '8', '9', '10', '11', '12'].includes(interaction.values[0]))) return;

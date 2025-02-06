@@ -7,17 +7,17 @@ import { ui_user_settings } from '../../common_ui/user_settings.js';
 
 async function menu_select_lang(interaction: StringSelectMenuInteraction): Promise<void> {
     
-    if (!(await is_interaction_owner(interaction.message.id, interaction.user.id))) {
-        return;
-    }
-
-    console.log('settings_general: select_lang');
-
     if (await interaction_is_outdated(interaction.message.id)) {
         const outdated_interaction_text: string[] = await get_display_text(['general.outdated_interaction'], interaction.user.id);
         await interaction.update({ content: outdated_interaction_text[0] ?? config['display_error'], components: [] });
         return;
     }
+    
+    if (!(await is_interaction_owner(interaction.message.id, interaction.user.id))) {
+        return;
+    }
+
+    console.log('settings_general: select_lang');
 
     if (interaction.values[0] === undefined) return;
     if (!(['eng', 'malay', 'schi', 'tchi', 'yue'].includes(interaction.values[0]))) return;
