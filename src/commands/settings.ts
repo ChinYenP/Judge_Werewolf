@@ -71,8 +71,8 @@ async function invalid_prefix(message: Message): Promise<void> {
     const invalidEmbed: EmbedBuilder = new EmbedBuilder()
         .setColor(config['embed_hex_color'])
         .setTitle(title_text ?? config['display_error'])
-        .setDescription(`${description_text ?? config['display_error']}\n${process.env.ALLOWED_PREFIX_CHARACTERS}`)
-    await message.reply({ embeds: [invalidEmbed] });
+        .setDescription(`${description_text ?? config['display_error']}\n\`\`\`${process.env.ALLOWED_PREFIX_CHARACTERS}\`\`\``)
+    await message.reply({ embeds: [invalidEmbed], components: [] });
 }
 
 
@@ -166,7 +166,7 @@ async function prefix_settings(message: Message, args: string[]): Promise<void> 
                     await TEMP_PREFIX_SETTINGS.destroy({ where: { guildId: message.guildId } });
                 } catch (error) {
                     console.error(error);
-                    await message.reply({content: (await get_display_error_code('D2', message.author.id)) ?? config['display_error'], components: []});
+                    await message.reply({content: (await get_display_error_code('D2', message.author.id)) ?? config['display_error'], components: [] });
                     return;
                 }
             }

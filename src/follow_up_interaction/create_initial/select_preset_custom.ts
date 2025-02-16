@@ -1,4 +1,4 @@
-import { StringSelectMenuInteraction, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, Message, InteractionCallbackResource } from 'discord.js';
+import { StringSelectMenuInteraction, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, Message, InteractionCallbackResource, EmbedBuilder } from 'discord.js';
 import { GameCreateInstance, GAME_CREATE } from '../../database/sqlite_db.js';
 import { interaction_is_outdated, timeout_set, is_interaction_owner } from '../../utility/timeout.js';
 import { get_display_text, get_display_error_code } from '../../utility/get_display.js';
@@ -74,9 +74,10 @@ async function select_create_initial_preset_custom(interaction: StringSelectMenu
 
     //Success
     const time_sec: number = config['timeout_sec'].create.initial;
-    const [ActionRowArr, Content, timeout_content]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], string, string]
+    const [ActionRowArr, initialEmbed, timeoutEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>,
+                ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder, EmbedBuilder]
         = await ui_create_initial(interaction.user.id, time_sec, num_player_selected, preset_selected, game_rule_selected);
-    const update_msg_resource: InteractionCallbackResource = (await interaction.update({ content: Content, components: ActionRowArr, withResponse: true })).resource as InteractionCallbackResource;
+    const update_msg_resource: InteractionCallbackResource = (await interaction.update({ embeds: [initialEmbed], components: ActionRowArr, withResponse: true })).resource as InteractionCallbackResource;
     const update_msg: Message = update_msg_resource.message as Message;
     await timeout_set('create', update_msg.id, interaction.user.id, update_msg.channelId, time_sec, message_timeout, update_msg);
 
@@ -91,7 +92,7 @@ async function select_create_initial_preset_custom(interaction: StringSelectMenu
                 return;
             }
         }
-        await update_msg.edit({ content: timeout_content, components: [] });
+        await update_msg.edit({ embeds: [initialEmbed, timeoutEmbed], components: [] });
     }
 }
 

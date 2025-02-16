@@ -30,7 +30,7 @@ async function button_prefix_no(interaction: ButtonInteraction): Promise<void> {
         }
     }
 
-    const display_arr: string[] = await get_display_text(['settings.server_settings.prefix.cancelation'], interaction.user.id);
+    const display_arr: string[] = await get_display_text(['settings.server_settings.prefix.cancellation'], interaction.user.id);
     await interaction.update({ content: display_arr[0] ?? config['display_error'], components: [], embeds: []});
     await timeout_delete(interaction.message.id, interaction.user.id);
 }

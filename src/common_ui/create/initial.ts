@@ -1,15 +1,24 @@
-import { ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 import { get_display_text } from '../../utility/get_display.js';
 import { config } from '../../text_data_config/config.js';
+import { ui_timeout } from '../timeout.js';
 
 async function ui_create_initial(clientId: string, time_sec: number, num_player_selected: number, preset_selected: number, game_rule_selected: number)
 : Promise<[[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>,
-    ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], string, string]> {
-    const display_arr: string[] = await get_display_text(['create.initial', 'create.initial.select_num_player',
+    ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder, EmbedBuilder]> {
+    
+    const [title_text, num_player_title_text, num_player_desc_text, preset_custom_title_text,
+        preset_custom_desc_text, game_rule_title_text, game_rule_desc_text, select_num_player_text,
+        placeholder_preset_custom_text, preset_text, custom_text, button_next_text, button_cancel_text,
+        timeout_text, placeholder_game_rule_text, kill_all_text, kill_either_text]: string[]
+        = await get_display_text(['create.initial.embed.title', 'create.initial.embed.num_player.title',
+        'create.initial.embed.num_player.description', 'create.initial.embed.preset_custom.title',
+        'create.initial.embed.preset_custom.description', 'create.initial.embed.game_rule.title',
+        'create.initial.embed.game_rule.description', 'create.initial.select_num_player',
         'create.initial.placeholder_preset_custom', 'create.initial.preset', 'create.initial.custom',
         'create.initial.button_next', 'create.initial.button_cancel', 'create.timeout',
-        'create.initial.placeholder_game_rule', 'create.initial.kill_all', 'create.initial.kill_all_description',
-        'create.initial.kill_either', 'create.initial.kill_either_description'], clientId);
+        'create.initial.placeholder_game_rule', 'create.initial.kill_all',
+        'create.initial.kill_either'], clientId);
 
     let next_disable: boolean = false;
     if (!([6,7,8,9,10,11,12].includes(num_player_selected))) next_disable = true;
@@ -20,7 +29,7 @@ async function ui_create_initial(clientId: string, time_sec: number, num_player_
         .addComponents(
             new StringSelectMenuBuilder()
                 .setCustomId('create_initial_num_player')
-                .setPlaceholder(display_arr[1] ?? config['display_error'])
+                .setPlaceholder(select_num_player_text ?? config['display_error'])
                 .addOptions(
                     {
                         label: '6',
@@ -70,16 +79,16 @@ async function ui_create_initial(clientId: string, time_sec: number, num_player_
         .addComponents(
             new StringSelectMenuBuilder()
                 .setCustomId('create_initial_preset_custom')
-                .setPlaceholder(display_arr[2] ?? config['display_error'])
+                .setPlaceholder(placeholder_preset_custom_text ?? config['display_error'])
                 .addOptions(
                     {
-                        label: display_arr[3] ?? config['display_error'],
+                        label: preset_text ?? config['display_error'],
                         description: 'Preset',
                         value: 'preset',
                         default: (preset_selected === 1)
                     },
                     {
-                        label: display_arr[4] ?? config['display_error'],
+                        label: custom_text ?? config['display_error'],
                         description: 'Custom',
                         value: 'custom',
                         default: (preset_selected === 0)
@@ -90,17 +99,17 @@ async function ui_create_initial(clientId: string, time_sec: number, num_player_
         .addComponents(
             new StringSelectMenuBuilder()
                 .setCustomId('create_initial_game_rule')
-                .setPlaceholder(display_arr[8] ?? config['display_error'])
+                .setPlaceholder(placeholder_game_rule_text ?? config['display_error'])
                 .addOptions(
                     {
-                        label: display_arr[9] ?? config['display_error'],
-                        description: display_arr[10] ?? config['display_error'],
+                        label: kill_all_text ?? config['display_error'],
+                        description: 'Kill All',
                         value: 'kill_all',
                         default: (game_rule_selected === 0)
                     },
                     {
-                        label: display_arr[11] ?? config['display_error'],
-                        description: display_arr[12] ?? config['display_error'],
+                        label: kill_either_text ?? config['display_error'],
+                        description: 'Kill Either',
                         value: 'kill_either',
                         default: (game_rule_selected === 1)
                     }
@@ -109,21 +118,38 @@ async function ui_create_initial(clientId: string, time_sec: number, num_player_
         
     const next_button: ButtonBuilder = new ButtonBuilder()
         .setCustomId('create_initial_next')
-        .setLabel(display_arr[5] ?? config['display_error'])
+        .setLabel(button_next_text ?? config['display_error'])
         .setStyle(ButtonStyle.Success)
         .setDisabled(next_disable);
 
     const cancel_button: ButtonBuilder = new ButtonBuilder()
         .setCustomId('create_cancel')
-        .setLabel(display_arr[6] ?? config['display_error'])
+        .setLabel(button_cancel_text ?? config['display_error'])
         .setStyle(ButtonStyle.Secondary);
         
     const rowButton: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder<ButtonBuilder>()
         .addComponents(cancel_button, next_button);
     
-    const content: string = display_arr[0] ?? config['display_error'];
-    const timeout_content: string = `${content}\n\n${(display_arr[7] ?? config['display_error']) + time_sec.toString()}s`;
-    return ([[rowNumPlayer, rowPresetCustom, rowGameRule, rowButton], content, timeout_content]);
+    const initialEmbed: EmbedBuilder = new EmbedBuilder()
+        .setColor(config['embed_hex_color'])
+        .setTitle(title_text ?? config['display_error'])
+        .addFields(
+            {
+                name: num_player_title_text ?? config['display_error'],
+                value: num_player_desc_text ?? config['display_error']
+            },
+            {
+                name: preset_custom_title_text ?? config['display_error'],
+                value: preset_custom_desc_text ?? config['display_error']
+            },
+            {
+                name: game_rule_title_text ?? config['display_error'],
+                value: game_rule_desc_text ?? config['display_error']
+            }
+        )
+        .setTimestamp()
+        
+    return ([[rowNumPlayer, rowPresetCustom, rowGameRule, rowButton], initialEmbed, (await ui_timeout(clientId, time_sec, timeout_text ?? config['display_error']))]);
 }
 
 export { ui_create_initial }

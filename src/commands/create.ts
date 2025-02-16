@@ -1,4 +1,4 @@
-import { Message, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder } from 'discord.js';
+import { Message, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, EmbedBuilder } from 'discord.js';
 import { get_display_text, get_display_error_code } from '../utility/get_display.js';
 import { check_cooldown } from '../utility/cooldown.js';
 import { timeout_set, timeout_delete_message } from '../utility/timeout.js';
@@ -88,9 +88,10 @@ async function general_create(message: Message): Promise<void> {
         }
     }
 
-    const [ActionRowArr, Content, timeout_content]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], string, string]
+    const [ActionRowArr, initialEmbed, timeoutEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>,
+        ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder, EmbedBuilder]
         = await ui_create_initial(message.author.id, time_sec, num_player_selected, preset_selected, game_rule_selected);
-    const bot_reply: Message = await message.reply({ content: Content, components: ActionRowArr });
+    const bot_reply: Message = await message.reply({ embeds: [initialEmbed], components: ActionRowArr });
     await timeout_set('create', bot_reply.id, message.author.id, message.channelId, time_sec, message_timeout, bot_reply);
 
     async function message_timeout(bot_reply: Message): Promise<void> {
@@ -104,7 +105,7 @@ async function general_create(message: Message): Promise<void> {
                 return;
             }
         }
-        await bot_reply.edit({ content: timeout_content, components: [] });
+        await bot_reply.edit({ embeds: [initialEmbed, timeoutEmbed], components: [] });
     }
 
 }

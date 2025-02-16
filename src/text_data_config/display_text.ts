@@ -338,7 +338,7 @@ const display_text: DisplayTextType = {
                     "tchi": "在不活動後將禁用前綴確認: ",
                     "yue": "喺唔活動後將停用前綴確認: "
                 },
-                "cancelation": {
+                "cancellation": {
                     "eng": "Cancelled prefix setting.",
                     "malay": "Tetapan awalan dibatalkan.",
                     "schi": "取消前缀设置。",
@@ -357,11 +357,63 @@ const display_text: DisplayTextType = {
     },
     "create": {
         "initial": {
-            "eng": "__Create a Game Board (Progress 1/3)__\n\n**Number of Players:** The more players there are in a board, the harder the game will be.\nBetween 6 to 12 players inclusive.\n\n**Preset or Custom:**\nPreset - There will be wide selection of preset boards to be played.\nCustom - You may choose any combinations of roles you want.",
-            "malay": "__Buat Papan Permainan (Kemajuan 1/3)__\n\n**Bilangan Pemain:** Semakin ramai pemain dalam papan, semakin sukar permainan tersebut.\nTermasuk antara 6 hingga 12 pemain.\n\n* *Pratetap atau Tersuai:**\nPratetap - Terdapat pelbagai pilihan papan pratetap untuk dimainkan.\nTersuai - Anda boleh memilih mana-mana gabungan peranan yang anda mahukan.",
-            "schi": "__创建游戏板子(进度 1/3)__\n\n**玩家数量:** 板子中的玩家越多, 游戏就越难。\n6 到 12 名玩家（含）。\n\n**预设或自定义:**\n预设 - 将有多种预设板可供选择。\n自定义 - 您可以选择所需角色的任意组合。",
-            "tchi": "__創建遊戲板子(進度 1/3)__\n\n**玩家數量:** 板子中的玩家越多, 遊戲就越難。\n6 到 12 名玩家（含）。\n\n**預設或自定義:**\n預設 - 將有多種預設板可供選擇。\n自定義 - 您可以選擇所需角色的任意組合。",
-            "yue": "__創建遊戲板(進度1/3)__\n\n**玩家數量:** 板中嘅玩家多, 遊戲就越難。\n6到12名玩家(含)。\n\n**預設或自定義:**\n預設 - 將有多種預設板可供選擇。\n自定義 - 你可以選擇所使角色嘅任意組合。",
+            "embed": {
+                "title": {
+                    "eng": "Create a Game Board (Progress 1/3)",
+                    "malay": "Buat Papan Permainan (Kemajuan 1/3)",
+                    "schi": "创建游戏板子(进度 1/3)",
+                    "tchi": "創建遊戲板子(進度 1/3)",
+                    "yue": "創建遊戲板子(進度1/3)"
+                },
+                "num_player": {
+                    "title": {
+                        "eng": "Number of Players",
+                        "malay": "Bilangan Pemain",
+                        "schi": "玩家数量",
+                        "tchi": "玩家數量",
+                        "yue": "玩家數量",
+                    },
+                    "description": {
+                        "eng": "The more players there are in a board, the harder the game will be.\nBetween 6 to 12 players inclusive.",
+                        "malay": "Semakin ramai pemain dalam papan, semakin sukar permainan tersebut.\nTermasuk antara 6 hingga 12 pemain.",
+                        "schi": "板子中的玩家越多, 游戏就越难。\n6到12名玩家(含)。",
+                        "tchi": "板子中的玩家越多, 遊戲就越難。\n6到12名玩家(含)。",
+                        "yue": "板子中嘅玩家多, 遊戲就越難。\n6到12名玩家(含)。",
+                    }
+                },
+                "preset_custom": {
+                    "title": {
+                        "eng": "Preset or Custom",
+                        "malay": "Pratetap atau Tersuai",
+                        "schi": "预设或自定义",
+                        "tchi": "預設或自定義",
+                        "yue": "預設或自定義",
+                    },
+                    "description": {
+                        "eng": "Preset - There will be wide selection of preset boards to be played.\nCustom - You may choose any combinations of roles you want.",
+                        "malay": "Pratetap - Terdapat pelbagai pilihan papan pratetap untuk dimainkan.\nTersuai - Anda boleh memilih mana-mana gabungan peranan yang anda mahukan.",
+                        "schi": "预设 - 将有多种预设板可供选择。\n自定义 - 您可以选择所需角色的任意组合。",
+                        "tchi": "預設 - 將有多種預設板可供選擇。\n自定義 - 您可以選擇所需角色的任意組合。",
+                        "yue": "預設 - 將有多種預設板可供選擇。\n自定義 - 你可以選擇所使角色嘅任意組合。",
+                    }
+                },
+                "game_rule": {
+                    "title": {
+                        "eng": "Game Rule",
+                        "malay": "Peraturan Permainan",
+                        "schi": "游戏规则",
+                        "tchi": "遊戲規則",
+                        "yue": "遊戲規則"
+                    },
+                    "description": {
+                        "eng": "Kill All - Werewolves win if all villagers and god identities are dead.\nKill Either - Werewolves win if either all villagers or all god identities are dead.",
+                        "malay": "Bunuh Semua - Serigala menang jika semua penduduk kampung dan identiti tuhan mati.\nBunuh Salah Satu - Serigala menang jika salah satu penduduk kampung atau identiti tuhan mati.",
+                        "schi": "屠城 - 如果所有村民和神职都死了, 狼人获胜。\n屠边 - 如果所有村民或神职中的任何一方死了，狼人获胜。",
+                        "tchi": "屠城 - 如果所有村民和神職都死了, 狼人獲勝。\n屠邊 - 如果所有村民或神職中的任何一方死了，狼人獲勝。",
+                        "yue": "屠城 - 如果所有村民同神職都死咗，狼人獲勝。\n屠邊 - 如果所有村民或神職當中嘅任何一方死咗，狼人獲勝。"
+                    }
+                }
+            },
             "select_num_player": {
                 "eng": "Number of Players",
                 "malay": "Bilangan Pemain",
