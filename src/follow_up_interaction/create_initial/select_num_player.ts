@@ -1,15 +1,20 @@
 import { StringSelectMenuInteraction, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, Message, InteractionCallbackResource, EmbedBuilder } from 'discord.js';
 import { GameCreateInstance, GAME_CREATE } from '../../database/sqlite_db.js';
 import { interaction_is_outdated, timeout_set, is_interaction_owner } from '../../utility/timeout.js';
-import { get_display_text, get_display_error_code } from '../../utility/get_display.js';
+import { get_display_text } from '../../utility/get_display.js';
 import { config } from '../../text_data_config/config.js';
 import { ui_create_initial } from '../../common_ui/create/initial.js';
+import { ui_error_non_fatal, ui_error_fatal } from '../../common_ui/error.js';
 
 async function select_create_initial_num_player(interaction: StringSelectMenuInteraction): Promise<void> {
     
-    if (await interaction_is_outdated(interaction.message.id)) {
-        const outdated_interaction_text: string[] = await get_display_text(['general.outdated_interaction'], interaction.user.id);
-        await interaction.update({ content: outdated_interaction_text[0] ?? config['display_error'], components: [] });
+    const clientId: string = interaction.user.id;
+    const messageId: string = interaction.message.id;
+
+    if (await interaction_is_outdated(messageId)) {
+        const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
+        const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? config['display_error']);
+        await interaction.update({embeds: [outdated_embed], components: []});
         return;
     }
     
@@ -33,7 +38,8 @@ async function select_create_initial_num_player(interaction: StringSelectMenuInt
         //Update first
         const [affectedCount] = await GAME_CREATE.update({ num_players: new_num_player }, { where: { clientId: interaction.user.id } });
         if (affectedCount <= 0) {
-            await interaction.update({content: (await get_display_error_code('D3', interaction.user.id)) ?? config['display_error'], components: []});
+            const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D3');
+            await interaction.update({embeds: [errorEmbed], components: []});
             return;
         }
         //Set default selection
@@ -66,7 +72,8 @@ async function select_create_initial_num_player(interaction: StringSelectMenuInt
         }
         catch (error) {
             console.log(error);
-            await interaction.update({content: (await get_display_error_code('D1', interaction.user.id)) ?? config['display_error'], components: []});
+            const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D1');
+            await interaction.update({embeds: [errorEmbed], components: []});
             return;
         }
     }
@@ -87,7 +94,8 @@ async function select_create_initial_num_player(interaction: StringSelectMenuInt
                 await GAME_CREATE.destroy({ where: { clientId: interaction.user.id } });
             } catch (error) {
                 console.error(error);
-                await update_msg.edit({content: (await get_display_error_code('D2', interaction.user.id)) ?? config['display_error'], components: []});
+                const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D2');
+                await update_msg.edit({embeds: [errorEmbed], components: []});
                 return;
             }
         }

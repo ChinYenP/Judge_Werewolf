@@ -8,3 +8,4 @@ package-lock.json
 eslint.config.mjs
 sequelize_cli/
 built/
+to_do_list.txt

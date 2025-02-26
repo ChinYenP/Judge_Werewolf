@@ -1,15 +1,20 @@
 import { StringSelectMenuInteraction, ActionRowBuilder, StringSelectMenuBuilder, Message, InteractionCallbackResource, EmbedBuilder } from 'discord.js';
 import { UserSettingsInstance, USER_SETTINGS } from '../../database/sqlite_db.js';
 import { interaction_is_outdated, timeout_set, is_interaction_owner } from '../../utility/timeout.js';
-import { get_display_text, get_display_error_code } from '../../utility/get_display.js';
+import { get_display_text } from '../../utility/get_display.js';
 import { config } from '../../text_data_config/config.js';
 import { ui_user_settings } from '../../common_ui/user_settings.js';
+import { ui_error_non_fatal, ui_error_fatal } from '../../common_ui/error.js';
 
 async function menu_select_lang(interaction: StringSelectMenuInteraction): Promise<void> {
     
-    if (await interaction_is_outdated(interaction.message.id)) {
-        const outdated_interaction_text: string[] = await get_display_text(['general.outdated_interaction'], interaction.user.id);
-        await interaction.update({ content: outdated_interaction_text[0] ?? config['display_error'], components: [] });
+    const clientId: string = interaction.user.id;
+    const messageId: string = interaction.message.id;
+
+    if (await interaction_is_outdated(messageId)) {
+        const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
+        const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? config['display_error']);
+        await interaction.update({embeds: [outdated_embed], components: []});
         return;
     }
     
@@ -23,11 +28,9 @@ async function menu_select_lang(interaction: StringSelectMenuInteraction): Promi
     if (!(['eng', 'malay', 'schi', 'tchi', 'yue'].includes(interaction.values[0]))) return;
     const lang: t_languages = interaction.values[0] as t_languages;
     //Do sequelize thing here while get output text
-    const sqlite_status: [number, string] | [number] = await sequelize_select_lang(interaction, lang);
+    const sqlite_status: boolean = await sequelize_select_lang(interaction, lang, clientId);
 
-    if (sqlite_status[0] === 0) {
-        const error_msg: string = await get_display_error_code(sqlite_status[1] ?? config['display_error'], interaction.user.id);
-        await interaction.update({content: error_msg ?? config['display_error'], components: []});
+    if (!sqlite_status) {
         return;
     }
 
@@ -44,24 +47,21 @@ async function menu_select_lang(interaction: StringSelectMenuInteraction): Promi
 }
 
 
-async function sequelize_select_lang(interaction: StringSelectMenuInteraction, value: t_languages): (Promise<[number, string] | [number]>) {
-
-    /*
-    [1] - success.
-    [0, <str>] - error encountered, next element represents error code.
-    */
+async function sequelize_select_lang(interaction: StringSelectMenuInteraction, value: t_languages, clientId: string): (Promise<boolean>) {
 
     // equivalent to: SELECT * FROM tags WHERE name = 'tagName' LIMIT 1;
-    const settings: UserSettingsInstance | null = await USER_SETTINGS.findOne({ where: { clientId: interaction.user.id } });
+    const settings: UserSettingsInstance | null = await USER_SETTINGS.findOne({ where: { clientId: clientId } });
 
     if (settings !== null) {
         //clientId exist, update data:
         // equivalent to: UPDATE SETTINGS (lang) values (?) WHERE clientId='?';
-        const [affectedCount] = await USER_SETTINGS.update({ lang: value }, { where: { clientId: interaction.user.id } });
+        const [affectedCount] = await USER_SETTINGS.update({ lang: value }, { where: { clientId: clientId } });
         if (affectedCount > 0) {
-            return [1];
+            return (true);
         }
-        return [0, 'D3'];
+        const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D3');
+        await interaction.update({embeds: [errorEmbed], components: []});
+        return (false);
     }
     //clientId not exist, create new data:
     try {
@@ -70,11 +70,13 @@ async function sequelize_select_lang(interaction: StringSelectMenuInteraction, v
             clientId: interaction.user.id,
             lang: value,
         })
-        return [1];
+        return (true);
     }
     catch (error) {
         console.log(error);
-        return [0, 'D1'];
+        const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D1');
+        await interaction.update({embeds: [errorEmbed], components: []});
+        return (false);
     }
 }
 

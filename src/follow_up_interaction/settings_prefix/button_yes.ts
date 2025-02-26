@@ -1,14 +1,19 @@
 import { interaction_is_outdated, timeout_delete, is_interaction_owner } from '../../utility/timeout.js';
-import { get_display_text, get_display_error_code } from '../../utility/get_display.js';
-import { ButtonInteraction } from 'discord.js';
+import { get_display_text } from '../../utility/get_display.js';
+import { ButtonInteraction, EmbedBuilder } from 'discord.js';
 import { config } from '../../text_data_config/config.js';
 import { ServerSettingsInstance, SERVER_SETTINGS, TempPrefixSettingInstance, TEMP_PREFIX_SETTINGS } from '../../database/sqlite_db.js';
+import { ui_error_non_fatal, ui_error_fatal } from '../../common_ui/error.js';
 
 async function button_prefix_yes(interaction: ButtonInteraction): Promise<void> {
 
-    if (await interaction_is_outdated(interaction.message.id)) {
-        const outdated_interaction_text: string[] = await get_display_text(['general.outdated_interaction'], interaction.user.id);
-        await interaction.update({ content: outdated_interaction_text[0] ?? config['display_error'], components: [] });
+    const clientId: string = interaction.user.id;
+    const messageId: string = interaction.message.id;
+
+    if (await interaction_is_outdated(messageId)) {
+        const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
+        const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? config['display_error']);
+        await interaction.update({embeds: [outdated_embed], components: []});
         return;
     }
 
@@ -29,10 +34,8 @@ async function button_prefix_yes(interaction: ButtonInteraction): Promise<void> 
     const prefix = prefix_arr[1];
     let display_arr: string[] = [];
 
-    const sqlite_status: [number, string] | [number] = await sequelize_prefix_yes(interaction, prefix);
-    if (sqlite_status[0] === 0) {
-        console.error(`${sqlite_status[1]  } error at ./utility/settings_prefix/button_yes.js, no3`);
-        await interaction.update({content: (await get_display_error_code(sqlite_status[1]!, interaction.user.id))[0] ?? config['display_error'], components: []});
+    const sqlite_status: boolean = await sequelize_prefix_yes(interaction, prefix, clientId);
+    if (!sqlite_status) {
         return;
     }
 
@@ -52,16 +55,13 @@ async function get_prefix(guildId: string): Promise<[boolean, string]> {
 }
 
 
-async function sequelize_prefix_yes(interaction: ButtonInteraction, prefix: string): Promise<[number, string] | [number]> {
-
-    /*
-    [1] - success.
-    [0, <str>] - error encountered, next element represents error code.
-    */
+async function sequelize_prefix_yes(interaction: ButtonInteraction, prefix: string, clientId: string): Promise<boolean> {
 
     if (interaction.guildId === null) {
         console.log('message.guildId should exists: ./utility/settings_prefix/button_yes.js');
-        return [0, 'U'];
+        const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
+        await interaction.update({embeds: [errorEmbed], components: []});
+        return (false);
     }
 
     const settings_Temp: TempPrefixSettingInstance | null = await TEMP_PREFIX_SETTINGS.findOne({ where: { guildId: interaction.guildId } });
@@ -70,7 +70,8 @@ async function sequelize_prefix_yes(interaction: ButtonInteraction, prefix: stri
             await TEMP_PREFIX_SETTINGS.destroy({ where: { guildId: interaction.guildId } });
         } catch (error) {
             console.error(error);
-            await interaction.update({content: (await get_display_error_code('D2', interaction.user.id)) ?? config['display_error'], components: []});
+            const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D2');
+            await interaction.update({embeds: [errorEmbed], components: []});
         }
     }
 
@@ -82,9 +83,11 @@ async function sequelize_prefix_yes(interaction: ButtonInteraction, prefix: stri
         // equivalent to: UPDATE SETTINGS (lang) values (?) WHERE clientId='?';
         const [affectedCount] = await SERVER_SETTINGS.update({ prefix: prefix }, { where: { guildId: interaction.guildId } });
         if (affectedCount > 0) {
-            return [1];
+            return (true);
         };
-        return [0, 'D3'];
+        const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D3');
+        await interaction.update({embeds: [errorEmbed], components: []});
+        return (false);
     };
     //clientId not exist, create new data:
     try {
@@ -93,11 +96,13 @@ async function sequelize_prefix_yes(interaction: ButtonInteraction, prefix: stri
             guildId: interaction.guildId,
             prefix: prefix,
         })
-        return [1];
+        return (true);
     }
     catch (error) {
         console.log(error);
-        return [0, 'D1'];
+        const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D1');
+        await interaction.update({embeds: [errorEmbed], components: []});
+        return (false);
     };
 };
 

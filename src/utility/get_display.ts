@@ -2,17 +2,6 @@ import { display_text } from '../text_data_config/display_text.js';
 import { UserSettingsInstance, USER_SETTINGS } from '../database/sqlite_db.js';
 import { config } from '../text_data_config/config.js';
 
-/*
-If return value after calling these functions are empty array, print the following default error text:
-'DSPY error at ./___.js, no_'
-Then display this to user before return:
-"Something has gone wrong during the code runtime: Error DSPY"
-How to check (example):
-if (display_arr.length !== 1) {
-    console.error("DSPY error at ./___.js, no1");
-    //display error code and return
-};
-*/
 
 //query_arr = [query_string1, query_string2, ...]
 //return [answer_string1, answer_string2, ...]
@@ -54,10 +43,16 @@ async function get_display_text(query_arr: string[], clientId: string): Promise<
             const query_keys: string[] = query_str.split('.');
             let display_ref: DisplayTextType = display_text;
             for (const key of query_keys) {
-                if (display_ref[key] === undefined || typeof display_ref[key] === 'string') return ([]);
+                if (display_ref[key] === undefined || typeof display_ref[key] === 'string') {
+                    console.error(display_ref[language]);
+                    return ([]);
+                }
                 display_ref = display_ref[key];
             }
-            if (typeof display_ref[language] !== 'string') return ([]);
+            if (typeof display_ref[language] !== 'string') {
+                console.error(display_ref[language]);
+                return ([]);
+            }
             display_arr.push(display_ref[language] as string || config['display_error']);
         }
         return (display_arr);
@@ -70,7 +65,7 @@ async function get_display_text(query_arr: string[], clientId: string): Promise<
 }
 
 async function get_display_error_code(error_code: string, clientId: string): Promise<string> {
-    const display_arr: string[] = await get_display_text(['general.error.display'], clientId);
+    const display_arr: string[] = await get_display_text(['general.error.discription'], clientId);
     if (display_arr.length !== 1) {
         console.error('DSPY error at ./utility/get_display.js, no2');
         return (config['display_error']);

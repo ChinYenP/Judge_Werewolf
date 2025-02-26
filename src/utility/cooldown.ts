@@ -1,9 +1,10 @@
 import { command_validation } from './validation/command_validation.js';
-import { get_display_text, get_display_error_code } from './get_display.js';
+import { get_display_error_code } from './get_display.js';
 import { isMyClient } from '../declare_type/type_guard.js';
-import { Message, Client } from 'discord.js';
+import { Message, Client, EmbedBuilder } from 'discord.js';
 import { config } from '../text_data_config/config.js';
 import { CommandCooldownInstance, COMMAND_COOLDOWN } from '../database/sqlite_db.js';
+import { ui_cooldown } from '../common_ui/cooldown.js';
 
 async function check_cooldown(clientId: string, command: string, time_sec: number, bot_client_instance: Client, msg_interact_instance: Message): Promise<boolean> {
 
@@ -20,8 +21,8 @@ async function check_cooldown(clientId: string, command: string, time_sec: numbe
         const expired_date: bigint = settings.expired_date;
         const date_now: number = Date.now();
         if (date_now < expired_date) {
-            const display_arr: string[] = await get_display_text(['general.cooldown_display'], clientId);
-            await msg_interact_instance.reply(`${(display_arr[0] ?? config['display_error']) + String((Number(expired_date) - date_now) / 1000)}s`);
+            const cooldownEmbed: EmbedBuilder = await ui_cooldown(clientId, time_sec);
+            await msg_interact_instance.reply({embeds: [cooldownEmbed]});
             return (false);
         }
     }

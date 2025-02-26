@@ -1,7 +1,14 @@
 const display_text: DisplayTextType = {
     "general": {
         "error": {
-            "display": {
+            "title": {
+                "eng": "Error",
+                "malay": "Ralat",
+                "schi": "错误",
+                "tchi": "錯誤",
+                "yue": "錯誤"
+            },
+            "description": {
                 "eng": "Something has gone wrong during the code runtime: Error ",
                 "malay": "Sesuatu telah berlaku semasa masa jalan kod: Ralat ",
                 "schi": "代码运行时出了点问题: 错误",
@@ -68,6 +75,29 @@ const display_text: DisplayTextType = {
             "schi": "超时",
             "tchi": "超時",
             "yue": "超時"
+        },
+        "cancel_title": {
+            "eng": "Cancel",
+            "malay": "Pembatalan",
+            "schi": "取消",
+            "tchi": "取消",
+            "yue": "取消"
+        },
+        "cooldown": {
+            "title": {
+                "eng": "Cooldown",
+                "malay": "Penyejukan",
+                "schi": "冷却",
+                "tchi": "冷卻",
+                "yue": "冷卻"
+            },
+            "description": {
+                "eng": "This command has a remaining cooldown of: ",
+                "malay": "Perintah ini mempunyai baki penyejukan sebanyak: ",
+                "schi": "该命令的剩余冷却时间为: ",
+                "tchi": "該命令的剩餘冷卻時間為: ",
+                "yue": "該命令嘅剩餘冷卻時間為: "
+            }
         }
     },
     "ping": {
