@@ -28,8 +28,9 @@ async function button_prefix_yes(interaction: ButtonInteraction): Promise<void> 
     //Get prefix. If it is false, the message is not from current session.
     const prefix_arr: [boolean, string] = await get_prefix(interaction.guildId);
     if (!prefix_arr[0]) {
-        const outdated_interaction_text = await get_display_text(['general.outdated_interaction'], clientId);
-        await interaction.update({ content: outdated_interaction_text[0] ?? config['display_error'], components: [] });
+        const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
+        const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? config['display_error']);
+        await interaction.update({embeds: [outdated_embed], components: []});
         return;
     }
     const prefix = prefix_arr[1];
