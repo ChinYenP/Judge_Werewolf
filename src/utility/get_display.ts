@@ -65,12 +65,8 @@ async function get_display_text(query_arr: string[], clientId: string): Promise<
 }
 
 async function get_display_error_code(error_code: string, clientId: string): Promise<string> {
-    const display_arr: string[] = await get_display_text(['general.error.discription'], clientId);
-    if (display_arr.length !== 1) {
-        console.error('DSPY error at ./utility/get_display.js, no2');
-        return (config['display_error']);
-    }
-    return (display_arr[0] + error_code);
+    const [error_desc_text]: string[] = await get_display_text(['general.error.discription'], clientId);
+    return (`${error_desc_text}${error_code}`);
 }
 
 export { get_display_text, get_display_error_code }

@@ -18,7 +18,7 @@ async function menu_select_lang(interaction: StringSelectMenuInteraction): Promi
         return;
     }
     
-    if (!(await is_interaction_owner(interaction.message.id, interaction.user.id))) {
+    if (!(await is_interaction_owner(messageId, clientId))) {
         return;
     }
 
@@ -36,10 +36,10 @@ async function menu_select_lang(interaction: StringSelectMenuInteraction): Promi
 
     //Success
     const time_sec: number = config['timeout_sec'].settings.user;
-    const [rowLang, userEmbed, serverEmbed, timeoutEmbed]: [ActionRowBuilder<StringSelectMenuBuilder>, EmbedBuilder, EmbedBuilder, EmbedBuilder] = await ui_user_settings(interaction.user.id, time_sec);
+    const [rowLang, userEmbed, serverEmbed, timeoutEmbed]: [ActionRowBuilder<StringSelectMenuBuilder>, EmbedBuilder, EmbedBuilder, EmbedBuilder] = await ui_user_settings(clientId, time_sec);
     const update_msg_resource: InteractionCallbackResource = (await interaction.update({ embeds: [userEmbed, serverEmbed], components: [rowLang], withResponse: true })).resource as InteractionCallbackResource;
     const update_msg: Message = update_msg_resource.message as Message;
-    await timeout_set('settings', update_msg.id, interaction.user.id, interaction.channelId, time_sec, interaction_timeout, update_msg);
+    await timeout_set('settings', update_msg.id, clientId, interaction.channelId, time_sec, interaction_timeout, update_msg);
 
     async function interaction_timeout(update_msg: Message): Promise<void> {
         await update_msg.edit({ embeds: [userEmbed, serverEmbed, timeoutEmbed], components: [] });
@@ -67,7 +67,7 @@ async function sequelize_select_lang(interaction: StringSelectMenuInteraction, v
     try {
         // equivalent to: INSERT INTO SETTINGS (clientId, lang, hardMode) values (?, ?, ?);
         await USER_SETTINGS.create({
-            clientId: interaction.user.id,
+            clientId: clientId,
             lang: value,
         })
         return (true);

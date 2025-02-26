@@ -88,11 +88,11 @@ async function invalid_prefix(message: Message, clientId: string): Promise<void>
 async function general_settings(message: Message, clientId: string): Promise<void> {
 
     if (!isMyClient(message.client)) return;
-    await timeout_delete_message(message.author.id, 'settings', message.client);
+    await timeout_delete_message(clientId, 'settings', message.client);
     const time_sec: number = config['timeout_sec'].settings.user;
     const [rowLang, userEmbed, serverEmbed, timeoutEmbed]: [ActionRowBuilder<StringSelectMenuBuilder>, EmbedBuilder, EmbedBuilder, EmbedBuilder] = await ui_user_settings(clientId, time_sec);
     const bot_reply: Message = await message.reply({ embeds: [userEmbed, serverEmbed], components: [rowLang] });
-    await timeout_set('settings', bot_reply.id, message.author.id, message.channelId, time_sec, message_timeout, bot_reply);
+    await timeout_set('settings', bot_reply.id, clientId, message.channelId, time_sec, message_timeout, bot_reply);
 
     async function message_timeout(bot_reply: Message): Promise<void> {
         await bot_reply.edit({ embeds: [userEmbed, serverEmbed, timeoutEmbed], components: [] });
@@ -105,7 +105,7 @@ async function prefix_settings(message: Message, args: string[], clientId: strin
     if (args[1] === undefined) return;
     if (!isMyClient(message.client)) return;
     if (message.guildId === null) return;
-    await timeout_delete_message(message.author.id, 'settings_prefix', message.client);
+    await timeout_delete_message(clientId, 'settings_prefix', message.client);
     const time_sec: number = config['timeout_sec'].settings.server.prefix;
     const [title_text, description_text, new_prefix_text, yes_text, no_text, timeout_text]: string[]
         = await get_display_text(['settings.server_settings.prefix.confirmation.title',
@@ -113,7 +113,7 @@ async function prefix_settings(message: Message, args: string[], clientId: strin
         'settings.server_settings.prefix.confirmation.new_prefix',
         'settings.server_settings.prefix.button_yes',
         'settings.server_settings.prefix.button_no',
-        'settings.server_settings.prefix.timeout_text'], message.author.id);
+        'settings.server_settings.prefix.timeout_text'], clientId);
 
     const new_prefix = args[1];
 
@@ -167,7 +167,7 @@ async function prefix_settings(message: Message, args: string[], clientId: strin
         .setTimestamp()
 
     const bot_reply: Message = await message.reply({ embeds: [prefixEmbed], components: [rowButton] });
-    await timeout_set('prefix_settings', bot_reply.id, message.author.id, message.channelId, time_sec, message_prefix_timeout, bot_reply);
+    await timeout_set('prefix_settings', bot_reply.id, clientId, message.channelId, time_sec, message_prefix_timeout, bot_reply);
 
     async function message_prefix_timeout(bot_reply: Message): Promise<void> {
         if (message.guildId !== null) {
@@ -185,7 +185,7 @@ async function prefix_settings(message: Message, args: string[], clientId: strin
         } else {
             console.error('message.guildId should exists.');
         }
-        await bot_reply.edit({ embeds: [prefixEmbed, await ui_timeout(message.author.id, time_sec, timeout_text ?? config['display_error'])], components: [] });
+        await bot_reply.edit({ embeds: [prefixEmbed, await ui_timeout(clientId, time_sec, timeout_text ?? config['display_error'])], components: [] });
     }
 
 }

@@ -83,6 +83,13 @@ const display_text: DisplayTextType = {
             "tchi": "取消",
             "yue": "取消"
         },
+        "success_title": {
+            "eng": "Success",
+            "malay": "Berjaya",
+            "schi": "成功",
+            "tchi": "成功",
+            "yue": "成功"
+        },
         "cooldown": {
             "title": {
                 "eng": "Cooldown",

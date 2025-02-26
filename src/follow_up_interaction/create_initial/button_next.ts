@@ -35,7 +35,7 @@ async function button_create_initial_next(interaction: ButtonInteraction): Promi
     if (settings.is_preset === null || settings.num_players === null || settings.game_rule === null) return;
 
     //Update data to transition to create_roles
-    const [affectedCount] = await GAME_CREATE.update({ status: 'roles', sheriff: false, players_role: [] }, { where: { clientId: interaction.user.id } });
+    const [affectedCount] = await GAME_CREATE.update({ status: 'roles', sheriff: false, players_role: [] }, { where: { clientId: clientId } });
     if (affectedCount <= 0) {
         const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D3');
         await interaction.update({embeds: [errorEmbed], components: []});

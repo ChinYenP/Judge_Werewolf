@@ -4,6 +4,7 @@ import { ButtonInteraction, EmbedBuilder } from 'discord.js';
 import { config } from '../../text_data_config/config.js';
 import { ServerSettingsInstance, SERVER_SETTINGS, TempPrefixSettingInstance, TEMP_PREFIX_SETTINGS } from '../../database/sqlite_db.js';
 import { ui_error_non_fatal, ui_error_fatal } from '../../common_ui/error.js';
+import { ui_success } from '../../common_ui/success.js';
 
 async function button_prefix_yes(interaction: ButtonInteraction): Promise<void> {
 
@@ -17,7 +18,7 @@ async function button_prefix_yes(interaction: ButtonInteraction): Promise<void> 
         return;
     }
 
-    if (!(await is_interaction_owner(interaction.message.id, interaction.user.id))) {
+    if (!(await is_interaction_owner(messageId, clientId))) {
         return;
     }
     if (interaction.guildId === null) return;
@@ -27,12 +28,11 @@ async function button_prefix_yes(interaction: ButtonInteraction): Promise<void> 
     //Get prefix. If it is false, the message is not from current session.
     const prefix_arr: [boolean, string] = await get_prefix(interaction.guildId);
     if (!prefix_arr[0]) {
-        const outdated_interaction_text = await get_display_text(['general.outdated_interaction'], interaction.user.id);
+        const outdated_interaction_text = await get_display_text(['general.outdated_interaction'], clientId);
         await interaction.update({ content: outdated_interaction_text[0] ?? config['display_error'], components: [] });
         return;
     }
     const prefix = prefix_arr[1];
-    let display_arr: string[] = [];
 
     const sqlite_status: boolean = await sequelize_prefix_yes(interaction, prefix, clientId);
     if (!sqlite_status) {
@@ -40,10 +40,10 @@ async function button_prefix_yes(interaction: ButtonInteraction): Promise<void> 
     }
 
     //Success
-    display_arr = await get_display_text(['settings.server_settings.prefix.success'], interaction.user.id);
-    await interaction.update({ content: (display_arr[0] ?? config['display_error']) + prefix, components: [], embeds: []});
-    await timeout_delete(interaction.message.id, interaction.user.id);
-    
+    const [success_text]: string[] = await get_display_text(['settings.server_settings.prefix.success'], clientId);
+    const successEmbed: EmbedBuilder = await ui_success(clientId, `${success_text ?? config['display_error']}${prefix}`);
+    await interaction.update({ embeds: [successEmbed], components: []});
+    await timeout_delete(messageId, clientId);
 };
 
 async function get_prefix(guildId: string): Promise<[boolean, string]> {

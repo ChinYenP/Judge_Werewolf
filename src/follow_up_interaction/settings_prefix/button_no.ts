@@ -18,7 +18,7 @@ async function button_prefix_no(interaction: ButtonInteraction): Promise<void> {
         return;
     }
 
-    if (!(await is_interaction_owner(interaction.message.id, interaction.user.id))) {
+    if (!(await is_interaction_owner(messageId, clientId))) {
         return;
     }
 
@@ -37,10 +37,10 @@ async function button_prefix_no(interaction: ButtonInteraction): Promise<void> {
         }
     }
 
-    const [cancel_text]: string[] = await get_display_text(['settings.server_settings.prefix.cancellation'], interaction.user.id);
-    const cancelEmbed: EmbedBuilder = await ui_cancel(interaction.user.id, cancel_text ?? config['display_error']);
+    const [cancel_text]: string[] = await get_display_text(['settings.server_settings.prefix.cancellation'], clientId);
+    const cancelEmbed: EmbedBuilder = await ui_cancel(clientId, cancel_text ?? config['display_error']);
     await interaction.update({ embeds: [cancelEmbed], components: []});
-    await timeout_delete(interaction.message.id, interaction.user.id);
+    await timeout_delete(messageId, clientId);
 }
 
 export { button_prefix_no }

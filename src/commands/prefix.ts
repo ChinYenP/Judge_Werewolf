@@ -36,7 +36,7 @@ export default {
         }
 
         const [title_text, current_prefix_text, default_prefix_text, instruction_text]: string[]
-            = await get_display_text(['prefix.title', 'prefix.current_prefix', 'prefix.default_prefix', 'prefix.instruction'], message.author.id);
+            = await get_display_text(['prefix.title', 'prefix.current_prefix', 'prefix.default_prefix', 'prefix.instruction'], clientId);
         
         const prefixEmbed: EmbedBuilder = new EmbedBuilder()
             .setColor(config['embed_hex_color'])

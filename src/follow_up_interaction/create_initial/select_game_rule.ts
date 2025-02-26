@@ -18,7 +18,7 @@ async function select_create_initial_game_rule(interaction: StringSelectMenuInte
         return;
     }
     
-    if (!(await is_interaction_owner(interaction.message.id, interaction.user.id))) {
+    if (!(await is_interaction_owner(messageId, clientId))) {
         return;
     }
 
@@ -39,11 +39,11 @@ async function select_create_initial_game_rule(interaction: StringSelectMenuInte
         game_rule_selected = 1;
         new_game_rule = 'kill_either';
     }
-    const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: interaction.user.id } });
+    const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
 
     if (settings !== null) {
         //Update first
-        const [affectedCount] = await GAME_CREATE.update({ game_rule: new_game_rule }, { where: { clientId: interaction.user.id } });
+        const [affectedCount] = await GAME_CREATE.update({ game_rule: new_game_rule }, { where: { clientId: clientId } });
         if (affectedCount <= 0) {
             const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D3');
             await interaction.update({embeds: [errorEmbed], components: []});
@@ -63,7 +63,7 @@ async function select_create_initial_game_rule(interaction: StringSelectMenuInte
     } else {
         try {
             await GAME_CREATE.create({
-                clientId: interaction.user.id,
+                clientId: clientId,
                 status: 'initial',
                 num_players: null,
                 is_preset: null,
@@ -84,16 +84,16 @@ async function select_create_initial_game_rule(interaction: StringSelectMenuInte
     const time_sec: number = config['timeout_sec'].create.initial;
     const [ActionRowArr, initialEmbed, timeoutEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>,
             ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder, EmbedBuilder]
-        = await ui_create_initial(interaction.user.id, time_sec, num_player_selected, preset_selected, game_rule_selected);
+        = await ui_create_initial(clientId, time_sec, num_player_selected, preset_selected, game_rule_selected);
     const update_msg_resource: InteractionCallbackResource = (await interaction.update({ embeds: [initialEmbed], components: ActionRowArr, withResponse: true })).resource as InteractionCallbackResource;
     const update_msg: Message = update_msg_resource.message as Message;
-    await timeout_set('create', update_msg.id, interaction.user.id, update_msg.channelId, time_sec, message_timeout, update_msg);
+    await timeout_set('create', update_msg.id, clientId, update_msg.channelId, time_sec, message_timeout, update_msg);
 
     async function message_timeout(update_msg: Message): Promise<void> {
-        const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: interaction.user.id } });
+        const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
         if (settings !== null) {
             try {
-                await GAME_CREATE.destroy({ where: { clientId: interaction.user.id } });
+                await GAME_CREATE.destroy({ where: { clientId: clientId } });
             } catch (error) {
                 console.error(error);
                 const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D2');

@@ -20,7 +20,7 @@ export default {
         }
 
         const [ping_text, pong_text, latency_text, ws_latency_text]: string[]
-            = await get_display_text(['ping.ping', 'ping.pong', 'ping.latency', 'ping.ws_latency'], message.author.id);
+            = await get_display_text(['ping.ping', 'ping.pong', 'ping.latency', 'ping.ws_latency'], clientId);
 
         const pingEmbed = new EmbedBuilder()
             .setColor(config['embed_hex_color'])

@@ -98,7 +98,7 @@ async function general_create(message: Message, clientId: string, time_sec: numb
     await timeout_set('create', bot_reply.id, clientId, message.channelId, time_sec, message_timeout, bot_reply);
 
     async function message_timeout(bot_reply: Message): Promise<void> {
-        const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: message.author.id } });
+        const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
         if (settings !== null) {
             try {
                 await GAME_CREATE.destroy({ where: { clientId: clientId } });
