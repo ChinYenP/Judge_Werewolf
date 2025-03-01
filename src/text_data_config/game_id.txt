@@ -1,0 +1,19 @@
+Game ID format
+(Werewolves category)-(Villagers category)-(God Identities category)
+Each role consists of one character followed by 3 digits:
+- The first character represents category.
+- The first two digits represents role ID.
+- The last digit represents number of the role.
+
+
+Role ID
+
+Werewolves (W)
+00 - Werewolf
+
+Villagers (V)
+00 - Villager
+
+God Identities (G)
+00 - Seer
+01 - Hunter

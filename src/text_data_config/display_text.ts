@@ -400,7 +400,7 @@ const display_text: DisplayTextType = {
                     "malay": "Buat Papan Permainan (Kemajuan 1/3)",
                     "schi": "创建游戏板子(进度 1/3)",
                     "tchi": "創建遊戲板子(進度 1/3)",
-                    "yue": "創建遊戲板子(進度1/3)"
+                    "yue": "創建遊戲板子(進度 1/3)"
                 },
                 "num_player": {
                     "title": {
@@ -513,24 +513,78 @@ const display_text: DisplayTextType = {
                 "schi": "如果所有村民或神职中的任何一方死了，狼人获胜",
                 "tchi": "如果所有村民或神職中的任何一方死了，狼人獲勝",
                 "yue": "如果所有村民或神職當中嘅任何一方死咗，狼人獲勝"
-            },
-            "button_next": {
-                "eng": "Next",
-                "malay": "Seterusnya",
-                "schi": "下一个",
-                "tchi": "下一個",
-                "yue": "下一個"
-            },
-            "button_cancel": {
-                "eng": "Cancel",
-                "malay": "Batalkan",
-                "schi": "取消",
-                "tchi": "取消",
-                "yue": "取消"
             }
         },
         "roles": {
-
+            "embed": {
+                "title": {
+                    "eng": "Create a Game Board (Progress 2/3)",
+                    "malay": "Buat Papan Permainan (Kemajuan 2/3)",
+                    "schi": "创建游戏板子(进度 2/3)",
+                    "tchi": "創建遊戲板子(進度 2/3)",
+                    "yue": "創建遊戲板子(進度 2/3)"
+                },
+                "description": {
+                    "eng": "Select a role in the select menu to insert it into the game board.",
+                    "malay": "Pilih peranan dalam menu pilihan untuk memasukkannya ke dalam papan permainan.",
+                    "schi": "在选择菜单中选择一个角色, 将其插入到游戏板子中。",
+                    "tchi": "在選擇菜單中選擇一個角色, 將其插入到遊戲板子中。",
+                    "yue": "在選擇菜單中選擇一個角色, 將其插入到遊戲板子中。"
+                },
+                "num_player": {
+                    "title": {
+                        "eng": "Number of Players",
+                        "malay": "Bilangan Pemain",
+                        "schi": "玩家数量",
+                        "tchi": "玩家數量",
+                        "yue": "玩家數量",
+                    }
+                },
+                "role_list": {
+                    "title": {
+                        "eng": "Current Role List",
+                        "malay": "Papan Permainan Semasa",
+                        "schi": "当前游戏板子",
+                        "tchi": "當前遊戲板子",
+                        "yue": "當前遊戲板子",
+                    }
+                }
+            },
+            "select_werewolf": {
+                "eng": "Werewolf Roles",
+                "malay": "Peranan Manusia Serigala",
+                "schi": "狼人角色",
+                "tchi": "狼人角色",
+                "yue": "狼人角色"
+            },
+            "select_village_team": {
+                "eng": "Village Team Roles",
+                "malay": "Peranan Pasukan Penduduk",
+                "schi": "好人阵营角色",
+                "tchi": "好人陣營角色",
+                "yue": "好人陣營角色"
+            },
+            "select_delete_roles": {
+                "eng": "Delete Role(s): Multiselect",
+                "malay": "Padam Peranan: Pilihan Berganda",
+                "schi": "删除角色: 多选",
+                "tchi": "刪除角色: 多選",
+                "yue": "刪除角色: 多選"
+            }
+        },
+        "button_next": {
+            "eng": "Next",
+            "malay": "Seterusnya",
+            "schi": "下一个",
+            "tchi": "下一個",
+            "yue": "下一個"
+        },
+        "button_cancel": {
+            "eng": "Cancel",
+            "malay": "Batalkan",
+            "schi": "取消",
+            "tchi": "取消",
+            "yue": "取消"
         },
         "timeout": {
             "eng": "Create game are disabled after inactivity: ",
@@ -545,6 +599,72 @@ const display_text: DisplayTextType = {
             "schi": "取消游戏创建。",
             "tchi": "取消遊戲創建。",
             "yue": "取消遊戲創建。"
+        }
+    },
+    "game_data": {
+        "W00": {
+            "name": {
+                "eng": "Werewolf",
+                "malay": "Manusia Serigala",
+                "schi": "狼人",
+                "tchi": "狼人",
+                "yue": "狼人"
+            },
+            "description": {
+                "eng": "A normal werewolf that can vote to kill a player at night.",
+                "malay": "Seorang manusia serigala biasa yang boleh mengundi untuk membunuh pemain pada waktu malam.",
+                "schi": "一个普通的狼人, 可以在夜晚投票杀死一个玩家。",
+                "tchi": "一個普通的狼人, 可以在夜晚投票殺死一個玩家。",
+                "yue": "一個普通嘅狼人, 可以喺夜晚投票殺死一個玩家。"
+            }
+        },
+        "V00": {
+            "name": {
+                "eng": "Villager",
+                "malay": "Penduduk",
+                "schi": "平民",
+                "tchi": "平民",
+                "yue": "平民"
+            },
+            "description": {
+                "eng": "A villager with no abilities.",
+                "malay": "Seorang penduduk tanpa kebolehan.",
+                "schi": "一个没有能力的村民。",
+                "tchi": "一個沒有能力的村民。",
+                "yue": "一個冇能力嘅村民。"
+            }
+        },
+        "G00": {
+            "name": {
+                "eng": "Seer",
+                "malay": "Peramal",
+                "schi": "预言家",
+                "tchi": "预言家",
+                "yue": "预言家"
+            },
+            "description": {
+                "eng": "A god identity that can check if a player is a werewolf.",
+                "malay": "Identiti tuhan yang boleh memeriksa sama ada pemain itu adalah manusia serigala.",
+                "schi": "一个神职, 可以检查玩家是否是狼人。",
+                "tchi": "一個神職, 可以檢查玩家是否是狼人。",
+                "yue": "一個神職, 可以檢查玩家係唔係狼人。"
+            }
+        },
+        "G01": {
+            "name": {
+                "eng": "Hunter",
+                "malay": "Pemburu",
+                "schi": "猎人",
+                "tchi": "獵人",
+                "yue": "獵人"
+            },
+            "description": {
+                "eng": "A god identity that can shoot a player upon death.",
+                "malay": "Identiti tuhan yang boleh menembak pemain apabila mati.",
+                "schi": "一个神职, 可以在死亡时射击玩家。",
+                "tchi": "一個神職, 可以在死亡時射擊玩家。",
+                "yue": "一個神職, 可以喺死咗嘅時候射擊玩家。"
+            }
         }
     }
 }

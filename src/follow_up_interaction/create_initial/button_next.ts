@@ -46,9 +46,10 @@ async function button_create_initial_next(interaction: ButtonInteraction): Promi
     //To do list: preset role lists
     //For now, the following code is for custom role list:
     const time_sec: number = config['timeout_sec'].create.roles;
-    const [ActionRowArr, Content, timeout_content]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], string, string]
-        = await ui_create_roles(clientId, time_sec, []);
-    const update_msg_resource: InteractionCallbackResource = (await interaction.update({ content: Content, components: ActionRowArr, withResponse: true })).resource as InteractionCallbackResource;
+    const [ActionRowArr, rolesEmbed, timeoutEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>]
+        | [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder, EmbedBuilder]
+    = await ui_create_roles(clientId, time_sec, settings.num_players, []);
+    const update_msg_resource: InteractionCallbackResource = (await interaction.update({ embeds: [rolesEmbed], components: ActionRowArr, withResponse: true })).resource as InteractionCallbackResource;
     const update_msg: Message = update_msg_resource.message as Message;
     await timeout_set('create', update_msg.id, clientId, update_msg.channelId, time_sec, message_timeout, update_msg);
 
@@ -64,7 +65,7 @@ async function button_create_initial_next(interaction: ButtonInteraction): Promi
                 return;
             }
         }
-        await update_msg.edit({ content: timeout_content, components: [] });
+        await update_msg.edit({ embeds: [rolesEmbed, timeoutEmbed], components: [] });
     }
 
 }

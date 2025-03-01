@@ -1,12 +1,12 @@
 import { display_text } from '../text_data_config/display_text.js';
 import { UserSettingsInstance, USER_SETTINGS } from '../database/sqlite_db.js';
 import { config } from '../text_data_config/config.js';
+import { isRoleId } from '../declare_type/type_guard.js';
 
 
 //query_arr = [query_string1, query_string2, ...]
 //return [answer_string1, answer_string2, ...]
 async function get_display_text(query_arr: string[], clientId: string): Promise<string[]> {
-    // equivalent to: SELECT * FROM tags WHERE name = 'tagName' LIMIT 1;
     const settings: UserSettingsInstance | null = await USER_SETTINGS.findOne({ where: { clientId: clientId } });
     let language: string = '';
     if (settings !== null) {
@@ -69,4 +69,9 @@ async function get_display_error_code(error_code: string, clientId: string): Pro
     return (`${error_desc_text}${error_code}`);
 }
 
-export { get_display_text, get_display_error_code }
+async function get_game_data(role_id: string, query_str: string, clientId: string): Promise<string> {
+    if (!isRoleId(role_id)) return (config['display_error']);
+    return ((await get_display_text([`game_data.${role_id}.${query_str}`], clientId))[0] ?? config['display_error']);
+}
+
+export { get_display_text, get_display_error_code, get_game_data }

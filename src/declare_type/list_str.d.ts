@@ -6,7 +6,7 @@ type t_game_rule = 'kill_all' | 'kill_either';
 
 
 interface i_player_info {
-    role: string;
+    role_id: t_role_id;
     dead: boolean;
     sheriff: boolean;
     target: number[];

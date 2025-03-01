@@ -1,5 +1,5 @@
-// Require Sequelize
 import { DataTypes, Sequelize, Model, InferAttributes, InferCreationAttributes } from 'sequelize';
+import { t_role_id } from '../declare_type/type_guard.js';
 
 //Connect Database: SQLite
 const sequelize = new Sequelize({
@@ -100,9 +100,9 @@ interface GameCreateInstance extends Model<InferAttributes<GameCreateInstance>, 
     num_players: number | null;
     is_preset: boolean | null;
     sheriff: boolean | null;
-    players_role: string[] | null;
+    players_role: t_role_id[] | null;
     game_rule: t_game_rule | null;
-};
+}
 const GAME_CREATE = sequelize.define<GameCreateInstance>('GAME_CREATE', {
     clientId: {
         type: DataTypes.STRING,

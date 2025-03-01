@@ -1,26 +1,47 @@
-import { ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
-// import { get_display_text } from '../../utility/get_display.js';
-// import { config } from '../../text_data_config/config.js';
+import { ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
+import { get_display_text, get_game_data } from '../../utility/get_display.js';
+import { config } from '../../text_data_config/config.js';
+import { t_role_id } from '../../declare_type/type_guard.js';
+import { ui_timeout } from '../timeout.js';
 
-async function ui_create_roles(clientId: string, time_sec: number, roles_list: string[])
-: Promise<[[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], string, string]> {
-    console.log('temp:', clientId);
+async function ui_create_roles(clientId: string, time_sec: number, num_players_max: number, roles_list: t_role_id[])
+: Promise<[[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>]
+    | [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder, EmbedBuilder]> {
+
+    const [title_text, description_text, num_player_title, role_list_title, select_werewolf_text,
+        select_village_team_text, select_delete_roles_text, timeout_text, button_next_text, button_cancel_text]: string[]
+        = await get_display_text(['create.roles.embed.title', 'create.roles.embed.description',
+            'create.roles.embed.num_player.title', 'create.roles.embed.role_list.title',
+            'create.roles.select_werewolf', 'create.roles.select_village_team',
+            'create.roles.select_delete_roles', 'create.timeout', 'create.button_next', 'create.button_cancel'
+        ], clientId);
+
+    let role_list_content: string = '';
+    let delete_roles_arr: {label: string, description: string, value: string}[] = [];
+    let i: number = 1;
+    for (const each_roles_id of roles_list) {
+        role_list_content += `${String(i)}. ${await get_game_data(each_roles_id, 'name', clientId)}`;
+        delete_roles_arr.push({
+            label: await get_game_data(each_roles_id, 'name', clientId),
+            description: await get_game_data(each_roles_id, 'description', clientId),
+            value: String(i - 1)
+        });
+        if (i != roles_list.length) {
+            role_list_content += '\n';
+        }
+        i++;
+    }
 
     const rowWerewolf: ActionRowBuilder<StringSelectMenuBuilder> = new ActionRowBuilder<StringSelectMenuBuilder>()
         .addComponents(
             new StringSelectMenuBuilder()
                 .setCustomId('create_roles_werewolf')
-                .setPlaceholder('Werewolf Roles')
+                .setPlaceholder(select_werewolf_text ?? config['display_error'])
                 .addOptions(
                     {
-                        label: 'Werewolf',
-                        description: 'A normal werewolf that can vote to kill a player at night.',
-                        value: 'W'
-                    },
-                    {
-                        label: 'Snow Werewolf',
-                        description: 'A werewolf that can deceive Seer\'s check.',
-                        value: 'SW'
+                        label: await get_game_data('W00', 'name', clientId),
+                        description: await get_game_data('W00', 'description', clientId),
+                        value: 'W00'
                     }
                 )
         )
@@ -28,126 +49,69 @@ async function ui_create_roles(clientId: string, time_sec: number, roles_list: s
         .addComponents(
             new StringSelectMenuBuilder()
                 .setCustomId('create_roles_village_team')
-                .setPlaceholder('Village Team Roles')
+                .setPlaceholder(select_village_team_text ?? config['display_error'])
                 .addOptions(
                     {
-                        label: 'Villager',
-                        description: 'A villager with no abilities.',
-                        value: 'V'
+                        label: await get_game_data('V00', 'name', clientId),
+                        description: await get_game_data('V00', 'description', clientId),
+                        value: 'V00'
                     },
                     {
-                        label: 'Seer',
-                        description: 'A god identity that can check if a player is a werewolf.',
-                        value: 'S'
+                        label: await get_game_data('G00', 'name', clientId),
+                        description: await get_game_data('G00', 'description', clientId),
+                        value: 'G00'
                     },
                     {
-                        label: 'Hunter',
-                        description: 'A god identity that can shoot a player upon death.',
-                        value: 'H'
-                    },
-                    {
-                        label: 'Witch',
-                        description: 'A god identity that can save and poison a player.',
-                        value: 'W'
-                    },
-                    {
-                        label: 'Guard',
-                        description: 'A god identity that can block werewolves\' attack.',
-                        value: 'G'
-                    }
-                )
-        )
-        const rowDeleteRole: ActionRowBuilder<StringSelectMenuBuilder> = new ActionRowBuilder<StringSelectMenuBuilder>()
-        .addComponents(
-            new StringSelectMenuBuilder()
-                .setCustomId('create_roles_delete_roles')
-                .setPlaceholder('Delete Slot(s): Multiselect')
-                .setMinValues(1)
-				.setMaxValues(12)
-                .addOptions(
-                    {
-                        label: '1',
-                        description: 'One',
-                        value: '1'
-                    },
-                    {
-                        label: '2',
-                        description: 'Two',
-                        value: '2'
-                    },
-                    {
-                        label: '3',
-                        description: 'Three',
-                        value: '3'
-                    },
-                    {
-                        label: '4',
-                        description: 'Four',
-                        value: '4'
-                    },
-                    {
-                        label: '5',
-                        description: 'Five',
-                        value: '5'
-                    },
-                    {
-                        label: '6',
-                        description: 'Six',
-                        value: '6'
-                    },
-                    {
-                        label: '7',
-                        description: 'Seven',
-                        value: '7'
-                    },
-                    {
-                        label: '8',
-                        description: 'Eight',
-                        value: '8'
-                    },
-                    {
-                        label: '9',
-                        description: 'Nine',
-                        value: '9'
-                    },
-                    {
-                        label: '10',
-                        description: 'Ten',
-                        value: '10'
-                    },
-                    {
-                        label: '11',
-                        description: 'Eleven',
-                        value: '11'
-                    },
-                    {
-                        label: '12',
-                        description: 'Twelve',
-                        value: '12'
+                        label: await get_game_data('G01', 'name', clientId),
+                        description: await get_game_data('G01', 'description', clientId),
+                        value: 'G01'
                     }
                 )
         )
 
     const next_button: ButtonBuilder = new ButtonBuilder()
         .setCustomId('create_roles_next')
-        .setLabel('Next')
+        .setLabel(button_next_text ?? config['display_error'])
         .setStyle(ButtonStyle.Success)
 
     const cancel_button: ButtonBuilder = new ButtonBuilder()
         .setCustomId('create_cancel')
-        .setLabel('Cancel')
-        .setStyle(ButtonStyle.Secondary);
+        .setLabel(button_cancel_text ?? config['display_error'])
+        .setStyle(ButtonStyle.Secondary)
         
     const rowButton: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder<ButtonBuilder>()
         .addComponents(cancel_button, next_button);
-    
-    let role_list_content: string = '';
-    for (let i: number = 0; i < roles_list.length; i++) {
-        role_list_content += `${String(i+1)}. ${roles_list[i]}`;
+
+    const rolesEmbed: EmbedBuilder = new EmbedBuilder()
+        .setColor(config['embed_hex_color'])
+        .setTitle(title_text ?? config['display_error'])
+        .setDescription(description_text ?? config['display_error'])
+        .addFields(
+            {
+                name: num_player_title ?? config['display_error'],
+                value: `${roles_list.length} / ${num_players_max}`
+            },
+            {
+                name: role_list_title ?? config['display_error'],
+                value: role_list_content
+            }
+        )
+        .setTimestamp()
+
+
+    if (roles_list.length === 0) {
+        return ([[rowWerewolf, rowVillageTeam, rowButton], rolesEmbed, (await ui_timeout(clientId, time_sec, timeout_text ?? config['display_error']))]);
     }
-    const content: string = 'Select the roles below to add it into role list.\nCurrent role list:\n\n' + role_list_content;
-    const timeout_content: string = `${content}\n\n${('Game creation timeout: ') + time_sec.toString()}s`;
-    return ([[rowWerewolf, rowVillageTeam, rowDeleteRole, rowButton], content, timeout_content]);
+
+    const rowDeleteRole: ActionRowBuilder<StringSelectMenuBuilder> = new ActionRowBuilder<StringSelectMenuBuilder>()
+        .addComponents(
+            new StringSelectMenuBuilder()
+                .setCustomId('create_roles_delete_roles')
+                .setPlaceholder(select_delete_roles_text ?? config['display_error'])
+                .addOptions(delete_roles_arr)
+        )
+    
+    return ([[rowWerewolf, rowVillageTeam, rowDeleteRole, rowButton], rolesEmbed, (await ui_timeout(clientId, time_sec, timeout_text ?? config['display_error']))]);
 }
 
 export { ui_create_roles }

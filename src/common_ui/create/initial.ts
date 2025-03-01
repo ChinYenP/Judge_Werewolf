@@ -16,7 +16,7 @@ async function ui_create_initial(clientId: string, time_sec: number, num_player_
         'create.initial.embed.preset_custom.description', 'create.initial.embed.game_rule.title',
         'create.initial.embed.game_rule.description', 'create.initial.select_num_player',
         'create.initial.placeholder_preset_custom', 'create.initial.preset', 'create.initial.custom',
-        'create.initial.button_next', 'create.initial.button_cancel', 'create.timeout',
+        'create.button_next', 'create.button_cancel', 'create.timeout',
         'create.initial.placeholder_game_rule', 'create.initial.kill_all',
         'create.initial.kill_either'], clientId);
 
