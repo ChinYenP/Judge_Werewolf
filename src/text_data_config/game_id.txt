@@ -1,9 +1,11 @@
 Game ID format
-S(00 to 12 for number of roles)(0 or 1 for sheriff mode)(A or E for gamemode: kill_all / kill_either)(Multiple Role IDs of minimum 6 and maximum 12)E
-Each role id consists of one character followed by 3 digits:
+S(06 to 12 for number of roles)(0 or 1 for sheriff mode)(A or E for gamemode: kill_all / kill_either)(Multiple Role IDs of minimum 0 and maximum 12)L
+Each role id consists of one character followed by 4 digits:
 - The first character represents category.
 - The first two digits represents role ID.
-- The last digit represents number of the role.
+- The last two digits represents number of the role (from 01 to 12).
+Minimum length of Game ID: 6
+Maximum length of Game ID: 66
 
 
 Role ID
@@ -22,7 +24,7 @@ God Identities (G)
 
 Example:
 
-S0EW003V003G001G011G021E
+S090EW0003V0003G0001G0101G0201L
 Sheriff mode disabled
 kill_either gamemode
 Werewolf x3

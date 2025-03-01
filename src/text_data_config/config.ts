@@ -21,7 +21,8 @@ const config: ConfigType = {
         "ping": 5,
         "settings": 5,
         "create": 5,
-        "prefix": 5
+        "prefix": 5,
+        "game_id": 5
     }
 }
 

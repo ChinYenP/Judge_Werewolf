@@ -13,7 +13,6 @@ export default {
 
         const clientId: string = message.author.id;
 
-        message.content = message.content.toLowerCase();
         let preset_prefix: string = '';
         const clientMention: string = message.client.user.toString();
 

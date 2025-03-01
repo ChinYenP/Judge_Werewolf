@@ -20,9 +20,11 @@ export default {
         }
 
         const [optional_arguments_text, title_text, title_description_text, help_description_text,
-            prefix_description_text, ping_description_text, settings_description_text, create_description_text, optional_ID_text]: string[]
+            prefix_description_text, game_id_description_text, ping_description_text,
+            settings_description_text, create_description_text, optional_ID_text]: string[]
             = await get_display_text(['help.optional_arguments', 'help.title', 'help.title_description', 'help.help_description',
-            'help.prefix_description', 'help.ping_description', 'help.settings_description', 'help.create_description', 'help.optional_ID'], clientId);
+            'help.prefix_description', 'help.game_id_description', 'help.ping_description',
+            'help.settings_description', 'help.create_description', 'help.optional_ID'], clientId);
 
         const helpEmbed: EmbedBuilder = new EmbedBuilder()
             .setColor(config['embed_hex_color'])
@@ -36,6 +38,10 @@ export default {
                 {
                     name: 'jw prefix',
                     value: prefix_description_text ?? config['display_error']
+                },
+                {
+                    name: `jw game_id <${optional_ID_text}>`,
+                    value: game_id_description_text ?? config['display_error']
                 },
                 {
                     name: 'jw ping',
