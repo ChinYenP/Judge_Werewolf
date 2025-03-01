@@ -5,6 +5,7 @@ import { Message } from 'discord.js';
 import { isMyClient, t_role_id } from '../declare_type/type_guard.js';
 import { EmbedBuilder } from 'discord.js';
 import { ui_error_fatal, ui_error_non_fatal } from '../common_ui/error.js';
+import { ui_invalid_game_id } from '../common_ui/invalid_game_id.js';
 import { game_id_validation } from '../utility/validation/game_id_validation.js';
 
 export default {
@@ -35,7 +36,14 @@ export default {
                 'game_rule': t_game_rule,
                 'roles_list': t_role_id[]}] = await game_id_validation(args[0] ?? '');
             if (!(validate[0])) {
-                await invalid_game_id(message, args[0] ?? '', clientId);
+                const invalidEmbed: EmbedBuilder = await ui_invalid_game_id(clientId, args[0] ?? '');
+                try {
+                    await message.reply({ embeds: [invalidEmbed] });
+                } catch (error) {
+                    console.error(error);
+                    const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'M1');
+                    await message.reply({embeds: [errorEmbed], components: []});
+                }
             } else {
                 await data_display(message, clientId, args[0] ?? '', validate[1] as {
                     'num_roles_max': number,
@@ -79,25 +87,6 @@ export default {
         }
     }
 
-}
-
-async function invalid_game_id(message: Message, game_id: string, clientId: string): Promise<void> {
-    const [title_text, description_text]: string[]
-        = await get_display_text(['game_id.invalid_embed.title', 'game_id.common_description'], clientId);
-
-    const invalidEmbed: EmbedBuilder = new EmbedBuilder()
-        .setColor(config['embed_hex_color'])
-        .setTitle(title_text ?? config['display_error'])
-        .setDescription(`${description_text}\`${game_id}\``)
-        .setTimestamp()
-
-    try {
-        await message.reply({ embeds: [invalidEmbed] });
-    } catch (error) {
-        console.error(error);
-        const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'M1');
-        await message.reply({embeds: [errorEmbed], components: []});
-    }
 }
 
 async function data_display(message: Message, clientId: string, game_id: string, data: {
