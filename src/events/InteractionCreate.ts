@@ -10,6 +10,9 @@ import { select_create_initial_game_rule } from '../follow_up_interaction/create
 import { button_create_initial_no } from '../follow_up_interaction/create_initial/button_cancel.js';
 import { button_create_initial_next } from '../follow_up_interaction/create_initial/button_next.js';
 
+import { select_create_roles_add_role } from '../follow_up_interaction/create_roles/select_add_role.js';
+import { select_create_roles_delete_roles } from '../follow_up_interaction/create_roles/select_delete_roles.js';
+
 export default {
     name: Events.InteractionCreate,
     once: false,
@@ -24,6 +27,10 @@ export default {
                 await select_create_initial_preset_custom(interaction);
             } else if (interaction.customId === 'create_initial_game_rule') {
                 await select_create_initial_game_rule(interaction);
+            } else if (interaction.customId === 'create_roles_werewolf' || interaction.customId === 'create_roles_village_team') {
+                await select_create_roles_add_role(interaction);
+            } else if (interaction.customId === 'create_roles_delete_roles') {
+                await select_create_roles_delete_roles(interaction);
             }
         } else if (interaction.isButton()) {
             if (interaction.customId === 'settings_prefix_yes') {

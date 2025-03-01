@@ -22,7 +22,7 @@ async function ui_create_roles(clientId: string, time_sec: number, num_players_m
     for (const each_roles_id of roles_list) {
         role_list_content += `${String(i)}. ${await get_game_data(each_roles_id, 'name', clientId)}`;
         delete_roles_arr.push({
-            label: await get_game_data(each_roles_id, 'name', clientId),
+            label: `${i}. ${await get_game_data(each_roles_id, 'name', clientId)}`,
             description: await get_game_data(each_roles_id, 'description', clientId),
             value: String(i - 1)
         });
@@ -73,6 +73,7 @@ async function ui_create_roles(clientId: string, time_sec: number, num_players_m
         .setCustomId('create_roles_next')
         .setLabel(button_next_text ?? config['display_error'])
         .setStyle(ButtonStyle.Success)
+        .setDisabled(roles_list.length !== num_players_max);
 
     const cancel_button: ButtonBuilder = new ButtonBuilder()
         .setCustomId('create_cancel')
@@ -109,6 +110,8 @@ async function ui_create_roles(clientId: string, time_sec: number, num_players_m
                 .setCustomId('create_roles_delete_roles')
                 .setPlaceholder(select_delete_roles_text ?? config['display_error'])
                 .addOptions(delete_roles_arr)
+                .setMinValues(1)
+			    .setMaxValues(roles_list.length)
         )
     
     return ([[rowWerewolf, rowVillageTeam, rowDeleteRole, rowButton], rolesEmbed, (await ui_timeout(clientId, time_sec, timeout_text ?? config['display_error']))]);
