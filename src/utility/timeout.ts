@@ -23,7 +23,7 @@ async function is_interaction_owner(messageId: string, clientId: string): Promis
     throw new Error(`Message ID ${messageId} not found in timeouts.`);
 }
 
-async function timeout_delete_message(clientId: string, command: t_cooldown, bot_client_instance: Client): Promise<void> {
+async function timeout_delete_message(clientId: string, command: t_commands, bot_client_instance: Client): Promise<void> {
     if (!isMyClient(bot_client_instance)) return;
     const client_to_message_arr: string[] | undefined = client_to_message.get(clientId);
     if (client_to_message.has(clientId)) {
@@ -55,7 +55,7 @@ async function timeout_delete_message(clientId: string, command: t_cooldown, bot
     }
 }
 
-async function timeout_set(command: string, messageId: string, clientId: string, channelId: string, time_sec: number, timeout_execute: (bot_reply: Message) => Promise<void>, execute_param: Message): Promise<void> {
+async function timeout_set(command: t_commands, messageId: string, clientId: string, channelId: string, time_sec: number, timeout_execute: (bot_reply: Message) => Promise<void>, execute_param: Message): Promise<void> {
     if (timeouts.has(messageId)) {
         await timeout_delete(messageId, clientId);
     };

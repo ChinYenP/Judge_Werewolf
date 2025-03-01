@@ -18,10 +18,11 @@ export default {
         console.log(`Settings command ran, args: ${args.join(", ")}`);
         const clientId: string = message.author.id;
 
-        if (!isMyClient(message.client)) return;
         if (!await check_cooldown(clientId, this.name, this.cooldown_sec, message.client, message)) {
             return;
         }
+
+        if (!isMyClient(message.client)) return;
         if (message.member === null || !isTextChannel(message.channel)) return;
 
         //Check arguments
@@ -126,19 +127,20 @@ async function prefix_settings(message: Message, args: string[], clientId: strin
             await message.reply({embeds: [errorEmbed], components: []});
             return;
         }
-    }
-    //clientId not exist, create new data:
-    try {
-        await TEMP_PREFIX_SETTINGS.create({
-            guildId: message.guildId,
-            prefix: new_prefix,
-        })
-    }
-    catch (error) {
-        console.log(error);
-        const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D1');
-        await message.reply({embeds: [errorEmbed], components: []});
-        return;
+    } else {
+        //clientId not exist, create new data:
+        try {
+            await TEMP_PREFIX_SETTINGS.create({
+                guildId: message.guildId,
+                prefix: new_prefix,
+            })
+        }
+        catch (error) {
+            console.log(error);
+            const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D1');
+            await message.reply({embeds: [errorEmbed], components: []});
+            return;
+        }
     }
 
     const yes_button: ButtonBuilder = new ButtonBuilder()
@@ -167,7 +169,7 @@ async function prefix_settings(message: Message, args: string[], clientId: strin
         .setTimestamp()
 
     const bot_reply: Message = await message.reply({ embeds: [prefixEmbed], components: [rowButton] });
-    await timeout_set('prefix_settings', bot_reply.id, clientId, message.channelId, time_sec, message_prefix_timeout, bot_reply);
+    await timeout_set('settings_prefix', bot_reply.id, clientId, message.channelId, time_sec, message_prefix_timeout, bot_reply);
 
     async function message_prefix_timeout(bot_reply: Message): Promise<void> {
         if (message.guildId !== null) {

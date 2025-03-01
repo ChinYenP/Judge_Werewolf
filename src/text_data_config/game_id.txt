@@ -1,6 +1,6 @@
 Game ID format
-(Werewolves category)-(Villagers category)-(God Identities category)
-Each role consists of one character followed by 3 digits:
+S(00 to 12 for number of roles)(0 or 1 for sheriff mode)(A or E for gamemode: kill_all / kill_either)(Multiple Role IDs of minimum 6 and maximum 12)E
+Each role id consists of one character followed by 3 digits:
 - The first character represents category.
 - The first two digits represents role ID.
 - The last digit represents number of the role.
@@ -17,3 +17,16 @@ Villagers (V)
 God Identities (G)
 00 - Seer
 01 - Hunter
+02 - Witch (not added yet)
+
+
+Example:
+
+S0EW003V003G001G011G021E
+Sheriff mode disabled
+kill_either gamemode
+Werewolf x3
+Villager x3
+Seer x1
+Hunter x1
+Witch x1

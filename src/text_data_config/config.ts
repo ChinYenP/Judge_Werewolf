@@ -19,7 +19,7 @@ const config: ConfigType = {
         "overall": 1,
         "help": 5,
         "ping": 5,
-        "settings": 10,
+        "settings": 5,
         "create": 5,
         "prefix": 5
     }
