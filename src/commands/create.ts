@@ -7,6 +7,7 @@ import { config } from '../text_data_config/config.js';
 import { GameCreateInstance, GAME_CREATE } from '../database/sqlite_db.js';
 import { ui_create_initial } from '../common_ui/create/initial.js';
 import { ui_create_roles } from '../common_ui/create/roles.js';
+import { ui_create_final } from '../common_ui/create/final.js';
 import { ui_error_non_fatal, ui_error_fatal } from '../common_ui/error.js';
 import { ui_invalid_game_id } from '../common_ui/invalid_game_id.js';
 import { game_id_validation } from '../utility/validation/game_id_validation.js';
@@ -36,13 +37,21 @@ export default {
 
         //Create by ID
         if (args.length === 1) {
+            //If the game has already created, stop new game creation.
+            const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+            if (settings !== null) {
+                const [creating_error_text]: string[] = await get_display_text(['create.creating_error'], clientId);
+                const creating_err_embed: EmbedBuilder = await ui_error_non_fatal(clientId, creating_error_text ?? config['display_error']);
+                await message.reply({embeds: [creating_err_embed], components: []});
+                return;
+            }
             const validate: [boolean, {} | {
                 'num_roles_max': number,
                 'sheriff': boolean,
                 'game_rule': t_game_rule,
-                'roles_list': t_role_id[]}] = await game_id_validation(args[0] ?? '');
+                'roles_list': t_role_id[]}, string] = await game_id_validation(args[0] ?? '', clientId);
             if (!(validate[0])) {
-                const invalidEmbed: EmbedBuilder = await ui_invalid_game_id(clientId, args[0] ?? '');
+                const invalidEmbed: EmbedBuilder = await ui_invalid_game_id(clientId, args[0] ?? '', validate[2]);
                 try {
                     await message.reply({ embeds: [invalidEmbed] });
                 } catch (error) {
@@ -68,6 +77,11 @@ export default {
                 if (settings.is_preset === null || settings.num_players === null || settings.game_rule === null
                     || settings.sheriff === null || settings.players_role === null) return;
                 await create_roles(message, clientId, config['timeout_sec'].create.roles, settings);
+                return;
+            } else if (settings.status === 'final') {
+                if (settings.is_preset === null || settings.num_players === null || settings.game_rule === null
+                    || settings.sheriff === null || settings.players_role === null) return;
+                await create_final(message, clientId, config['timeout_sec'].create.final, settings);
                 return;
             }
         }
@@ -186,7 +200,6 @@ async function create_roles_by_id(message: Message, clientId: string, time_sec: 
         }
     }
 
-
     const [ActionRowArr, rolesEmbed, timeoutEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>]
         | [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder, EmbedBuilder]
     = await ui_create_roles(clientId, time_sec, game_data['num_roles_max'], game_data['roles_list']);
@@ -213,7 +226,7 @@ async function create_roles_by_id(message: Message, clientId: string, time_sec: 
 async function create_roles(message: Message, clientId: string, time_sec: number, settings: GameCreateInstance): Promise<void> {
     const [ActionRowArr, rolesEmbed, timeoutEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>]
         | [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder, EmbedBuilder]
-    = await ui_create_roles(clientId, time_sec, settings.num_players as number, []);
+    = await ui_create_roles(clientId, time_sec, settings.num_players as number, settings.players_role as string[]);
     const bot_reply: Message = await message.reply({ embeds: [rolesEmbed], components: ActionRowArr });
     await timeout_set('create', bot_reply.id, clientId, message.channelId, time_sec, message_timeout, bot_reply);
 
@@ -230,5 +243,35 @@ async function create_roles(message: Message, clientId: string, time_sec: number
             }
         }
         await bot_reply.edit({ embeds: [rolesEmbed, timeoutEmbed], components: [] });
+    }
+}
+
+
+async function create_final(message: Message, clientId: string, time_sec: number, settings: GameCreateInstance): Promise<void> {
+    if (settings.is_preset === null || settings.num_players === null || settings.game_rule === null
+        || settings.sheriff === null || settings.players_role === null) return;
+    const [ActionRowArr, finalEmbed, timeoutEmbed]: [[ActionRowBuilder<ButtonBuilder>], EmbedBuilder, EmbedBuilder]
+    = await ui_create_final(clientId, time_sec, {
+        "num_roles_max": settings.num_players,
+        "sheriff": settings.sheriff,
+        "game_rule": settings.game_rule,
+        "roles_list": settings.players_role
+    });
+    const bot_reply: Message = await message.reply({ embeds: [finalEmbed], components: ActionRowArr});
+    await timeout_set('create', bot_reply.id, clientId, message.channelId, time_sec, message_timeout, bot_reply);
+
+    async function message_timeout(update_msg: Message): Promise<void> {
+        const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+        if (settings !== null) {
+            try {
+                await GAME_CREATE.destroy({ where: { clientId: clientId } });
+            } catch (error) {
+                console.error(error);
+                const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D2');
+                await message.reply({embeds: [errorEmbed], components: []});
+                return;
+            }
+        }
+        await update_msg.edit({ embeds: [finalEmbed, timeoutEmbed], components: [] });
     }
 }

@@ -12,6 +12,7 @@ import { button_create_initial_next } from '../follow_up_interaction/create_init
 
 import { select_create_roles_add_role } from '../follow_up_interaction/create_roles/select_add_role.js';
 import { select_create_roles_delete_roles } from '../follow_up_interaction/create_roles/select_delete_roles.js';
+import { button_create_roles_next } from '../follow_up_interaction/create_roles/button_next.js';
 
 export default {
     name: Events.InteractionCreate,
@@ -41,6 +42,8 @@ export default {
                 await button_create_initial_no(interaction);
             } else if (interaction.customId === 'create_initial_next') {
                 await button_create_initial_next(interaction);
+            } else if (interaction.customId === 'create_roles_next') {
+                await button_create_roles_next(interaction);
             }
         }
     }

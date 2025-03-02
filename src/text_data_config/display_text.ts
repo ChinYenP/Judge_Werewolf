@@ -264,11 +264,11 @@ const display_text: DisplayTextType = {
                     "yue": "格式"
                 },
                 "description": {
-                    "eng": "```S(06 to 12 for number of roles)(0 or 1 for sheriff mode)(A or E for gamemode: kill_all / kill_either)(0 to 12 Role ID Group(s))L```\n\nEach Role ID Group consists of one character followed by 4 digits:\n- The first character represents category (W, V or G).\n- The first two digits represents role ID.\n- The last two digits represents number of the role (from 01 to 12).\n\nYou may refer each role's ID in `role` command.",
-                    "malay": "```S(06 hingga 12 untuk bilangan peranan)(0 atau 1 untuk mod sheriff)(A atau E untuk mod permainan: kill_all / kill_either)(0 hingga 12 Kumpulan ID Peranan)L```\n\nSetiap Kumpulan ID Peranan terdiri daripada satu aksara diikuti dengan 4 digit:\n- Aksara pertama mewakili kategori (W, V atau G).\n- Dua digit pertama mewakili ID peranan.\n- Dua digit terakhir mewakili bilangan peranan (dari 01 hingga 12).\n\nAnda boleh merujuk ID setiap peranan dalam arahan `role`.",
-                    "schi": "```S(06 到 12 表示角色数量)(0 或 1 表示警长模式)(A 或 E 表示游戏模式: kill_all / kill_either)(0 到 12 角色ID组)L```\n\n每个角色ID组由一个字符和四位数字组成:\n- 第一个字符表示类别(W, V或G)。\n- 前两位数字表示角色ID。\n- 最后两位数字表示该角色的数量(从01到12)。\n\n您可以在`role`命令中查看每个角色的ID。",
-                    "tchi": "```S(06 到 12 表示角色數量)(0 或 1 表示警長模式)(A 或 E 表示遊戲模式: kill_all / kill_either)(0 到 12 角色ID組)L```\n\n每個角色ID組由一個字符和四位數字組成:\n- 第一個字符表示類別(W, V或G)。\n- 前兩位數字表示角色ID。\n- 最後兩位數字表示該角色的數量(從01到12)。\n\n您可以在`role`命令中查看每個角色的ID。",
-                    "yue": "```S(06 到 12 表示角色數量)(0 或 1 表示警長模式)(A 或 E 表示遊戲模式: kill_all / kill_either)(0 到 12 角色ID組)L```\n\n每個角色ID組由一個字符和四位數字組成:\n- 第一個字符表示類別(W, V或G)。\n- 前兩位數字表示角色ID。\n- 最後兩位數字表示該角色的數量(從01到12)。\n\n您可以在`role`命令中查看每個角色的ID。"
+                    "eng": "```S(06 to 12 for number of roles)(0 or 1 for sheriff mode)(A or E for game rule: kill_all / kill_either)(0 to 12 Role ID Group(s))L```\n\nEach Role ID Group consists of one character followed by 4 digits:\n- The first character represents category (W, V or G).\n- The first two digits represents role ID.\n- The last two digits represents number of the role (from 01 to 12).\n\nYou may refer each role's ID in `role` command.",
+                    "malay": "```S(06 hingga 12 untuk bilangan peranan)(0 atau 1 untuk mod sheriff)(A atau E untuk peraturan permainan: kill_all / kill_either)(0 hingga 12 Kumpulan ID Peranan)L```\n\nSetiap Kumpulan ID Peranan terdiri daripada satu aksara diikuti dengan 4 digit:\n- Aksara pertama mewakili kategori (W, V atau G).\n- Dua digit pertama mewakili ID peranan.\n- Dua digit terakhir mewakili bilangan peranan (dari 01 hingga 12).\n\nAnda boleh merujuk ID setiap peranan dalam arahan `role`.",
+                    "schi": "```S(06 到 12 表示角色数量)(0 或 1 表示警长模式)(A 或 E 表示游戏规则: kill_all / kill_either)(0 到 12 角色ID组)L```\n\n每个角色ID组由一个字符和四位数字组成:\n- 第一个字符表示类别(W, V或G)。\n- 前两位数字表示角色ID。\n- 最后两位数字表示该角色的数量(从01到12)。\n\n您可以在`role`命令中查看每个角色的ID。",
+                    "tchi": "```S(06 到 12 表示角色數量)(0 或 1 表示警長模式)(A 或 E 表示遊戲規則: kill_all / kill_either)(0 到 12 角色ID組)L```\n\n每個角色ID組由一個字符和四位數字組成:\n- 第一個字符表示類別(W, V或G)。\n- 前兩位數字表示角色ID。\n- 最後兩位數字表示該角色的數量(從01到12)。\n\n您可以在`role`命令中查看每個角色的ID。",
+                    "yue": "```S(06 到 12 表示角色數量)(0 或 1 表示警長模式)(A 或 E 表示遊戲規則: kill_all / kill_either)(0 到 12 角色ID組)L```\n\n每個角色ID組由一個字符和四位數字組成:\n- 第一個字符表示類別(W, V或G)。\n- 前兩位數字表示角色ID。\n- 最後兩位數字表示該角色的數量(從01到12)。\n\n您可以在`role`命令中查看每個角色的ID。"
                 }
             },
             "example": {
@@ -280,11 +280,11 @@ const display_text: DisplayTextType = {
                     "yue": "例子"
                 },
                 "description": {
-                    "eng": "```S090EW0003V0003G0001G0101G0201L```\nSheriff mode disabled\nkill_either gamemode\nWerewolf x3\nVillager x3\nSeer x1\nHunter x1\nWitch x1",
-                    "malay": "```S090EW0003V0003G0001G0101G0201L```\nMod sheriff dinyahaktifkan\nMod permainan kill_either\nSerigala x3\nPenduduk x3\nPeramal x1\nPemburu x1\nAhli Sihir x1",
-                    "schi": "```S090EW0003V0003G0001G0101G0201L```\n禁用警长模式\n游戏模式为kill_either\n狼人 x3\n村民 x3\n预言家 x1\n猎人 x1\n女巫 x1",
-                    "tchi": "```S090EW0003V0003G0001G0101G0201L```\n禁用警長模式\n遊戲模式為kill_either\n狼人 x3\n村民 x3\n預言家 x1\n獵人 x1\n女巫 x1",
-                    "yue": "```S090EW0003V0003G0001G0101G0201L```\n禁用警長模式\n遊戲模式為kill_either\n狼人 x3\n村民 x3\n預言家 x1\n獵人 x1\n女巫 x1"
+                    "eng": "```S090EW0003V0003G0001G0101G0201L```\nSheriff mode disabled\nkill_either game rule\nWerewolf x3\nVillager x3\nSeer x1\nHunter x1\nWitch x1",
+                    "malay": "```S090EW0003V0003G0001G0101G0201L```\nMod sheriff dinyahaktifkan\nPeraturan permainan kill_either\nSerigala x3\nPenduduk x3\nPeramal x1\nPemburu x1\nAhli Sihir x1",
+                    "schi": "```S090EW0003V0003G0001G0101G0201L```\n禁用警长模式\n游戏规则为kill_either\n狼人 x3\n村民 x3\n预言家 x1\n猎人 x1\n女巫 x1",
+                    "tchi": "```S090EW0003V0003G0001G0101G0201L```\n禁用警長模式\n遊戲規則為kill_either\n狼人 x3\n村民 x3\n預言家 x1\n獵人 x1\n女巫 x1",
+                    "yue": "```S090EW0003V0003G0001G0101G0201L```\n禁用警長模式\n遊戲規則為kill_either\n狼人 x3\n村民 x3\n預言家 x1\n獵人 x1\n女巫 x1"
                 }
             }
         },
@@ -303,6 +303,55 @@ const display_text: DisplayTextType = {
                 "tchi": "無效的遊戲ID",
                 "yue": "無效的遊戲ID"
             },
+            "invalid_length": {
+                "eng": "Your Game ID is either too long or too short.",
+                "malay": "ID Permainan anda terlalu panjang atau terlalu pendek.",
+                "schi": "您的游戏ID太长或太短。",
+                "tchi": "您的遊戲ID太長或太短。",
+                "yue": "你的遊戲ID太長或太短。"
+            },
+            "start_last": {
+                "eng": "Your Game ID does not start with 'S' and end with 'L'. Did you copy the full Game ID?",
+                "malay": "ID Permainan anda tidak bermula dengan 'S' dan berakhir dengan 'L'. Adakah anda menyalin ID Permainan penuh?",
+                "schi": "您的游戏ID没有以 'S' 开头并以 'L' 结尾。您是否复制了完整的游戏ID?",
+                "tchi": "您的遊戲ID沒有以 'S' 開頭並以 'L' 結尾。您是否複製了完整的遊戲ID?",
+                "yue": "你的遊戲ID唔係以 'S' 開頭同以 'L' 結尾。你有冇複製完整嘅遊戲ID?"
+            },
+            "invalid_num_roles": {
+                "eng": "Your Game ID's \"number of roles\" is in the wrong format.",
+                "malay": "\"Jumlah peranan\" ID Permainan anda dalam format yang salah.",
+                "schi": "您的游戏ID的\"角色数量\"格式错误。",
+                "tchi": "您的遊戲ID的\"角色數量\"格式錯誤。",
+                "yue": "你的遊戲ID嘅\"角色數量\"格式錯誤。"
+            },
+            "invalid_sheriff": {
+                "eng": "Your Game ID's \"sheriff mode\" is in the wrong format.",
+                "malay": "\"Mod sheriff\" ID Permainan anda dalam format yang salah.",
+                "schi": "您的游戏ID的\"警长模式\"格式错误。",
+                "tchi": "您的遊戲ID的\"警長模式\"格式錯誤。",
+                "yue": "你的遊戲ID嘅\"警長模式\"格式錯誤。"
+            },
+            "invalid_game_rule": {
+                "eng": "Your Game ID's \"game rule\" is in the wrong format.",
+                "malay": "\"Peraturan permainan\" ID Permainan anda dalam format yang salah.",
+                "schi": "您的游戏ID的\"游戏规则\"格式错误。",
+                "tchi": "您的遊戲ID的\"遊戲規則\"格式錯誤。",
+                "yue": "你的遊戲ID嘅\"遊戲規則\"格式錯誤。"
+            },
+            "invalid_role_id": {
+                "eng": "The following Role ID is in the wrong format: ",
+                "malay": "ID Peranan berikut dalam format yang salah: ",
+                "schi": "以下角色ID格式错误: ",
+                "tchi": "以下角色ID格式錯誤: ",
+                "yue": "以下角色ID格式錯誤: "
+            },
+            "exceed_max_num_player": {
+                "eng": "Your Game ID has more roles than the number of roles specified in the Game ID itself.",
+                "malay": "ID Permainan anda mempunyai lebih banyak peranan daripada jumlah peranan yang ditetapkan dalam ID Permainan itu sendiri.",
+                "schi": "您的游戏ID包含的角色数量超过了游戏ID中指定的角色数量。",
+                "tchi": "您的遊戲ID包含的角色數量超過了遊戲ID中指定的角色數量。",
+                "yue": "你的遊戲ID包含嘅角色數量超過咗遊戲ID中指定嘅角色數量。"
+            }
         },
         "valid_embed": {
             "title": {
@@ -713,6 +762,38 @@ const display_text: DisplayTextType = {
                 "schi": "删除角色: 多选",
                 "tchi": "刪除角色: 多選",
                 "yue": "刪除角色: 多選"
+            },
+            "win_con_met": {
+                "eng": "The current role list will end the game from the start.",
+                "malay": "Senarai peranan semasa akan menamatkan permainan dari awal.",
+                "schi": "当前的角色列表将从一开始结束游戏。",
+                "tchi": "當前的角色列表將從一開始結束遊戲。",
+                "yue": "而家嘅角色列表會由一開始就結束遊戲。"
+            }
+        },
+        "final": {
+            "embed": {
+                "title": {
+                    "eng": "Create a Game Board (Progress 3/3)",
+                    "malay": "Buat Papan Permainan (Kemajuan 3/3)",
+                    "schi": "创建游戏板子(进度 3/3)",
+                    "tchi": "創建遊戲板子(進度 3/3)",
+                    "yue": "創建遊戲板子(進度 3/3)"
+                },
+                "description": {
+                    "eng": "Verify the game board below before starting the game.",
+                    "malay": "Sahkan papan permainan di bawah ini sebelum memulakan permainan.",
+                    "schi": "在开始游戏之前, 请验证下面的游戏板子。",
+                    "tchi": "在開始遊戲之前, 請驗證下面的遊戲板子。",
+                    "yue": "喺開始遊戲之前, 請驗證下面嘅遊戲板子。"
+                }
+            },
+            "button_start_game": {
+                "eng": "Start Game",
+                "malay": "Mula Permainan",
+                "schi": "开始游戏",
+                "tchi": "開始遊戲",
+                "yue": "開始遊戲"
             }
         },
         "button_next": {
@@ -742,6 +823,13 @@ const display_text: DisplayTextType = {
             "schi": "取消游戏创建。",
             "tchi": "取消遊戲創建。",
             "yue": "取消遊戲創建。"
+        },
+        "creating_error": {
+            "eng": "The game is already created. Type `create` command without the Game ID to see current game.",
+            "malay": "Permainan sudah dicipta. Taip arahan `create` tanpa ID Permainan untuk melihat permainan semasa.",
+            "schi": "游戏已经创建。输入 `create` 指令不带游戏ID以查看当前游戏。",
+            "tchi": "遊戲已經創建。輸入 `create` 指令不帶遊戲ID以查看當前遊戲。",
+            "yue": "遊戲已經創建。輸入 `create` 指令唔帶遊戲ID嚟查看當前遊戲。"
         }
     },
     "game_data": {
