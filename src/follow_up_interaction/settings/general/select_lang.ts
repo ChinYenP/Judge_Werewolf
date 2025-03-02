@@ -1,10 +1,10 @@
 import { StringSelectMenuInteraction, ActionRowBuilder, StringSelectMenuBuilder, Message, InteractionCallbackResource, EmbedBuilder } from 'discord.js';
-import { UserSettingsInstance, USER_SETTINGS } from '../../database/sqlite_db.js';
-import { interaction_is_outdated, timeout_set, is_interaction_owner } from '../../utility/timeout.js';
-import { get_display_text } from '../../utility/get_display.js';
-import { config } from '../../text_data_config/config.js';
-import { ui_user_settings } from '../../common_ui/user_settings.js';
-import { ui_error_non_fatal, ui_error_fatal } from '../../common_ui/error.js';
+import { UserSettingsInstance, USER_SETTINGS } from '../../../database/sqlite_db.js';
+import { interaction_is_outdated, timeout_set, is_interaction_owner } from '../../../utility/timeout.js';
+import { get_display_text } from '../../../utility/get_display.js';
+import { config } from '../../../text_data_config/config.js';
+import { ui_user_settings } from '../../../common_ui/user_settings.js';
+import { ui_error_non_fatal, ui_error_fatal } from '../../../common_ui/error.js';
 
 async function menu_select_lang(interaction: StringSelectMenuInteraction): Promise<void> {
     

@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
-import { get_display_text } from '../../utility/get_display.js';
+import { get_display_text, get_game_id } from '../../utility/get_display.js';
 import { config } from '../../text_data_config/config.js';
 import { t_role_id } from '../../declare_type/type_guard.js';
 import { ui_timeout } from '../timeout.js';
@@ -18,7 +18,8 @@ async function ui_create_final(clientId: string, time_sec: number, data: {
             'game_id.common_description'
         ], clientId);
 
-    const finalEmbed: EmbedBuilder = await ui_game_id(clientId, title_text ?? config['display_error'], `${description_text}\n${game_id_description}\`${''}\``, data);
+        const game_id: string = await get_game_id(data);
+    const finalEmbed: EmbedBuilder = await ui_game_id(clientId, title_text ?? config['display_error'], `${description_text}\n${game_id_description}\`${game_id}\``, data);
     
     const start_game_button: ButtonBuilder = new ButtonBuilder()
         .setCustomId('create_final_start_game')

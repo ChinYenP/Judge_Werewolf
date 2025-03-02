@@ -370,11 +370,11 @@ const display_text: DisplayTextType = {
             },
             "sheriff_mode": {
                 "title": {
-                    "eng": "Game Rule",
-                    "malay": "Peraturan Permainan",
-                    "schi": "游戏规则",
-                    "tchi": "遊戲規則",
-                    "yue": "遊戲規則"
+                    "eng": "Sheriff Mode",
+                    "malay": "Mod Sheriff",
+                    "schi": "警长模式",
+                    "tchi": "警長模式",
+                    "yue": "警長模式"
                 },
                 "enabled": {
                     "eng": "Enabled",

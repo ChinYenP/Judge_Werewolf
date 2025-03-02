@@ -1,7 +1,7 @@
 import { display_text } from '../text_data_config/display_text.js';
 import { UserSettingsInstance, USER_SETTINGS } from '../database/sqlite_db.js';
 import { config } from '../text_data_config/config.js';
-import { isRoleId } from '../declare_type/type_guard.js';
+import { isRoleId, t_role_id } from '../declare_type/type_guard.js';
 
 
 //query_arr = [query_string1, query_string2, ...]
@@ -74,4 +74,74 @@ async function get_game_data(role_id: string, query_str: string, clientId: strin
     return ((await get_display_text([`game_data.${role_id}.${query_str}`], clientId))[0] ?? config['display_error']);
 }
 
-export { get_display_text, get_display_error_code, get_game_data }
+async function get_role_list_order(role_list: t_role_id[]): Promise<[t_role_id, number][]> {
+    let role_set: Set<t_role_id> = new Set();
+    let new_role_list: [t_role_id, number][] = [];
+    for (const role_id of role_list) {
+        if (role_set.has(role_id)) {
+            let i = 0;
+            for (const [role_id_i, _] of new_role_list) {
+                if (role_id_i === role_id) break;
+                i++;
+            }
+            (new_role_list[i] as [t_role_id, number])[1]++;
+        } else {
+            new_role_list.push([role_id, 1]);
+            role_set.add(role_id);
+        }
+    }
+    return (new_role_list.sort(compareFn));
+
+    function compareFn(a: [t_role_id, number], b: [t_role_id, number]): number {
+        const category_arr: string[] = ['W', 'V', 'G'];
+        if (category_arr.indexOf(a[0][0] ?? '') < category_arr.indexOf(b[0][0] ?? '')) {
+            return (-1);
+        } else if (category_arr.indexOf(a[0][0] ?? '') > category_arr.indexOf(b[0][0] ?? '')) {
+            return (1);
+        }
+        if (Number(`${a[0][1]}${a[0][2]}`) < Number(`${b[0][1]}${b[0][2]}`)) {
+            return (-1);
+        } else if (Number(`${a[0][1]}${a[0][2]}`) > Number(`${b[0][1]}${b[0][2]}`)) {
+            return (1);
+        }
+        return (0);
+    }
+}
+
+async function get_game_id(data: {
+    'num_roles_max': number,
+    'sheriff': boolean,
+    'game_rule': t_game_rule,
+    'roles_list': t_role_id[]}): Promise<string> {
+    
+    const role_order: [t_role_id, number][] = await get_role_list_order(data['roles_list']);
+    let game_id: string = "S";
+    if (data['num_roles_max'] < 10) {
+        game_id += `0${data['num_roles_max']}`;
+    } else {
+        game_id += String(data['num_roles_max']);
+    }
+    if (data['sheriff'] === false) {
+        game_id += '0';
+    } else {
+        game_id == '1';
+    }
+    if (data['game_rule'] === 'kill_all') {
+        game_id += 'A';
+    } else {
+        game_id += 'E';
+    }
+
+    for (const [each_role_id, count] of role_order) {
+        game_id += each_role_id;
+        if (count < 10) {
+            game_id += `0${count}`;
+        } else {
+            game_id += String(count);
+        }
+    }
+    game_id += 'L';
+    return (game_id);
+}
+
+export { get_display_text, get_display_error_code, get_game_data, get_role_list_order, get_game_id }

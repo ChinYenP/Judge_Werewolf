@@ -1,10 +1,10 @@
-import { interaction_is_outdated, timeout_delete, is_interaction_owner } from '../../utility/timeout.js';
-import { get_display_text } from '../../utility/get_display.js';
+import { interaction_is_outdated, timeout_delete, is_interaction_owner } from '../../../utility/timeout.js';
+import { get_display_text } from '../../../utility/get_display.js';
 import { ButtonInteraction, EmbedBuilder } from 'discord.js';
-import { config } from '../../text_data_config/config.js';
-import { ServerSettingsInstance, SERVER_SETTINGS, TempPrefixSettingInstance, TEMP_PREFIX_SETTINGS } from '../../database/sqlite_db.js';
-import { ui_error_non_fatal, ui_error_fatal } from '../../common_ui/error.js';
-import { ui_success } from '../../common_ui/success.js';
+import { config } from '../../../text_data_config/config.js';
+import { ServerSettingsInstance, SERVER_SETTINGS, TempPrefixSettingInstance, TEMP_PREFIX_SETTINGS } from '../../../database/sqlite_db.js';
+import { ui_error_non_fatal, ui_error_fatal } from '../../../common_ui/error.js';
+import { ui_success } from '../../../common_ui/success.js';
 
 async function button_prefix_yes(interaction: ButtonInteraction): Promise<void> {
 

@@ -1,12 +1,12 @@
 import { ButtonInteraction, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, Message, InteractionCallbackResource, EmbedBuilder } from 'discord.js';
-import { GameCreateInstance, GAME_CREATE } from '../../database/sqlite_db.js';
-import { interaction_is_outdated, timeout_set, is_interaction_owner } from '../../utility/timeout.js';
-import { get_display_text } from '../../utility/get_display.js';
-import { config } from '../../text_data_config/config.js';
-import { ui_create_roles } from '../../common_ui/create/roles.js';
-import { ui_error_non_fatal, ui_error_fatal } from '../../common_ui/error.js';
-import { ui_create_final } from '../../common_ui/create/final.js';
-import { win_condition_in_role } from '../../gameplay/game_logic/win_condition.js';
+import { GameCreateInstance, GAME_CREATE } from '../../../database/sqlite_db.js';
+import { interaction_is_outdated, timeout_set, is_interaction_owner } from '../../../utility/timeout.js';
+import { get_display_text } from '../../../utility/get_display.js';
+import { config } from '../../../text_data_config/config.js';
+import { ui_create_roles } from '../../../common_ui/create/roles.js';
+import { ui_error_non_fatal, ui_error_fatal } from '../../../common_ui/error.js';
+import { ui_create_final } from '../../../common_ui/create/final.js';
+import { win_condition_in_role } from '../../../gameplay/game_logic/win_condition.js';
 
 async function button_create_roles_next(interaction: ButtonInteraction): Promise<void> {
 

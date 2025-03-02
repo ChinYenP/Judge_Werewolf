@@ -1,18 +1,18 @@
 import { Events, Interaction } from 'discord.js';
 
-import { menu_select_lang } from '../follow_up_interaction/settings_general/select_lang.js';
-import { button_prefix_yes } from '../follow_up_interaction/settings_prefix/button_yes.js';
-import { button_prefix_no } from '../follow_up_interaction/settings_prefix/button_no.js';
+import { menu_select_lang } from '../follow_up_interaction/settings/general/select_lang.js';
+import { button_prefix_yes } from '../follow_up_interaction/settings/prefix/button_yes.js';
+import { button_prefix_no } from '../follow_up_interaction/settings/prefix/button_no.js';
 
-import { select_create_initial_num_player } from '../follow_up_interaction/create_initial/select_num_player.js';
-import { select_create_initial_preset_custom } from '../follow_up_interaction/create_initial/select_preset_custom.js';
-import { select_create_initial_game_rule } from '../follow_up_interaction/create_initial/select_game_rule.js';
-import { button_create_initial_no } from '../follow_up_interaction/create_initial/button_cancel.js';
-import { button_create_initial_next } from '../follow_up_interaction/create_initial/button_next.js';
+import { select_create_initial_num_player } from '../follow_up_interaction/create/initial/select_num_player.js';
+import { select_create_initial_preset_custom } from '../follow_up_interaction/create/initial/select_preset_custom.js';
+import { select_create_initial_game_rule } from '../follow_up_interaction/create/initial/select_game_rule.js';
+import { button_create_initial_no } from '../follow_up_interaction/create/button_cancel.js';
+import { button_create_initial_next } from '../follow_up_interaction/create/initial/button_next.js';
 
-import { select_create_roles_add_role } from '../follow_up_interaction/create_roles/select_add_role.js';
-import { select_create_roles_delete_roles } from '../follow_up_interaction/create_roles/select_delete_roles.js';
-import { button_create_roles_next } from '../follow_up_interaction/create_roles/button_next.js';
+import { select_create_roles_add_role } from '../follow_up_interaction/create/roles/select_add_role.js';
+import { select_create_roles_delete_roles } from '../follow_up_interaction/create/roles/select_delete_roles.js';
+import { button_create_roles_next } from '../follow_up_interaction/create/roles/button_next.js';
 
 export default {
     name: Events.InteractionCreate,
