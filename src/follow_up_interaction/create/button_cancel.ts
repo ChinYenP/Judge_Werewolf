@@ -25,8 +25,8 @@ async function button_create_initial_no(interaction: ButtonInteraction): Promise
     console.log('create_initial: button_cancel');
 
     if (interaction.guildId === null) return;
-    const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
-    if (settings !== null) {
+    const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+    if (game_create !== null) {
         try {
             await GAME_CREATE.destroy({ where: { clientId: clientId } });
         } catch (error) {

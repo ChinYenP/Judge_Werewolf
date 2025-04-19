@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
-import { get_display_text, get_game_data, get_role_list_order } from '../utility/get_display.js';
+import { get_display_text, get_game_text, get_role_list_order } from '../utility/get_display.js';
 import { config } from '../text_data_config/config.js';
 import { t_role_id } from '../declare_type/type_guard.js';
 
@@ -32,7 +32,7 @@ async function ui_game_id(clientId: string, title: string, description: string, 
         let i: number = 1;
         let role_order: [t_role_id, number][] = await get_role_list_order(data['roles_list']);
         for (const [each_role_id, count] of role_order) {
-            role_list_content += `${await get_game_data(each_role_id, 'name', clientId)} x${count}`;
+            role_list_content += `${await get_game_text(each_role_id, 'name', clientId)} x${count}`;
             if (i != role_order.length) {
                 role_list_content += '\n';
             }

@@ -2,6 +2,10 @@ const config: ConfigType = {
     "display_error": "Something has gone wrong during the code runtime: Error DSPY",
     "default_prefix": "jw",
     "embed_hex_color": 0x00aaff,
+    "gameplay": {
+        "timeout": (5 * 60),
+        "consecutive_no_death": 3,
+    },
     "timeout_sec": {
         "settings": {
             "user": 30,

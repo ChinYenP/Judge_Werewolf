@@ -2,7 +2,7 @@ import { display_text } from '../text_data_config/display_text.js';
 import { UserSettingsInstance, USER_SETTINGS } from '../database/sqlite_db.js';
 import { config } from '../text_data_config/config.js';
 import { isRoleId, t_role_id } from '../declare_type/type_guard.js';
-
+import { compareRoleCount } from './compareFn.js';
 
 //query_arr = [query_string1, query_string2, ...]
 //return [answer_string1, answer_string2, ...]
@@ -69,9 +69,9 @@ async function get_display_error_code(error_code: string, clientId: string): Pro
     return (`${error_desc_text}${error_code}`);
 }
 
-async function get_game_data(role_id: string, query_str: string, clientId: string): Promise<string> {
+async function get_game_text(role_id: string, query_str: string, clientId: string): Promise<string> {
     if (!isRoleId(role_id)) return (config['display_error']);
-    return ((await get_display_text([`game_data.${role_id}.${query_str}`], clientId))[0] ?? config['display_error']);
+    return ((await get_display_text([`game_text.${role_id}.${query_str}`], clientId))[0] ?? config['display_error']);
 }
 
 async function get_role_list_order(role_list: t_role_id[]): Promise<[t_role_id, number][]> {
@@ -90,22 +90,8 @@ async function get_role_list_order(role_list: t_role_id[]): Promise<[t_role_id, 
             role_set.add(role_id);
         }
     }
-    return (new_role_list.sort(compareFn));
-
-    function compareFn(a: [t_role_id, number], b: [t_role_id, number]): number {
-        const category_arr: string[] = ['W', 'V', 'G'];
-        if (category_arr.indexOf(a[0][0] ?? '') < category_arr.indexOf(b[0][0] ?? '')) {
-            return (-1);
-        } else if (category_arr.indexOf(a[0][0] ?? '') > category_arr.indexOf(b[0][0] ?? '')) {
-            return (1);
-        }
-        if (Number(`${a[0][1]}${a[0][2]}`) < Number(`${b[0][1]}${b[0][2]}`)) {
-            return (-1);
-        } else if (Number(`${a[0][1]}${a[0][2]}`) > Number(`${b[0][1]}${b[0][2]}`)) {
-            return (1);
-        }
-        return (0);
-    }
+    return (new_role_list.sort(compareRoleCount));
+    
 }
 
 async function get_game_id(data: {
@@ -144,4 +130,4 @@ async function get_game_id(data: {
     return (game_id);
 }
 
-export { get_display_text, get_display_error_code, get_game_data, get_role_list_order, get_game_id }
+export { get_display_text, get_display_error_code, get_game_text, get_role_list_order, get_game_id }

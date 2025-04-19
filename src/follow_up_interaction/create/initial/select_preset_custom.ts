@@ -38,9 +38,9 @@ async function select_create_initial_preset_custom(interaction: StringSelectMenu
         preset_selected = 0;
         new_is_preset = false;
     }
-    const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+    const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
 
-    if (settings !== null) {
+    if (game_create !== null) {
         //Update first
         const [affectedCount] = await GAME_CREATE.update({ is_preset: new_is_preset }, { where: { clientId: clientId } });
         if (affectedCount <= 0) {
@@ -49,13 +49,13 @@ async function select_create_initial_preset_custom(interaction: StringSelectMenu
             return;
         }
         //Set default selection
-        if (settings.num_players !== null) {
-            num_player_selected = settings.num_players;
+        if (game_create.num_players !== null) {
+            num_player_selected = game_create.num_players;
         }
-        if (settings.game_rule !== null) {
-            if (settings.game_rule === 'kill_all') {
+        if (game_create.game_rule !== null) {
+            if (game_create.game_rule === 'kill_all') {
                 game_rule_selected = 0;
-            } else if (settings.game_rule === 'kill_either') {
+            } else if (game_create.game_rule === 'kill_either') {
                 game_rule_selected = 1;
             }
         }
@@ -89,8 +89,8 @@ async function select_create_initial_preset_custom(interaction: StringSelectMenu
     await timeout_set('create', update_msg.id, clientId, update_msg.channelId, time_sec, message_timeout, update_msg);
 
     async function message_timeout(update_msg: Message): Promise<void> {
-        const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
-        if (settings !== null) {
+        const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+        if (game_create !== null) {
             try {
                 await GAME_CREATE.destroy({ where: { clientId: clientId } });
             } catch (error) {

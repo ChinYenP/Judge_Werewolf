@@ -13,5 +13,3 @@ declare global {
         async execute: (content: Message | Interaction | Client) => Promise<void>;
     }
 }
-
-export {}

@@ -24,15 +24,15 @@ async function button_create_initial_next(interaction: ButtonInteraction): Promi
 
     console.log('create_initial: button_next');
 
-    const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+    const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
 
-    if (settings === null) {
+    if (game_create === null) {
         const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
         await interaction.update({embeds: [errorEmbed], components: []});
         return;
     }
     
-    if (settings.is_preset === null || settings.num_players === null || settings.game_rule === null) return;
+    if (game_create.is_preset === null || game_create.num_players === null || game_create.game_rule === null) return;
 
     //Update data to transition to create_roles
     const [affectedCount] = await GAME_CREATE.update({ status: 'roles', sheriff: false, players_role: [] }, { where: { clientId: clientId } });
@@ -42,20 +42,19 @@ async function button_create_initial_next(interaction: ButtonInteraction): Promi
         return;
     }
 
-    //////////////////////////////////////////////////////////////////////////////////
-    //To do list: preset role lists
+    
     //For now, the following code is for custom role list:
     const time_sec: number = config['timeout_sec'].create.roles;
     const [ActionRowArr, rolesEmbed, timeoutEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>]
         | [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder, EmbedBuilder]
-    = await ui_create_roles(clientId, time_sec, settings.num_players, []);
+    = await ui_create_roles(clientId, time_sec, game_create.num_players, []);
     const update_msg_resource: InteractionCallbackResource = (await interaction.update({ embeds: [rolesEmbed], components: ActionRowArr, withResponse: true })).resource as InteractionCallbackResource;
     const update_msg: Message = update_msg_resource.message as Message;
     await timeout_set('create', update_msg.id, clientId, update_msg.channelId, time_sec, message_timeout, update_msg);
 
     async function message_timeout(update_msg: Message): Promise<void> {
-        const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
-        if (settings !== null) {
+        const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+        if (game_create !== null) {
             try {
                 await GAME_CREATE.destroy({ where: { clientId: clientId } });
             } catch (error) {

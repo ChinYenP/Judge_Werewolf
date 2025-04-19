@@ -1,5 +1,6 @@
 import { DataTypes, Sequelize, Model, InferAttributes, InferCreationAttributes } from 'sequelize';
-import { t_role_id } from '../declare_type/type_guard.js';
+import { t_role_id, t_fake_role_id } from '../declare_type/type_guard.js';
+import { i_player_info } from '../declare_type/player_info.js';
 
 //Connect Database: SQLite
 const sequelize = new Sequelize({
@@ -150,8 +151,11 @@ interface GameMatchInstance extends Model<InferAttributes<GameMatchInstance>, In
     turn_order: t_game_match_status[];
     num_days: number;
     sheriff: boolean;
-    num_players: number;
+    game_rule: t_game_rule;
     consecutive_no_death: number;
+    num_ability: number;
+    role_count: [t_role_id, number][];
+    fake_role_list: t_fake_role_id[];
     players_info: i_player_info[];
 };
 const GAME_MATCH = sequelize.define<GameMatchInstance>('GAME_MATCH', {
@@ -160,14 +164,12 @@ const GAME_MATCH = sequelize.define<GameMatchInstance>('GAME_MATCH', {
         primaryKey: true
     },
     status: {
-        type: DataTypes.ENUM('night', 'sheriff', 'hunter', 'day_ability', 'day_vote', 'result'),
-        allowNull: false,
-        defaultValue: 'night'
+        type: DataTypes.ENUM('night', 'sheriff', 'day_ability', 'day_vote', 'hunter'),
+        allowNull: false
     },
     turn_order: {
         type: DataTypes.JSON,
-        allowNull: false,
-        defaultValue: []
+        allowNull: false
     },
     num_days: {
         type: DataTypes.INTEGER,
@@ -178,16 +180,11 @@ const GAME_MATCH = sequelize.define<GameMatchInstance>('GAME_MATCH', {
     },
     sheriff: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: false
+        allowNull: false
     },
-    num_players: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-            min: 6,
-            max: 12
-        }
+    game_rule: {
+        type: DataTypes.ENUM('kill_all', 'kill_either'),
+        allowNull: false
     },
     consecutive_no_death: {
         type: DataTypes.INTEGER,
@@ -197,10 +194,24 @@ const GAME_MATCH = sequelize.define<GameMatchInstance>('GAME_MATCH', {
             max: 4
         }
     },
-    players_info: {
+    num_ability: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+            min: 1
+        }
+    },
+    role_count: {
         type: DataTypes.JSON,
         allowNull: false,
-        defaultValue: []
+    },
+    fake_role_list: {
+        type: DataTypes.JSON,
+        allowNull: false
+    },
+    players_info: {
+        type: DataTypes.JSON,
+        allowNull: false
     }
 },{
     freezeTableName: true,

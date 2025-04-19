@@ -26,7 +26,7 @@ export default {
         if (args.length > 1) {
             //Too much arguments;
             const [much_args_text]: string[] = await get_display_text(['general.command_args_error.much_args'], clientId);
-            const much_args_embed: EmbedBuilder = await ui_error_non_fatal(clientId, `settings ${much_args_text ?? config['display_error']}`);
+            const much_args_embed: EmbedBuilder = await ui_error_non_fatal(clientId, `game_id ${much_args_text ?? config['display_error']}`);
             await message.reply({embeds: [much_args_embed], components: []});
             return;
         }

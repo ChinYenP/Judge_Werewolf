@@ -39,9 +39,9 @@ async function select_create_initial_game_rule(interaction: StringSelectMenuInte
         game_rule_selected = 1;
         new_game_rule = 'kill_either';
     }
-    const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+    const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
 
-    if (settings !== null) {
+    if (game_create !== null) {
         //Update first
         const [affectedCount] = await GAME_CREATE.update({ game_rule: new_game_rule }, { where: { clientId: clientId } });
         if (affectedCount <= 0) {
@@ -50,11 +50,11 @@ async function select_create_initial_game_rule(interaction: StringSelectMenuInte
             return;
         }
         //Set default selection
-        if (settings.num_players !== null) {
-            num_player_selected = settings.num_players;
+        if (game_create.num_players !== null) {
+            num_player_selected = game_create.num_players;
         }
-        if (settings.is_preset !== null) {
-            if (settings.is_preset == true) {
+        if (game_create.is_preset !== null) {
+            if (game_create.is_preset == true) {
                 preset_selected = 1;
             } else {
                 preset_selected = 0;
@@ -90,8 +90,8 @@ async function select_create_initial_game_rule(interaction: StringSelectMenuInte
     await timeout_set('create', update_msg.id, clientId, update_msg.channelId, time_sec, message_timeout, update_msg);
 
     async function message_timeout(update_msg: Message): Promise<void> {
-        const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
-        if (settings !== null) {
+        const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+        if (game_create !== null) {
             try {
                 await GAME_CREATE.destroy({ where: { clientId: clientId } });
             } catch (error) {

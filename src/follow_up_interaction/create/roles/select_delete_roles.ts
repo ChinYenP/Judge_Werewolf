@@ -28,17 +28,17 @@ async function select_create_roles_delete_roles(interaction: StringSelectMenuInt
     if (interaction.values[0] === undefined) return;
 
     //Do sequelize thing here while get output text
-    let settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+    let game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
 
-    if (settings === null) {
+    if (game_create === null) {
         const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D4');
         await interaction.update({embeds: [errorEmbed], components: []});
         return;
     }
 
     //Update first
-    if (settings.players_role == null || settings.num_players === null) return;
-    let new_players_role: string[] = settings.players_role;
+    if (game_create.players_role == null || game_create.num_players === null) return;
+    let new_players_role: string[] = game_create.players_role;
     for (const index_to_remove of interaction.values) {
         new_players_role[Number(index_to_remove)] = ''; // To be removed
     }
@@ -50,27 +50,27 @@ async function select_create_roles_delete_roles(interaction: StringSelectMenuInt
         await interaction.update({embeds: [errorEmbed], components: []});
         return;
     }
-    settings = await GAME_CREATE.findOne({ where: { clientId: clientId } });
-    if (settings === null) {
+    game_create = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+    if (game_create === null) {
         const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D4');
         await interaction.update({embeds: [errorEmbed], components: []});
         return;
     }
-    if (settings.players_role == null || settings.num_players === null) return;
+    if (game_create.players_role == null || game_create.num_players === null) return;
 
 
     //Success
     const time_sec: number = config['timeout_sec'].create.roles;
     const [ActionRowArr, rolesEmbed, timeoutEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>]
         | [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder, EmbedBuilder]
-    = await ui_create_roles(clientId, time_sec, settings.num_players, settings.players_role);
+    = await ui_create_roles(clientId, time_sec, game_create.num_players, game_create.players_role);
     const update_msg_resource: InteractionCallbackResource = (await interaction.update({ embeds: [rolesEmbed], components: ActionRowArr, withResponse: true })).resource as InteractionCallbackResource;
     const update_msg: Message = update_msg_resource.message as Message;
     await timeout_set('create', update_msg.id, clientId, update_msg.channelId, time_sec, message_timeout, update_msg);
 
     async function message_timeout(update_msg: Message): Promise<void> {
-        const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
-        if (settings !== null) {
+        const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+        if (game_create !== null) {
             try {
                 await GAME_CREATE.destroy({ where: { clientId: clientId } });
             } catch (error) {

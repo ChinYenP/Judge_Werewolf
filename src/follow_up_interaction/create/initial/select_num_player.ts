@@ -32,9 +32,9 @@ async function select_create_initial_num_player(interaction: StringSelectMenuInt
     let num_player_selected: number = -1;
     let preset_selected: number = -1;
     let game_rule_selected: number = -1;
-    const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+    const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
 
-    if (settings !== null) {
+    if (game_create !== null) {
         //Update first
         const [affectedCount] = await GAME_CREATE.update({ num_players: new_num_player }, { where: { clientId: clientId } });
         if (affectedCount <= 0) {
@@ -44,17 +44,17 @@ async function select_create_initial_num_player(interaction: StringSelectMenuInt
         }
         //Set default selection
         num_player_selected = new_num_player;
-        if (settings.is_preset !== null) {
-            if (settings.is_preset == true) {
+        if (game_create.is_preset !== null) {
+            if (game_create.is_preset == true) {
                 preset_selected = 1;
             } else {
                 preset_selected = 0;
             }
         }
-        if (settings.game_rule !== null) {
-            if (settings.game_rule === 'kill_all') {
+        if (game_create.game_rule !== null) {
+            if (game_create.game_rule === 'kill_all') {
                 game_rule_selected = 0;
-            } else if (settings.game_rule === 'kill_either') {
+            } else if (game_create.game_rule === 'kill_either') {
                 game_rule_selected = 1;
             }
         }
@@ -88,8 +88,8 @@ async function select_create_initial_num_player(interaction: StringSelectMenuInt
     await timeout_set('create', update_msg.id, clientId, update_msg.channelId, time_sec, message_timeout, update_msg);
 
     async function message_timeout(update_msg: Message): Promise<void> {
-        const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
-        if (settings !== null) {
+        const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+        if (game_create !== null) {
             try {
                 await GAME_CREATE.destroy({ where: { clientId: clientId } });
             } catch (error) {

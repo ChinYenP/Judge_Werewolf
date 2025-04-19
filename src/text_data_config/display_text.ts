@@ -832,7 +832,7 @@ const display_text: DisplayTextType = {
             "yue": "遊戲已經創建。輸入 `create` 指令唔帶遊戲ID嚟查看當前遊戲。"
         }
     },
-    "game_data": {
+    "game_text": {
         "W00": {
             "name": {
                 "eng": "Werewolf",
@@ -895,6 +895,135 @@ const display_text: DisplayTextType = {
                 "schi": "一个神职, 可以在死亡时射击玩家。",
                 "tchi": "一個神職, 可以在死亡時射擊玩家。",
                 "yue": "一個神職, 可以喺死咗嘅時候射擊玩家。"
+            }
+        }
+    },
+    "gameplay": {
+        "guess_button": {
+
+        },
+        "info_embed": {
+            "title": {
+                "eng": "Game Info",
+                "malay": "Maklumat Permainan",
+                "schi": "游戏资讯",
+                "tchi": "遊戲資訊",
+                "yue": "遊戲資訊"
+            },
+            "sheriff_mode": {
+                "title": {
+                    "eng": "Sheriff Mode",
+                    "malay": "Mod Sheriff",
+                    "schi": "警长模式",
+                    "tchi": "警長模式",
+                    "yue": "警長模式"
+                },
+                "enabled": {
+                    "eng": "Enabled",
+                    "malay": "Diaktifkan",
+                    "schi": "启用",
+                    "tchi": "啟用",
+                    "yue": "啟用"
+                },
+                "disabled": {
+                    "eng": "Disabled",
+                    "malay": "Dinonaktifkan",
+                    "schi": "禁用",
+                    "tchi": "禁用",
+                    "yue": "禁用"
+                }
+            },
+            "game_rule": {
+                "title": {
+                    "eng": "Game Rule",
+                    "malay": "Peraturan Permainan",
+                    "schi": "游戏规则",
+                    "tchi": "遊戲規則",
+                    "yue": "遊戲規則"
+                },
+                "kill_all": {
+                    "eng": "Kill All",
+                    "malay": "Bunuh Semua",
+                    "schi": "屠城",
+                    "tchi": "屠城",
+                    "yue": "屠城"
+                },
+                "kill_either": {
+                    "eng": "Kill Either",
+                    "malay": "Bunuh Salah Satu",
+                    "schi": "屠边",
+                    "tchi": "屠邊",
+                    "yue": "屠邊"
+                }
+            },
+            "death_requirement": {
+                "title": {
+                    "eng": "Death Requirement",
+                    "malay": "Keperluan Kematian",
+                    "schi": "死亡要求",
+                    "tchi": "死亡要求",
+                    "yue": "死亡要求"
+                },
+                "description_front": {
+                    "eng": "At least one player must die within ",
+                    "malay": "Keperluan Kematian: Sekurang-kurangnya seorang pemain mesti mati dalam ",
+                    "schi": "至少一个玩家必须在",
+                    "tchi": "至少一個玩家必須在",
+                    "yue": "最少一個玩家必須在"
+                },
+                "description_back": {
+                    "eng": " phases.",
+                    "malay": " fasa.",
+                    "schi": "个阶段内死亡。",
+                    "tchi": "個階段內死亡。",
+                    "yue": "階段內死亡。"
+                }
+            },
+            "role_list": {
+                "eng": "Role List",
+                "malay": "Papan Permainan",
+                "schi": "游戏板子",
+                "tchi": "遊戲板子",
+                "yue": "遊戲板子"
+            },
+            "fake_role_list": {
+                "eng": "Roles that can be faked by Werewolves",
+                "malay": "Peranan yang boleh disamar oleh Serigala Manusia",
+                "schi": "狼人可以伪装的角色",
+                "tchi": "狼人可以偽裝的角色",
+                "yue": "狼人可以偽裝的角色"
+            },
+            "survived": {
+
+            },
+            "dead": {
+
+            }
+        },
+        "night": {
+            "title": {
+
+            },
+            "description": {
+
+            },
+            "select_target_1": {
+
+            },
+            "select_target_2": {
+
+            },
+            "ability_num": {
+
+            },
+            "delete_ability": {
+
+            },
+            "add_button": {
+
+            },
+            "next_button": {
+                
             }
         }
     }

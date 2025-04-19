@@ -15,10 +15,10 @@ async function check_cooldown(clientId: string, command: string, time_sec: numbe
     }
 
     // equivalent to: SELECT * FROM tags WHERE name = 'tagName' LIMIT 1;
-    const settings: CommandCooldownInstance | null = await COMMAND_COOLDOWN.findOne({ where: { clientId: clientId, command: command } });
-    if (settings !== null) {
+    const command_cooldown: CommandCooldownInstance | null = await COMMAND_COOLDOWN.findOne({ where: { clientId: clientId, command: command } });
+    if (command_cooldown !== null) {
         //data exist
-        const expired_date: bigint = settings.expired_date;
+        const expired_date: bigint = command_cooldown.expired_date;
         const date_now: number = Date.now();
         if (date_now < expired_date) {
             const cooldownEmbed: EmbedBuilder = await ui_cooldown(clientId, time_sec);
@@ -41,8 +41,8 @@ async function update_cooldown(clientId: string, command: string, time_sec: numb
     const expired_date: number = Date.now() + (time_sec * 1000);
 
     // equivalent to: SELECT * FROM tags WHERE name = 'tagName' LIMIT 1;
-    const settings: CommandCooldownInstance | null = await COMMAND_COOLDOWN.findOne({ where: { clientId: clientId, command: command } });
-    if (settings !== null) {
+    const command_cooldown: CommandCooldownInstance | null = await COMMAND_COOLDOWN.findOne({ where: { clientId: clientId, command: command } });
+    if (command_cooldown !== null) {
         //data exist
         const [affectedCount]: [number] = await COMMAND_COOLDOWN.update({ expired_date: BigInt(expired_date) }, { where: { clientId: clientId, command: command } });
         if (affectedCount > 0) {
@@ -53,7 +53,6 @@ async function update_cooldown(clientId: string, command: string, time_sec: numb
     }
     //Data not exist
     try {
-        // equivalent to: INSERT INTO SETTINGS (clientId, lang, hardMode) values (?, ?, ?);
         await COMMAND_COOLDOWN.create({
             clientId: clientId,
             command: command,

@@ -38,8 +38,8 @@ export default {
         //Create by ID
         if (args.length === 1) {
             //If the game has already created, stop new game creation.
-            const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
-            if (settings !== null) {
+            const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+            if (game_create !== null) {
                 const [creating_error_text]: string[] = await get_display_text(['create.creating_error'], clientId);
                 const creating_err_embed: EmbedBuilder = await ui_error_non_fatal(clientId, creating_error_text ?? config['display_error']);
                 await message.reply({embeds: [creating_err_embed], components: []});
@@ -71,26 +71,26 @@ export default {
 
         //For general create
         await timeout_delete_message(clientId, 'create', message.client);
-        const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
-        if (settings !== null) {
-            if (settings.status === 'roles') {
-                if (settings.is_preset === null || settings.num_players === null || settings.game_rule === null
-                    || settings.sheriff === null || settings.players_role === null) return;
-                await create_roles(message, clientId, config['timeout_sec'].create.roles, settings);
+        const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+        if (game_create !== null) {
+            if (game_create.status === 'roles') {
+                if (game_create.is_preset === null || game_create.num_players === null || game_create.game_rule === null
+                    || game_create.sheriff === null || game_create.players_role === null) return;
+                await create_roles(message, clientId, config['timeout_sec'].create.roles, game_create);
                 return;
-            } else if (settings.status === 'final') {
-                if (settings.is_preset === null || settings.num_players === null || settings.game_rule === null
-                    || settings.sheriff === null || settings.players_role === null) return;
-                await create_final(message, clientId, config['timeout_sec'].create.final, settings);
+            } else if (game_create.status === 'final') {
+                if (game_create.is_preset === null || game_create.num_players === null || game_create.game_rule === null
+                    || game_create.sheriff === null || game_create.players_role === null) return;
+                await create_final(message, clientId, config['timeout_sec'].create.final, game_create);
                 return;
             }
         }
-        await create_initial(message, clientId, config['timeout_sec'].create.initial, settings);
+        await create_initial(message, clientId, config['timeout_sec'].create.initial, game_create);
     }
 }
 
 
-async function create_initial(message: Message, clientId: string, time_sec: number, settings: GameCreateInstance | null): Promise<void> {
+async function create_initial(message: Message, clientId: string, time_sec: number, game_create: GameCreateInstance | null): Promise<void> {
 
     if (!isMyClient(message.client)) return;
 
@@ -98,21 +98,21 @@ async function create_initial(message: Message, clientId: string, time_sec: numb
     let preset_selected: number = -1;
     let game_rule_selected: number = -1;
 
-    if (settings !== null) {
-        if (settings.num_players !== null) {
-            num_player_selected = settings.num_players;
+    if (game_create !== null) {
+        if (game_create.num_players !== null) {
+            num_player_selected = game_create.num_players;
         }
-        if (settings.is_preset !== null) {
-            if (settings.is_preset === true) {
+        if (game_create.is_preset !== null) {
+            if (game_create.is_preset === true) {
                 preset_selected = 1;
             } else {
                 preset_selected = 0;
             }
         }
-        if (settings.game_rule !== null) {
-            if (settings.game_rule === 'kill_all') {
+        if (game_create.game_rule !== null) {
+            if (game_create.game_rule === 'kill_all') {
                 game_rule_selected = 0;
-            } else if (settings.game_rule === 'kill_either') {
+            } else if (game_create.game_rule === 'kill_either') {
                 game_rule_selected = 1;
             }
         }
@@ -143,8 +143,8 @@ async function create_initial(message: Message, clientId: string, time_sec: numb
     await timeout_set('create', bot_reply.id, clientId, message.channelId, time_sec, message_timeout, bot_reply);
 
     async function message_timeout(bot_reply: Message): Promise<void> {
-        const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
-        if (settings !== null) {
+        const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+        if (game_create !== null) {
             try {
                 await GAME_CREATE.destroy({ where: { clientId: clientId } });
             } catch (error) {
@@ -165,8 +165,8 @@ async function create_roles_by_id(message: Message, clientId: string, time_sec: 
     'game_rule': t_game_rule,
     'roles_list': t_role_id[]}): Promise<void> {
     
-    const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
-    if (settings !== null) {
+    const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+    if (game_create !== null) {
         const [affectedCount] = await GAME_CREATE.update({
             status: 'roles',
             num_players: game_data['num_roles_max'],
@@ -207,8 +207,8 @@ async function create_roles_by_id(message: Message, clientId: string, time_sec: 
     await timeout_set('create', bot_reply.id, clientId, message.channelId, time_sec, message_timeout, bot_reply);
 
     async function message_timeout(bot_reply: Message): Promise<void> {
-        const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
-        if (settings !== null) {
+        const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+        if (game_create !== null) {
             try {
                 await GAME_CREATE.destroy({ where: { clientId: clientId } });
             } catch (error) {
@@ -223,16 +223,16 @@ async function create_roles_by_id(message: Message, clientId: string, time_sec: 
 }
 
 
-async function create_roles(message: Message, clientId: string, time_sec: number, settings: GameCreateInstance): Promise<void> {
+async function create_roles(message: Message, clientId: string, time_sec: number, game_create: GameCreateInstance): Promise<void> {
     const [ActionRowArr, rolesEmbed, timeoutEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>]
         | [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder, EmbedBuilder]
-    = await ui_create_roles(clientId, time_sec, settings.num_players as number, settings.players_role as string[]);
+    = await ui_create_roles(clientId, time_sec, game_create.num_players as number, game_create.players_role as string[]);
     const bot_reply: Message = await message.reply({ embeds: [rolesEmbed], components: ActionRowArr });
     await timeout_set('create', bot_reply.id, clientId, message.channelId, time_sec, message_timeout, bot_reply);
 
     async function message_timeout(bot_reply: Message): Promise<void> {
-        const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
-        if (settings !== null) {
+        const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+        if (game_create !== null) {
             try {
                 await GAME_CREATE.destroy({ where: { clientId: clientId } });
             } catch (error) {
@@ -247,22 +247,22 @@ async function create_roles(message: Message, clientId: string, time_sec: number
 }
 
 
-async function create_final(message: Message, clientId: string, time_sec: number, settings: GameCreateInstance): Promise<void> {
-    if (settings.is_preset === null || settings.num_players === null || settings.game_rule === null
-        || settings.sheriff === null || settings.players_role === null) return;
+async function create_final(message: Message, clientId: string, time_sec: number, game_create: GameCreateInstance): Promise<void> {
+    if (game_create.is_preset === null || game_create.num_players === null || game_create.game_rule === null
+        || game_create.sheriff === null || game_create.players_role === null) return;
     const [ActionRowArr, finalEmbed, timeoutEmbed]: [[ActionRowBuilder<ButtonBuilder>], EmbedBuilder, EmbedBuilder]
     = await ui_create_final(clientId, time_sec, {
-        "num_roles_max": settings.num_players,
-        "sheriff": settings.sheriff,
-        "game_rule": settings.game_rule,
-        "roles_list": settings.players_role
+        "num_roles_max": game_create.num_players,
+        "sheriff": game_create.sheriff,
+        "game_rule": game_create.game_rule,
+        "roles_list": game_create.players_role
     });
     const bot_reply: Message = await message.reply({ embeds: [finalEmbed], components: ActionRowArr});
     await timeout_set('create', bot_reply.id, clientId, message.channelId, time_sec, message_timeout, bot_reply);
 
     async function message_timeout(update_msg: Message): Promise<void> {
-        const settings: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
-        if (settings !== null) {
+        const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+        if (game_create !== null) {
             try {
                 await GAME_CREATE.destroy({ where: { clientId: clientId } });
             } catch (error) {

@@ -14,6 +14,8 @@ import { select_create_roles_add_role } from '../follow_up_interaction/create/ro
 import { select_create_roles_delete_roles } from '../follow_up_interaction/create/roles/select_delete_roles.js';
 import { button_create_roles_next } from '../follow_up_interaction/create/roles/button_next.js';
 
+import { button_create_final_start } from '../follow_up_interaction/create/final/button_start_game.js';
+
 export default {
     name: Events.InteractionCreate,
     once: false,
@@ -44,6 +46,8 @@ export default {
                 await button_create_initial_next(interaction);
             } else if (interaction.customId === 'create_roles_next') {
                 await button_create_roles_next(interaction);
+            } else if (interaction.customId === 'create_final_start_game') {
+                await button_create_final_start(interaction);
             }
         }
     }

@@ -1,5 +1,5 @@
 import { ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
-import { get_display_text, get_game_data } from '../../utility/get_display.js';
+import { get_display_text, get_game_text } from '../../utility/get_display.js';
 import { config } from '../../text_data_config/config.js';
 import { t_role_id } from '../../declare_type/type_guard.js';
 import { ui_timeout } from '../timeout.js';
@@ -20,10 +20,10 @@ async function ui_create_roles(clientId: string, time_sec: number, num_players_m
     let delete_roles_arr: {label: string, description: string, value: string}[] = [];
     let i: number = 1;
     for (const each_roles_id of roles_list) {
-        role_list_content += `${String(i)}. ${await get_game_data(each_roles_id, 'name', clientId)}`;
+        role_list_content += `${String(i)}. ${await get_game_text(each_roles_id, 'name', clientId)}`;
         delete_roles_arr.push({
-            label: `${i}. ${await get_game_data(each_roles_id, 'name', clientId)}`,
-            description: await get_game_data(each_roles_id, 'description', clientId),
+            label: `${i}. ${await get_game_text(each_roles_id, 'name', clientId)}`,
+            description: await get_game_text(each_roles_id, 'description', clientId),
             value: String(i - 1)
         });
         if (i != roles_list.length) {
@@ -39,8 +39,8 @@ async function ui_create_roles(clientId: string, time_sec: number, num_players_m
                 .setPlaceholder(select_werewolf_text ?? config['display_error'])
                 .addOptions(
                     {
-                        label: await get_game_data('W00', 'name', clientId),
-                        description: await get_game_data('W00', 'description', clientId),
+                        label: await get_game_text('W00', 'name', clientId),
+                        description: await get_game_text('W00', 'description', clientId),
                         value: 'W00'
                     }
                 )
@@ -52,18 +52,18 @@ async function ui_create_roles(clientId: string, time_sec: number, num_players_m
                 .setPlaceholder(select_village_team_text ?? config['display_error'])
                 .addOptions(
                     {
-                        label: await get_game_data('V00', 'name', clientId),
-                        description: await get_game_data('V00', 'description', clientId),
+                        label: await get_game_text('V00', 'name', clientId),
+                        description: await get_game_text('V00', 'description', clientId),
                         value: 'V00'
                     },
                     {
-                        label: await get_game_data('G00', 'name', clientId),
-                        description: await get_game_data('G00', 'description', clientId),
+                        label: await get_game_text('G00', 'name', clientId),
+                        description: await get_game_text('G00', 'description', clientId),
                         value: 'G00'
                     },
                     {
-                        label: await get_game_data('G01', 'name', clientId),
-                        description: await get_game_data('G01', 'description', clientId),
+                        label: await get_game_text('G01', 'name', clientId),
+                        description: await get_game_text('G01', 'description', clientId),
                         value: 'G01'
                     }
                 )
