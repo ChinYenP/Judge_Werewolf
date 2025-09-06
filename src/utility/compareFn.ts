@@ -1,6 +1,7 @@
-import { t_role_id } from '../declare_type/type_guard.js';
+import { t_role_id } from '../global/types/other_types.js';
 
 function compareRoleId(a: t_role_id, b: t_role_id): number {
+    if (a.length != 3 || b.length != 3) return (0);
     const category_arr: string[] = ['W', 'V', 'G'];
     if (category_arr.indexOf(a[0] ?? '') < category_arr.indexOf(b[0] ?? '')) {
         return (-1);

@@ -1,54 +1,77 @@
 import { Events, Interaction } from 'discord.js';
+import { EventModule } from '../global/types/module.js';
+import { t_interaction_name, isInteractionName } from '../global/types/list_str.js';
+import { AllSelectModules, AllButtonModules } from '../global/types/interaction_states.js';
+import { get_display_text, get_display_error_code } from '../utility/get_display.js';
+import { display_error_str } from '../global/config.js';
 
-import { menu_select_lang } from '../follow_up_interaction/settings/general/select_lang.js';
-import { button_prefix_yes } from '../follow_up_interaction/settings/prefix/button_yes.js';
-import { button_prefix_no } from '../follow_up_interaction/settings/prefix/button_no.js';
+async function get_select_module(interaction_name: t_interaction_name): Promise<AllSelectModules | undefined> {
+    switch (interaction_name) {
+        case ('select_settings_user_lang'):
+            return ((await import('../features/settings/user/select_lang.js')).default);
+        default:
+            return (undefined);
+    }
+}
 
-import { select_create_initial_num_player } from '../follow_up_interaction/create/initial/select_num_player.js';
-import { select_create_initial_preset_custom } from '../follow_up_interaction/create/initial/select_preset_custom.js';
-import { select_create_initial_game_rule } from '../follow_up_interaction/create/initial/select_game_rule.js';
-import { button_create_initial_no } from '../follow_up_interaction/create/button_cancel.js';
-import { button_create_initial_next } from '../follow_up_interaction/create/initial/button_next.js';
+async function get_button_module(interaction_name: t_interaction_name): Promise<AllButtonModules | undefined> {
+    switch (interaction_name) {
+        case ('button_settings_prefix_no'):
+            return ((await import('../features/settings/prefix/button_no.js')).default);
+        case ('button_settings_prefix_yes'):
+            return ((await import('../features/settings/prefix/button_yes.js')).default);
+        default:
+            return (undefined);
+    }
+}
 
-import { select_create_roles_add_role } from '../follow_up_interaction/create/roles/select_add_role.js';
-import { select_create_roles_delete_roles } from '../follow_up_interaction/create/roles/select_delete_roles.js';
-import { button_create_roles_next } from '../follow_up_interaction/create/roles/button_next.js';
-
-import { button_create_final_start } from '../follow_up_interaction/create/final/button_start_game.js';
-
-export default {
-    name: Events.InteractionCreate,
+const interaction_create: EventModule<Interaction> = {
+    event_name: Events.InteractionCreate,
     once: false,
     async execute(interaction: Interaction): Promise<void> {
 
+        if (!interaction.isStringSelectMenu() && !interaction.isButton()) return;
+        if (!isInteractionName(interaction.customId)) return;
+
+        const clientId: string = interaction.user.id;
+        const interactionName: t_interaction_name = interaction.customId;
+
         if (interaction.isStringSelectMenu()) {
-            if (interaction.customId === 'settings_user_lang') {
-                await menu_select_lang(interaction);
-            } else if (interaction.customId === 'create_initial_num_player') {
-                await select_create_initial_num_player(interaction);
-            } else if (interaction.customId === 'create_initial_preset_custom') {
-                await select_create_initial_preset_custom(interaction);
-            } else if (interaction.customId === 'create_initial_game_rule') {
-                await select_create_initial_game_rule(interaction);
-            } else if (interaction.customId === 'create_roles_werewolf' || interaction.customId === 'create_roles_village_team') {
-                await select_create_roles_add_role(interaction);
-            } else if (interaction.customId === 'create_roles_delete_roles') {
-                await select_create_roles_delete_roles(interaction);
+
+            const interact: AllSelectModules | undefined = await get_select_module(interactionName);
+            if (!interact) {
+                const [cmd_not_exist_text]: string[] = await get_display_text(['general.interaction_not_implemented'], clientId);
+                await interaction.reply(`${cmd_not_exist_text ?? display_error_str}${interactionName}`);
+                console.error(`Interaction matching ${interactionName} is not implemented yet.`);
+                return;
             }
-        } else if (interaction.isButton()) {
-            if (interaction.customId === 'settings_prefix_yes') {
-                await button_prefix_yes(interaction);
-            } else if (interaction.customId === 'settings_prefix_no') {
-                await button_prefix_no(interaction);
-            } else if (interaction.customId === 'create_cancel') {
-                await button_create_initial_no(interaction);
-            } else if (interaction.customId === 'create_initial_next') {
-                await button_create_initial_next(interaction);
-            } else if (interaction.customId === 'create_roles_next') {
-                await button_create_roles_next(interaction);
-            } else if (interaction.customId === 'create_final_start_game') {
-                await button_create_final_start(interaction);
+            try {
+                await interact.entry(interaction);
+            } catch (error) {
+                await interaction.reply((await get_display_error_code('C2', clientId))[0] ?? display_error_str);
+                console.error(error);
             }
+
+        } else {
+            
+            const interact: AllButtonModules | undefined = await get_button_module(interactionName);
+            if (!interact) {
+                const [cmd_not_exist_text]: string[] = await get_display_text(['general.interaction_not_implemented'], clientId);
+                await interaction.reply(`${cmd_not_exist_text ?? display_error_str}${interactionName}`);
+                console.error(`Interaction matching ${interactionName} is not implemented yet.`);
+                return;
+            }
+            try {
+                await interact.entry(interaction);
+            } catch (error) {
+                await interaction.reply((await get_display_error_code('C2', clientId))[0] ?? display_error_str);
+                console.error(error);
+            }
+
         }
+
+        
     }
 }
+
+export default interaction_create;

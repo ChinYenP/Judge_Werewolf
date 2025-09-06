@@ -1,16 +1,16 @@
 import { Events, Client } from 'discord.js';
-import { sequelize } from '../database/sqlite_db.js';
+import { sequelize } from '../global/sqlite_db.js';
 import * as fs from 'fs';
 import * as path from 'path';
-import { isMyClient } from '../declare_type/type_guard.js';
+import { EventModule } from '../global/types/module.js';
 
-export default {
+const ready: EventModule<Client> = {
 
-    name: Events.ClientReady,
+    event_name: Events.ClientReady,
     once: true,
     async execute(client: Client): Promise<void> {
 
-        if (!isMyClient(client) || client.user === null) return;
+        if ( client.user === null) return;
         const dbFilePath: string = path.join(__dirname, '..', process.env.DBSTORAGE);
 
         await sequelize.authenticate().then(() => {
@@ -44,3 +44,5 @@ export default {
         console.log(`Ready! Logged in as ${client.user.tag}`);
     }
 }
+
+export default ready;
