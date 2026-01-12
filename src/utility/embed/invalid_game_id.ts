@@ -9,7 +9,7 @@ async function ui_invalid_game_id(clientId: string, game_id: string, error_msg: 
     const invalidEmbed: EmbedBuilder = new EmbedBuilder()
         .setColor(embed_hex_color)
         .setTitle(title_text ?? display_error_str)
-        .setDescription(`${error_msg}\n${description_text}\`${game_id}\``)
+        .setDescription(`${error_msg}\n${description_text ?? display_error_str}\`${game_id}\``)
         .setTimestamp()
     
     return (invalidEmbed);

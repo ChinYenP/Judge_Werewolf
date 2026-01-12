@@ -16,23 +16,10 @@ const button_no_interaction: InteractionModule<ButtonInteraction, buttonPrefixNo
                 const clientId: string = interaction.user.id;
                 const messageId: string = interaction.message.id;
 
-                const interaction_check: {
-                    valid: true
-                } | {
-                    valid: false,
-                    type: 'outdated' | 'not_owner'
-                } = await is_valid_interaction(messageId, clientId);
-
-                if (!interaction_check.valid) {
-                    if (interaction_check.type === 'outdated') {
-                        const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
-                        const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? display_error_str);
-                        await interaction.update({embeds: [outdated_embed], components: []});
-                    }
+                if (interaction.guildId === null) {
+                    await interaction.update({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
                     return;
                 }
-
-                if (interaction.guildId === null) return;
                 const settings: TempPrefixSettingInstance | null = await TEMP_PREFIX_SETTINGS.findOne({ where: { guildId: interaction.guildId } });
                 if (settings !== null) {
                     try {
@@ -48,13 +35,30 @@ const button_no_interaction: InteractionModule<ButtonInteraction, buttonPrefixNo
                 const [cancel_text]: string[] = await get_display_text(['settings.server_settings.prefix.cancellation'], clientId);
                 const cancelEmbed: EmbedBuilder = await ui_cancel(clientId, cancel_text ?? display_error_str);
                 await interaction.update({ embeds: [cancelEmbed], components: []});
-                await timeout_delete(messageId);
+                timeout_delete(messageId);
             },
             timeout: false
         }
     },
     entry: async function(interaction: ButtonInteraction): Promise<void> {
         console.log('interaction run: button_settings_prefix_no');
+        const clientId: string = interaction.user.id;
+                const messageId: string = interaction.message.id;
+        const interaction_check: {
+            valid: true
+        } | {
+            valid: false,
+            type: 'outdated' | 'not_owner'
+        } = is_valid_interaction(messageId, clientId);
+
+        if (!interaction_check.valid) {
+            if (interaction_check.type === 'outdated') {
+                const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
+                const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? display_error_str);
+                await interaction.update({embeds: [outdated_embed], components: []});
+            }
+            return;
+        }
         await this.states.prefix_no.execute(interaction);
     }
 }

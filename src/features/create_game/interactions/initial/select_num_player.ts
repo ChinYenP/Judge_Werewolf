@@ -1,106 +1,82 @@
-// import { StringSelectMenuInteraction, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, Message, InteractionCallbackResource, EmbedBuilder } from 'discord.js';
-// import { GameCreateInstance, GAME_CREATE } from '../../../../global/sqlite_db.js';
-// import { interaction_is_outdated, timeout_set, is_interaction_owner } from '../../../../utility/timeout/timeout.js';
-// import { get_display_text } from '../../../utility/texts/get_display.js';
-// import { config } from '../../../../global/config.js';
-// import { ui_create_initial } from '../../embed/initial.js';
-// import { ui_error_non_fatal, ui_error_fatal } from '../../../../utility/embed/error.js';
-// uncheck
-// async function select_create_initial_num_player(interaction: StringSelectMenuInteraction): Promise<void> {
-    
-//     const clientId: string = interaction.user.id;
-//     const messageId: string = interaction.message.id;
+import { StringSelectMenuInteraction, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, Message, EmbedBuilder } from 'discord.js';
+import { is_valid_interaction, timeout_set } from '../../../../utility/timeout/timeout.js';
+import { get_display_text } from '../../../../utility/get_display.js';
+import { display_error_str, timeout_sec } from '../../../../global/config.js';
+import { ui_error_non_fatal, ui_error_fatal } from '../../../../utility/embed/error.js';
+import { InteractionModule } from '../../../../global/types/module.js';
+import { selectCreateNumPlayer } from '../../../../global/types/interaction_states.js';
+import { t_error_code, isNumPlayer } from '../../../../global/types/list_str.js';
+import { initial_common_process } from '../../common_process/initial.js';
+import { common_delete_create_timeout } from '../../common_process/delete_create_timeout.js';
 
-//     if (await interaction_is_outdated(messageId)) {
-//         const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
-//         const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? config['display_error']);
-//         await interaction.update({embeds: [outdated_embed], components: []});
-//         return;
-//     }
-    
-//     if (!(await is_interaction_owner(messageId, clientId))) {
-//         return;
-//     }
+const select_num_player_interaction: InteractionModule<StringSelectMenuInteraction, selectCreateNumPlayer> = {
+    interaction_name: 'select_create_initial_num_player',
+    states: {
+        initial: {
+            execute: async function (interaction: StringSelectMenuInteraction): Promise<void> {
+                const clientId: string = interaction.user.id;
 
-//     console.log('create_initial: select_num_player');
+                if (interaction.values[0] === undefined || !isNumPlayer(interaction.values[0])) {
+                    await interaction.update({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
+                    return;
+                }
 
-//     if (interaction.values[0] === undefined) return;
-//     if (!(['6', '7', '8', '9', '10', '11', '12'].includes(interaction.values[0]))) return;
-//     const new_num_player: number = parseInt(interaction.values[0]);
+                //Initial process
+                const initial_process_obj: {
+                    error: false,
+                    value: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>,
+                    ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder]
+                } | {
+                    error: true,
+                    code: t_error_code
+                } = await initial_common_process(clientId, {replace: 'num_player', value: parseInt(interaction.values[0])});
+                if (initial_process_obj.error) {
+                    await interaction.update({ embeds: [await ui_error_fatal(clientId, initial_process_obj.code)], components: [] })
+                    return;
+                }
 
-//     //Do sequelize thing here while get output text
-//     let num_player_selected: number = -1;
-//     let preset_selected: number = -1;
-//     let game_rule_selected: number = -1;
-//     const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+                //Success
+                const [ActionRowArr, initialEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>,
+                    ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder]
+                    = initial_process_obj.value;
+                await interaction.update({ embeds: [initialEmbed], components: ActionRowArr })
+                const update_msg: Message = await interaction.fetchReply();
+                timeout_set('create', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, initialEmbed);
+            },
+            timeout: true,
+            timeout_sec: timeout_sec.create,
+            timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, initialEmbed: EmbedBuilder): Promise<void> {
+                const timeoutObj: {embed: EmbedBuilder, error: boolean} = await common_delete_create_timeout(clientId, timeout_sec);
+                if (timeoutObj.error) {
+                    await reply_msg.reply({embeds: [timeoutObj.embed], components: []});
+                    return;
+                }
+                await reply_msg.edit({ embeds: [initialEmbed, timeoutObj.embed], components: [] });
+            }
+        }
+    },
+    entry: async function(interaction: StringSelectMenuInteraction): Promise<void> {
+        console.log('interaction run: select_create_initial_num_player');
+        const clientId: string = interaction.user.id;
+        const messageId: string = interaction.message.id;
 
-//     if (game_create !== null) {
-//         //Update first
-//         const [affectedCount] = await GAME_CREATE.update({ num_players: new_num_player }, { where: { clientId: clientId } });
-//         if (affectedCount <= 0) {
-//             const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D3');
-//             await interaction.update({embeds: [errorEmbed], components: []});
-//             return;
-//         }
-//         //Set default selection
-//         num_player_selected = new_num_player;
-//         if (game_create.is_preset !== null) {
-//             if (game_create.is_preset == true) {
-//                 preset_selected = 1;
-//             } else {
-//                 preset_selected = 0;
-//             }
-//         }
-//         if (game_create.game_rule !== null) {
-//             if (game_create.game_rule === 'kill_all') {
-//                 game_rule_selected = 0;
-//             } else if (game_create.game_rule === 'kill_either') {
-//                 game_rule_selected = 1;
-//             }
-//         }
-//     } else {
-//         try {
-//             await GAME_CREATE.create({
-//                 clientId: clientId,
-//                 status: 'initial',
-//                 num_players: new_num_player,
-//                 is_preset: null,
-//                 sheriff: null,
-//                 players_role: null,
-//                 game_rule: null
-//             })
-//         }
-//         catch (error) {
-//             console.log(error);
-//             const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D1');
-//             await interaction.update({embeds: [errorEmbed], components: []});
-//             return;
-//         }
-//     }
+        const interaction_check: {
+            valid: true
+        } | {
+            valid: false,
+            type: 'outdated' | 'not_owner'
+        } = is_valid_interaction(messageId, clientId);
 
-//     //Success
-//     const time_sec: number = config['timeout_sec'].create.initial;
-//     const [ActionRowArr, initialEmbed, timeoutEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>,
-//             ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder, EmbedBuilder]
-//         = await ui_create_initial(clientId, time_sec, num_player_selected, preset_selected, game_rule_selected);
-//     const update_msg_resource: InteractionCallbackResource = (await interaction.update({ embeds: [initialEmbed], components: ActionRowArr, withResponse: true })).resource as InteractionCallbackResource;
-//     const update_msg: Message = update_msg_resource.message as Message;
-//     await timeout_set('create', update_msg.id, clientId, update_msg.channelId, time_sec, message_timeout, update_msg);
+        if (!interaction_check.valid) {
+            if (interaction_check.type === 'outdated') {
+                const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
+                const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? display_error_str);
+                await interaction.update({embeds: [outdated_embed], components: []});
+            }
+            return;
+        }
+        await this.states.initial.execute(interaction);
+    }
+}
 
-//     async function message_timeout(update_msg: Message): Promise<void> {
-//         const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
-//         if (game_create !== null) {
-//             try {
-//                 await GAME_CREATE.destroy({ where: { clientId: clientId } });
-//             } catch (error) {
-//                 console.error(error);
-//                 const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D2');
-//                 await update_msg.edit({embeds: [errorEmbed], components: []});
-//                 return;
-//             }
-//         }
-//         await update_msg.edit({ embeds: [initialEmbed, timeoutEmbed], components: [] });
-//     }
-// }
-
-// export { select_create_initial_num_player }
+export default select_num_player_interaction;

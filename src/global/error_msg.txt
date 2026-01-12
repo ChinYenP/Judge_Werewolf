@@ -37,4 +37,4 @@ DSPY: Display Error (usually occurs in get_display.js)
 M: Message Error
 M1: Message edit error
 
-U: Undefined Error
+U: Undefined Error or Impossible Error

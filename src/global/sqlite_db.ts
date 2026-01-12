@@ -1,4 +1,4 @@
-import { DataTypes, Sequelize, Model, InferAttributes, InferCreationAttributes } from 'sequelize';
+import { DataTypes, Sequelize, Model, InferAttributes, InferCreationAttributes, ModelStatic } from 'sequelize';
 import { t_role_id, t_fake_role_id } from './types/other_types.js';
 import { i_player_info } from './types/player_info.js';
 import { t_languages, languages_list, t_create_status, create_status_list,
@@ -6,9 +6,8 @@ import { t_languages, languages_list, t_create_status, create_status_list,
     game_match_status_list, t_command_cooldown_type, command_cooldown_type_list
 } from './types/list_str.js';
 import { default_prefix } from './config.js';
-
 //Connect Database: SQLite
-const sequelize = new Sequelize({
+const sequelize: Sequelize = new Sequelize({
     dialect: 'sqlite',
     logging: false,
     //logging: (msg) => console.log(msg),
@@ -20,7 +19,7 @@ interface UserSettingsInstance extends Model<InferAttributes<UserSettingsInstanc
     clientId: string;
     lang: t_languages;
 };
-const USER_SETTINGS = sequelize.define<UserSettingsInstance>('USER_SETTINGS', {
+const USER_SETTINGS: ModelStatic<UserSettingsInstance> = sequelize.define<UserSettingsInstance>('USER_SETTINGS', {
     clientId: {
         type: DataTypes.STRING,
         primaryKey: true,
@@ -40,7 +39,7 @@ interface ServerSettingsInstance extends Model<InferAttributes<ServerSettingsIns
     guildId: string;
     prefix: string;
 };
-const SERVER_SETTINGS = sequelize.define<ServerSettingsInstance>('SERVER_SETTINGS', {
+const SERVER_SETTINGS: ModelStatic<ServerSettingsInstance> = sequelize.define<ServerSettingsInstance>('SERVER_SETTINGS', {
     guildId: {
         type: DataTypes.STRING,
         primaryKey: true,
@@ -60,7 +59,7 @@ interface TempPrefixSettingInstance extends Model<InferAttributes<ServerSettings
     guildId: string;
     prefix: string;
 };
-const TEMP_PREFIX_SETTINGS = sequelize.define<TempPrefixSettingInstance>('TEMP_PREFIX_SETTINGS', {
+const TEMP_PREFIX_SETTINGS: ModelStatic<TempPrefixSettingInstance> = sequelize.define<TempPrefixSettingInstance>('TEMP_PREFIX_SETTINGS', {
     guildId: {
         type: DataTypes.STRING,
         primaryKey: true,
@@ -81,7 +80,7 @@ interface CommandCooldownInstance extends Model<InferAttributes<CommandCooldownI
     command_type: t_command_cooldown_type;
     expired_date: bigint;
 };
-const COMMAND_COOLDOWN = sequelize.define<CommandCooldownInstance>('COMMAND_COOLDOWN', {
+const COMMAND_COOLDOWN: ModelStatic<CommandCooldownInstance> = sequelize.define<CommandCooldownInstance>('COMMAND_COOLDOWN', {
     clientId: {
         type: DataTypes.STRING,
         primaryKey: true,
@@ -93,6 +92,13 @@ const COMMAND_COOLDOWN = sequelize.define<CommandCooldownInstance>('COMMAND_COOL
     expired_date: {
         type: DataTypes.BIGINT,
         allowNull: false,
+        get() {
+            const raw: bigint = this.getDataValue('expired_date');
+            return (raw);
+        },
+        set(value: bigint) {
+            this.setDataValue('expired_date', value);
+        }
     }
 },{
     freezeTableName: true,
@@ -109,7 +115,7 @@ interface GameCreateInstance extends Model<InferAttributes<GameCreateInstance>, 
     players_role: t_role_id[] | null;
     game_rule: t_game_rule | null;
 }
-const GAME_CREATE = sequelize.define<GameCreateInstance>('GAME_CREATE', {
+const GAME_CREATE: ModelStatic<GameCreateInstance> = sequelize.define<GameCreateInstance>('GAME_CREATE', {
     clientId: {
         type: DataTypes.STRING,
         primaryKey: true
@@ -162,7 +168,7 @@ interface GameMatchInstance extends Model<InferAttributes<GameMatchInstance>, In
     fake_role_list: t_fake_role_id[];
     players_info: i_player_info[];
 };
-const GAME_MATCH = sequelize.define<GameMatchInstance>('GAME_MATCH', {
+const GAME_MATCH: ModelStatic<GameMatchInstance> = sequelize.define<GameMatchInstance>('GAME_MATCH', {
     clientId: {
         type: DataTypes.STRING,
         primaryKey: true

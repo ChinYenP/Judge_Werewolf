@@ -4,5 +4,5 @@ declare namespace NodeJS {
         DBSTORAGE: string;
         DBBACKUPFOLDER: string;
         ALLOWED_PREFIX_CHARACTERS: string;
-    };
-};
+    }
+}

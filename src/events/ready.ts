@@ -15,20 +15,20 @@ const ready: EventModule<Client> = {
 
         await sequelize.authenticate().then(() => {
             console.log('Database connection established!');
-        }).catch((error: string) => {
-            throw new Error(`Unable to connect to the database: ${ error}`);
+        }).catch((error: unknown) => {
+            throw new Error(`Unable to connect to the database: ${String(error)}`);
         })
 
         await sequelize.sync(/*{force: true}*/).then(() => {
             console.log('Database created in ready.js successfully!');
-        }).catch((error: string) => {
-            throw new Error(`Unable to create table: ${ error}`);
+        }).catch((error: unknown) => {
+            throw new Error(`Unable to create table: ${String(error)}`);
         })
 
         // Generate a timestamp for the backup file name
         const timestamp: number = Date.now();
         const backupFolderPath: string = process.env.DBBACKUPFOLDER;
-        const backupFilePath: string = path.join(__dirname, '..', backupFolderPath, `backup_${timestamp}.sqlite`);
+        const backupFilePath: string = path.join(__dirname, '..', backupFolderPath, `backup_${String(timestamp)}.sqlite`);
         try {
             if (!fs.existsSync(backupFolderPath)) {
                 fs.mkdirSync(backupFolderPath, { recursive: true });
@@ -38,7 +38,7 @@ const ready: EventModule<Client> = {
             fs.copyFileSync(dbFilePath, backupFilePath);
             console.log(`Database backup created successfully at ${backupFilePath}`);
         } catch (error) {
-            throw new Error(`Failed to create database backup: ${ error}`);
+            throw new Error(`Failed to create database backup: ${String(error)}`);
         }
 
         console.log(`Ready! Logged in as ${client.user.tag}`);

@@ -37,7 +37,7 @@
 //         .addComponents(
 //             new StringSelectMenuBuilder()
 //                 .setCustomId('create_initial_num_player' satisfies t_interaction_name)
-//                 .setPlaceholder(select_num_player_text ?? config['display_error'])
+//                 .setPlaceholder(select_num_player_text ?? display_error_str)
 //                 .addOptions(
 //                     {
 //                         label: '6',
@@ -87,16 +87,16 @@
 //         .addComponents(
 //             new StringSelectMenuBuilder()
 //                 .setCustomId('create_initial_preset_custom' satisfies t_interaction_name)
-//                 .setPlaceholder(placeholder_preset_custom_text ?? config['display_error'])
+//                 .setPlaceholder(placeholder_preset_custom_text ?? display_error_str)
 //                 .addOptions(
 //                     {
-//                         label: preset_text ?? config['display_error'],
+//                         label: preset_text ?? display_error_str,
 //                         description: 'Preset',
 //                         value: 'preset',
 //                         default: (preset_selected === 1)
 //                     },
 //                     {
-//                         label: custom_text ?? config['display_error'],
+//                         label: custom_text ?? display_error_str,
 //                         description: 'Custom',
 //                         value: 'custom',
 //                         default: (preset_selected === 0)
@@ -107,16 +107,16 @@
 //         .addComponents(
 //             new StringSelectMenuBuilder()
 //                 .setCustomId('create_initial_game_rule' satisfies t_interaction_name)
-//                 .setPlaceholder(placeholder_game_rule_text ?? config['display_error'])
+//                 .setPlaceholder(placeholder_game_rule_text ?? display_error_str)
 //                 .addOptions(
 //                     {
-//                         label: kill_all_text ?? config['display_error'],
+//                         label: kill_all_text ?? display_error_str,
 //                         description: 'Kill All',
 //                         value: 'kill_all',
 //                         default: (game_rule_selected === 0)
 //                     },
 //                     {
-//                         label: kill_either_text ?? config['display_error'],
+//                         label: kill_either_text ?? display_error_str,
 //                         description: 'Kill Either',
 //                         value: 'kill_either',
 //                         default: (game_rule_selected === 1)
@@ -126,13 +126,13 @@
         
 //     const next_button: ButtonBuilder = new ButtonBuilder()
 //         .setCustomId('create_initial_next' satisfies t_interaction_name)
-//         .setLabel(button_next_text ?? config['display_error'])
+//         .setLabel(button_next_text ?? display_error_str)
 //         .setStyle(ButtonStyle.Success)
 //         .setDisabled(next_disable);
 
 //     const cancel_button: ButtonBuilder = new ButtonBuilder()
 //         .setCustomId('create_cancel' satisfies t_interaction_name)
-//         .setLabel(button_cancel_text ?? config['display_error'])
+//         .setLabel(button_cancel_text ?? display_error_str])
 //         .setStyle(ButtonStyle.Secondary);
         
 //     const rowButton: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder<ButtonBuilder>()
@@ -140,24 +140,24 @@
     
 //     const initialEmbed: EmbedBuilder = new EmbedBuilder()
 //         .setColor(config['embed_hex_color'])
-//         .setTitle(title_text ?? config['display_error'])
+//         .setTitle(title_text ?? display_error_str)
 //         .addFields(
 //             {
-//                 name: num_player_title_text ?? config['display_error'],
-//                 value: num_player_desc_text ?? config['display_error']
+//                 name: num_player_title_text ?? display_error_str,
+//                 value: num_player_desc_text ?? display_error_str
 //             },
 //             {
-//                 name: preset_custom_title_text ?? config['display_error'],
-//                 value: preset_custom_desc_text ?? config['display_error']
+//                 name: preset_custom_title_text ?? display_error_str],
+//                 value: preset_custom_desc_text ?? display_error_str
 //             },
 //             {
-//                 name: game_rule_title_text ?? config['display_error'],
-//                 value: game_rule_desc_text ?? config['display_error']
+//                 name: game_rule_title_text ?? display_error_str,
+//                 value: game_rule_desc_text ?? display_error_str
 //             }
 //         )
 //         .setTimestamp()
         
-//     return ([[rowNumPlayer, rowPresetCustom, rowGameRule, rowButton], initialEmbed, (await ui_timeout(clientId, time_sec, timeout_text ?? config['display_error']))]);
+//     return ([[rowNumPlayer, rowPresetCustom, rowGameRule, rowButton], initialEmbed, (await ui_timeout(clientId, time_sec, timeout_text ?? display_error_str]))]);
 // }
 
 // export { game_night }

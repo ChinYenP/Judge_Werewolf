@@ -52,27 +52,27 @@
     
 //     const infoEmbed: EmbedBuilder = new EmbedBuilder()
 //         .setColor(config['embed_hex_color'])
-//         .setTitle(title_text ?? config['display_error'])
+//         .setTitle(title_text ?? display_error_str)
 //         .addFields(
 //             {
-//                 name: sheriff_title ?? config['display_error'],
-//                 value: sheriff_desc_text ?? config['display_error']
+//                 name: sheriff_title ?? display_error_str,
+//                 value: sheriff_desc_text ?? display_error_str
 //             },
 //             {
-//                 name: game_rule_title ?? config['display_error'],
-//                 value: game_rule_desc_text ?? config['display_error']
+//                 name: game_rule_title ?? display_error_str,
+//                 value: game_rule_desc_text ?? display_error_str
 //             },
 //             {
-//                 name: death_title ?? config['display_error'],
+//                 name: death_title ?? display_error_str,
 //                 value: `${death_front_text}${String(game_match.consecutive_no_death)}${death_back_text}`
 //             },
 //             {
-//                 name: role_list_title ?? config['display_error'],
-//                 value: role_list_content ?? config['display_error']
+//                 name: role_list_title ?? display_error_str,
+//                 value: role_list_content ?? display_error_str
 //             },
 //             {
-//                 name: fake_role_list_title ?? config['display_error'],
-//                 value: fake_role_list_content ?? config['display_error']
+//                 name: fake_role_list_title ?? display_error_str,
+//                 value: fake_role_list_content ?? display_error_str
 //             }
 //         )
 //         .setTimestamp()

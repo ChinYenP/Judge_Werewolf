@@ -16,16 +16,15 @@ const prefix_command: CommandModule<prefixStates> = {
     states: {
         prefix: {
             cooldown_sec: command_cooldown_sec.prefix,
-            execute: async function(message: Message, args: string[]): Promise<void> {
-                args.length; //Just to get through typescript warning compiler
+            execute: async function(message: Message, _args: string[]): Promise<void> {
                 const clientId: string = message.author.id;
 
                 const cooldown_status: t_cooldown_status = await check_cooldown(clientId, 'prefix', this.cooldown_sec);
                 if (cooldown_status.status == 'cooldown') {
-                    message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)] })
+                    await message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)], components: [] })
                     return;
                 } else if (cooldown_status.status == 'fatal') {
-                    message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)] })
+                    await message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)], components: [] })
                     return;
                 }
                 let prefix: string = default_prefix;
@@ -38,7 +37,7 @@ const prefix_command: CommandModule<prefixStates> = {
                 }
 
                 //Validate prefix
-                if (!(await prefix_validation(prefix))) {
+                if (!prefix_validation(prefix)) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'C3');
                     await message.reply({embeds: [errorEmbed], components: []});
                 }
@@ -66,7 +65,7 @@ const prefix_command: CommandModule<prefixStates> = {
                     .setTimestamp()
 
                 try {
-                    await message.reply({ embeds: [prefixEmbed] });
+                    await message.reply({ embeds: [prefixEmbed], components: [] });
                 } catch (error) {
                     console.error(error);
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'M1');

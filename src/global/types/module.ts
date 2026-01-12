@@ -50,3 +50,22 @@ export interface EventModule<T extends AllowedEventParam> {
     once: boolean;
     execute: (content: T) => Promise<void>;
 }
+export function isEventModule(module: unknown): module is { default: EventModule<AllowedEventParam> } {
+    if (module === null || module === undefined || typeof module !== 'object') {
+        return (false);
+    }
+    const wrapper: Record<string, unknown> = module as Record<string, unknown>;
+    if (!('default' in wrapper)) {
+        return false;
+    }
+    const event: unknown = wrapper['default'];
+    if (typeof event !== 'object' || event === null) {
+        return false;
+    }
+    const eventObj: Record<string, unknown> = event as Record<string, unknown>;
+    return (
+        typeof eventObj['event_name'] === 'string' &&
+        typeof eventObj['execute'] === 'function' &&
+        typeof eventObj['once'] === 'boolean'
+    );
+}

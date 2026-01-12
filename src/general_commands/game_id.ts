@@ -24,10 +24,10 @@ const game_id_command: CommandModule<gameIdStates> = {
 
                 const cooldown_status: t_cooldown_status = await check_cooldown(clientId, 'game_id', this.cooldown_sec);
                 if (cooldown_status.status == 'cooldown') {
-                    message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)] })
+                    await message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)], components: [] })
                     return;
                 } else if (cooldown_status.status == 'fatal') {
-                    message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)] })
+                    await message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)], components: [] })
                     return;
                 }
 
@@ -40,22 +40,22 @@ const game_id_command: CommandModule<gameIdStates> = {
                     return;
                 }
                 if (args.length === 1) {
-                    const validate: [false, string] | [true, {
-                    'num_roles_max': number,
-                    'sheriff': boolean,
-                    'game_rule': t_game_rule,
-                    'roles_list': t_role_id[]}] = await game_id_validation(args[0] ?? '', clientId);
-                    if (!(validate[0])) {
-                        const invalidEmbed: EmbedBuilder = await ui_invalid_game_id(clientId, args[0] ?? '', validate[1]);
+                    const validate: {valid: false, error_msg: string} | {valid: true, datas: {
+                        'num_roles_max': number,
+                        'sheriff': boolean,
+                        'game_rule': t_game_rule,
+                        'roles_list': t_role_id[]}} = await game_id_validation(args[0] ?? '', clientId);
+                    if (!(validate.valid)) {
+                        const invalidEmbed: EmbedBuilder = await ui_invalid_game_id(clientId, args[0] ?? '', validate.error_msg);
                         try {
-                            await message.reply({ embeds: [invalidEmbed] });
+                            await message.reply({ embeds: [invalidEmbed], components: [] });
                         } catch (error) {
                             console.error(error);
                             const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'M1');
                             await message.reply({embeds: [errorEmbed], components: []});
                         }
                     } else {
-                        await data_display(message, clientId, args[0] ?? '', validate[1]);
+                        await data_display(message, clientId, args[0] ?? '', validate.datas);
                     }
                     return;
                 }
@@ -85,7 +85,7 @@ const game_id_command: CommandModule<gameIdStates> = {
                     .setTimestamp()
 
                 try {
-                    await message.reply({ embeds: [infoEmbed] });
+                    await message.reply({ embeds: [infoEmbed], components: [] });
                 } catch (error) {
                     console.error(error);
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'M1');
@@ -113,10 +113,10 @@ async function data_display(message: Message, clientId: string, game_id: string,
     = await get_display_text(['game_id.valid_embed.title', 'game_id.common_description'], clientId);
 
     const validEmbed: EmbedBuilder = await ui_game_id(clientId, title_text ?? display_error_str,
-        `${description_text}\`${game_id}\``, data);
+        `${description_text ?? display_error_str}\`${game_id}\``, data);
 
     try {
-        await message.reply({ embeds: [validEmbed] });
+        await message.reply({ embeds: [validEmbed], components: [] });
     } catch (error) {
         console.error(error);
         const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'M1');

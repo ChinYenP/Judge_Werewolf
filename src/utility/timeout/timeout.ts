@@ -6,16 +6,16 @@ const timeouts: Collection<string, Collection<string, [string, Message, NodeJS.T
 // clientId -> [messageId -> [timeout_type, bot_reply, setTimeout instance], messageId -> [...], ...]
 const message_to_client: Collection<string, string> = new Collection<string, string>();
 
-async function external_delete_check(messageId: string): Promise<boolean> {
+function external_delete_check(messageId: string): boolean {
     return (message_to_client.has(messageId));
 }
 
-async function is_valid_interaction(messageId: string, clientId: string): Promise<{
+function is_valid_interaction(messageId: string, clientId: string): {
     valid: true
 } | {
     valid: false,
     type: 'outdated' | 'not_owner'
-}> {
+} {
     if (!message_to_client.has(messageId)) {
         return ({valid: false, type: 'outdated'});
     }
@@ -52,16 +52,16 @@ async function delete_message(clientId: string, timeout_type: t_timeout_type): P
     }
 }
 
-async function timeout_set<Tdatas>(
+function timeout_set<Tdatas>(
     timeout_type: t_timeout_type,
     messageId: string,
     clientId: string,
     time_sec: number,
     timeout_execute: (bot_reply: Message, clientId: string, timeout_sec: number, data_passed: Tdatas) => Promise<void>,
-    bot_reply: Message, datas: Tdatas): Promise<void> {
+    bot_reply: Message, datas: Tdatas): void {
 
     
-    await timeout_delete(messageId);
+    timeout_delete(messageId);
     //Set timer while add data to database:
     let client_timeout: Collection<string, [string, Message, NodeJS.Timeout]> | undefined
     = timeouts.get(clientId);
@@ -69,16 +69,19 @@ async function timeout_set<Tdatas>(
         client_timeout = new Collection<string, [string, Message, NodeJS.Timeout]>();
         timeouts.set(clientId, client_timeout);
     }
-    client_timeout.set(messageId, [timeout_type, bot_reply, setTimeout(async () => {
-        await timeout_execute(bot_reply, clientId, time_sec, datas);
-        await timeout_delete(messageId);
+    client_timeout.set(messageId, [timeout_type, bot_reply, setTimeout(() => {
+        timeout_execute(bot_reply, clientId, time_sec, datas)
+        .then(() => {
+            timeout_delete(messageId)
+        })
+        .catch(console.error);
     }, (time_sec * 1000))]);
     message_to_client.set(messageId, clientId);
 }
 
 
-async function timeout_delete(messageId: string): Promise<void> {
-    let clientId: string | undefined = message_to_client.get(messageId);
+function timeout_delete(messageId: string): void {
+    const clientId: string | undefined = message_to_client.get(messageId);
     if (clientId === undefined) return;
     const client_timeout: Collection<string, [string, Message, NodeJS.Timeout]> | undefined
     = timeouts.get(clientId);

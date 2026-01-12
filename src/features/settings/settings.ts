@@ -19,24 +19,22 @@ const settings_command: CommandModule<settingsStates> = {
     states: {
         user_settings: {
             cooldown_sec: command_cooldown_sec.user_settings,
-            execute: async function (message: Message, args: string[]): Promise<void> {
-                args.length; //Just to get through typescript warning compiler
+            execute: async function (message: Message, _args: string[]): Promise<void> {
                 const clientId: string = message.author.id;
                 const cooldown_status: t_cooldown_status = await check_cooldown(clientId, 'user_settings', this.cooldown_sec);
                 if (cooldown_status.status == 'cooldown') {
-                    message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)] })
+                    await message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)], components: [] })
                     return;
                 } else if (cooldown_status.status == 'fatal') {
-                    message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)] })
+                    await message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)], components: [] })
                     return;
                 }
                 await delete_message(clientId, 'user_settings');
                 const userEmbed: EmbedBuilder = await ui_user_info_embed(clientId);
                 const serverEmbed: EmbedBuilder = await ui_server_info_embed(clientId);
                 const rowLang: ActionRowBuilder<StringSelectMenuBuilder>[] = await user_settings_action_row(clientId);
-                const bot_reply: Message = await message.reply({ embeds: [userEmbed, serverEmbed],
-                    components: rowLang });
-                await timeout_set('user_settings', bot_reply.id, clientId, this.timeout_sec, this.timeout_execute, bot_reply, [userEmbed, serverEmbed]);
+                const bot_reply: Message = await message.reply({ embeds: [userEmbed, serverEmbed], components: rowLang });
+                timeout_set('user_settings', bot_reply.id, clientId, this.timeout_sec, this.timeout_execute, bot_reply, [userEmbed, serverEmbed]);
             },
             timeout: true,
             timeout_sec: timeout_sec.user_settings,
@@ -63,7 +61,7 @@ const settings_command: CommandModule<settingsStates> = {
                     'settings.server_settings.prefix.button_yes',
                     'settings.server_settings.prefix.button_no'], clientId);
 
-                const new_prefix = args[1];
+                const new_prefix: string = args[1];
 
                 const settings: TempPrefixSettingInstance | null = await TEMP_PREFIX_SETTINGS.findOne({ where: { guildId: message.guildId } });
 
@@ -100,7 +98,7 @@ const settings_command: CommandModule<settingsStates> = {
                     .setLabel(no_text ?? display_error_str)
                     .setStyle(ButtonStyle.Secondary);
                 
-                const rowButton = new ActionRowBuilder<ButtonBuilder>()
+                const rowButton: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder<ButtonBuilder>()
                     .addComponents(yes_button, no_button);
                 
                 const prefixEmbed: EmbedBuilder = new EmbedBuilder()
@@ -116,7 +114,7 @@ const settings_command: CommandModule<settingsStates> = {
                     .setTimestamp()
 
                 const bot_reply: Message = await message.reply({ embeds: [prefixEmbed], components: [rowButton] });
-                await timeout_set('settings_prefix', bot_reply.id, clientId, time_sec, this.timeout_execute, bot_reply, prefixEmbed);
+                timeout_set('settings_prefix', bot_reply.id, clientId, time_sec, this.timeout_execute, bot_reply, prefixEmbed);
 
             },
             timeout: true,
@@ -177,7 +175,7 @@ const settings_command: CommandModule<settingsStates> = {
             if (args[0] === undefined) return;
             if (args[0] === 'prefix') {
                 if (args[1] === undefined) return;
-                if (await prefix_validation(args[1])) {
+                if (prefix_validation(args[1])) {
                     //Valid argument for prefix
                     await (this.states.prefix_confirmation).execute(message, args);
                     return;

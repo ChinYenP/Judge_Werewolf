@@ -4,59 +4,60 @@ import { get_display_text } from '../../../../utility/get_display.js';
 import { display_error_str, timeout_sec } from '../../../../global/config.js';
 import { ui_error_non_fatal, ui_error_fatal } from '../../../../utility/embed/error.js';
 import { InteractionModule } from '../../../../global/types/module.js';
-import { selectCreatePresetCustom } from '../../../../global/types/interaction_states.js';
-import { t_error_code, isPresetCustom } from '../../../../global/types/list_str.js';
-import { initial_common_process } from '../../common_process/initial.js';
+import { selectCreateAddRoleVillage } from '../../../../global/types/interaction_states.js';
+import { t_error_code } from '../../../../global/types/list_str.js';
 import { common_delete_create_timeout } from '../../common_process/delete_create_timeout.js';
+import { isRoleId } from '../../../../global/types/other_types.js';
+import { roles_common_process } from '../../common_process/roles.js';
 
-const select_preset_custom_interaction: InteractionModule<StringSelectMenuInteraction, selectCreatePresetCustom> = {
-    interaction_name: 'select_create_initial_preset_custom',
+const select_add_role_village_interaction: InteractionModule<StringSelectMenuInteraction, selectCreateAddRoleVillage> = {
+    interaction_name: 'select_create_roles_village_team',
     states: {
-        initial: {
+        roles: {
             execute: async function (interaction: StringSelectMenuInteraction): Promise<void> {
                 const clientId: string = interaction.user.id;
 
-                if (interaction.values[0] === undefined || !isPresetCustom(interaction.values[0])) {
+                if (interaction.values[0] === undefined || !isRoleId(interaction.values[0])) {
                     await interaction.update({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
                     return;
-                };
+                }
 
-                //Initial process
-                const initial_process_obj: {
+                //Roles process
+                const roles_process_obj: {
                     error: false,
-                    value: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>,
-                    ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder]
+                    value: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>]
+                        | [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder]
                 } | {
                     error: true,
                     code: t_error_code
-                } = await initial_common_process(clientId, {replace: 'preset', value: interaction.values[0] === 'preset'});
-                if (initial_process_obj.error) {
-                    await interaction.update({ embeds: [await ui_error_fatal(clientId, initial_process_obj.code)], components: [] })
+                } = await roles_common_process(clientId, {action: 'add_role', value: interaction.values[0]});
+                if (roles_process_obj.error) {
+                    await interaction.update({ embeds: [await ui_error_fatal(clientId, roles_process_obj.code)], components: [] })
                     return;
                 }
 
                 //Success
-                const [ActionRowArr, initialEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>,
-                    ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder]
-                    = initial_process_obj.value;
-                await interaction.update({ embeds: [initialEmbed], components: ActionRowArr })
+                const [ActionRowArr, rolesEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>]
+                        | [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder]
+                    = roles_process_obj.value;
+                await interaction.update({ embeds: [rolesEmbed], components: ActionRowArr })
                 const update_msg: Message = await interaction.fetchReply();
-                timeout_set('create', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, initialEmbed);
+                timeout_set('create', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, rolesEmbed);
             },
             timeout: true,
             timeout_sec: timeout_sec.create,
-            timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, initialEmbed: EmbedBuilder): Promise<void> {
+            timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, rolesEmbed: EmbedBuilder): Promise<void> {
                 const timeoutObj: {embed: EmbedBuilder, error: boolean} = await common_delete_create_timeout(clientId, timeout_sec);
                 if (timeoutObj.error) {
                     await reply_msg.reply({embeds: [timeoutObj.embed], components: []});
                     return;
                 }
-                await reply_msg.edit({ embeds: [initialEmbed, timeoutObj.embed], components: [] });
+                await reply_msg.edit({ embeds: [rolesEmbed, timeoutObj.embed], components: [] });
             }
         }
     },
     entry: async function(interaction: StringSelectMenuInteraction): Promise<void> {
-        console.log('interaction run: select_create_initial_preset_custom');
+        console.log('interaction run: select_create_roles_werewolf');
         const clientId: string = interaction.user.id;
         const messageId: string = interaction.message.id;
 
@@ -75,8 +76,8 @@ const select_preset_custom_interaction: InteractionModule<StringSelectMenuIntera
             }
             return;
         }
-        await this.states.initial.execute(interaction);
+        await this.states.roles.execute(interaction);
     }
 }
 
-export default select_preset_custom_interaction;
+export default select_add_role_village_interaction;

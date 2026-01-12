@@ -26,7 +26,7 @@ async function get_display_text(query_arr: string[], clientId: string): Promise<
         for (const query_str of query_arr) {
             const query_keys: string[] = query_str.split('.');
             let display_ref: DisplayTextType = display_text;
-            let has_error = false;
+            let has_error: boolean = false;
             for (const key of query_keys) {
                 if (!isDisplayText(display_ref[key])) {
                     display_arr.push(display_error_str); //Error
@@ -36,7 +36,7 @@ async function get_display_text(query_arr: string[], clientId: string): Promise<
                 display_ref = display_ref[key];
             }
             if (has_error) continue;
-            if (display_ref === undefined || !isDisplayTestUnit(display_ref)) {
+            if (!isDisplayTestUnit(display_ref)) {
                 display_arr.push(display_error_str); //Error
                 continue;
             }
@@ -72,7 +72,7 @@ async function get_display_text(query_arr: string[], clientId: string): Promise<
 
 async function get_display_error_code(error_code: t_error_code, clientId: string): Promise<string> {
     const [error_desc_text]: string[] = await get_display_text(['general.error.discription'], clientId);
-    return (`${error_desc_text}${error_code}`);
+    return (`${error_desc_text ?? display_error_str}${error_code}`);
 }
 
 async function get_game_text(role_id: string, query_str: string, clientId: string): Promise<string> {
@@ -80,12 +80,12 @@ async function get_game_text(role_id: string, query_str: string, clientId: strin
     return ((await get_display_text([`game_text.${role_id}.${query_str}`], clientId))[0] ?? display_error_str);
 }
 
-async function get_role_list_order(role_list: t_role_id[]): Promise<[t_role_id, number][]> {
-    const role_set = new Set<t_role_id>();
+function get_role_list_order(role_list: t_role_id[]): [t_role_id, number][] {
+    const role_set: Set<t_role_id> = new Set<t_role_id>();
     const new_role_list: [t_role_id, number][] = [];
     for (const role_id of role_list) {
         if (role_set.has(role_id)) {
-            let i = 0;
+            let i: number = 0;
             for (const [role_id_i, _] of new_role_list) {
                 if (role_id_i === role_id) break;
                 i++;
@@ -99,23 +99,23 @@ async function get_role_list_order(role_list: t_role_id[]): Promise<[t_role_id, 
     return (new_role_list.sort(compareRoleCount));
 }
 
-async function get_game_id(data: {
+function get_game_id(data: {
     'num_roles_max': number,
     'sheriff': boolean,
     'game_rule': t_game_rule,
-    'roles_list': t_role_id[]}): Promise<string> {
+    'roles_list': t_role_id[]}): string {
     
-    const role_order: [t_role_id, number][] = await get_role_list_order(data.roles_list);
-    let game_id = "S";
+    const role_order: [t_role_id, number][] = get_role_list_order(data.roles_list);
+    let game_id: string = "S";
     if (data.num_roles_max < 10) {
-        game_id += `0${data.num_roles_max}`;
+        game_id += `0${String(data.num_roles_max)}`;
     } else {
         game_id += String(data.num_roles_max);
     }
     if (!data.sheriff) {
         game_id += '0';
     } else {
-        game_id == '1';
+        game_id += '1';
     }
     if (data.game_rule === 'kill_all') {
         game_id += 'A';
@@ -126,7 +126,7 @@ async function get_game_id(data: {
     for (const [each_role_id, count] of role_order) {
         game_id += each_role_id;
         if (count < 10) {
-            game_id += `0${count}`;
+            game_id += `0${String(count)}`;
         } else {
             game_id += String(count);
         }

@@ -17,23 +17,11 @@ const button_yes_interaction: InteractionModule<ButtonInteraction, buttonPrefixY
                 const clientId: string = interaction.user.id;
                 const messageId: string = interaction.message.id;
 
-                const interaction_check: {
-                    valid: true
-                } | {
-                    valid: false,
-                    type: 'outdated' | 'not_owner'
-                } = await is_valid_interaction(messageId, clientId);
-
-                if (!interaction_check.valid) {
-                    if (interaction_check.type === 'outdated') {
-                        const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
-                        const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? display_error_str);
-                        await interaction.update({embeds: [outdated_embed], components: []});
-                    }
+                if (interaction.guildId === null) {
+                    const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
+                    await interaction.update({embeds: [errorEmbed], components: []});
                     return;
-                }
-
-                if (interaction.guildId === null) return;
+                };
                 
                 //Get prefix. If it is false, the message is not from current session.
                 const settings: TempPrefixSettingInstance | null = await TEMP_PREFIX_SETTINGS.findOne({where: { guildId: interaction.guildId }});
@@ -43,7 +31,7 @@ const button_yes_interaction: InteractionModule<ButtonInteraction, buttonPrefixY
                     await interaction.update({embeds: [outdated_embed], components: []});
                     return;
                 }
-                const prefix = settings.prefix;
+                const prefix: string = settings.prefix;
 
                 const sqlite_status: boolean = await sequelize_prefix_yes(interaction, prefix, clientId);
                 if (!sqlite_status) {
@@ -54,13 +42,31 @@ const button_yes_interaction: InteractionModule<ButtonInteraction, buttonPrefixY
                 const [success_text]: string[] = await get_display_text(['settings.server_settings.prefix.success'], clientId);
                 const successEmbed: EmbedBuilder = await ui_success(clientId, `${success_text ?? display_error_str}${prefix}`);
                 await interaction.update({ embeds: [successEmbed], components: []});
-                await timeout_delete(messageId);
+                timeout_delete(messageId);
             },
             timeout: false
         }
     },
     entry: async function(interaction: ButtonInteraction): Promise<void> {
         console.log('interaction run: button_settings_prefix_yes');
+        const clientId: string = interaction.user.id;
+        const messageId: string = interaction.message.id;
+
+        const interaction_check: {
+            valid: true
+        } | {
+            valid: false,
+            type: 'outdated' | 'not_owner'
+        } = is_valid_interaction(messageId, clientId);
+
+        if (!interaction_check.valid) {
+            if (interaction_check.type === 'outdated') {
+                const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
+                const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? display_error_str);
+                await interaction.update({embeds: [outdated_embed], components: []});
+            }
+            return;
+        }
         await this.states.prefix_yes.execute(interaction);
     }
 }

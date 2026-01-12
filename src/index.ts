@@ -5,7 +5,7 @@ import * as path from 'node:path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { Client, Interaction, Message, GatewayIntentBits } from 'discord.js';
-import { EventModule, AllowedEventParam } from './global/types/module.js';
+import { EventModule, AllowedEventParam, isEventModule } from './global/types/module.js';
 
 //Global variable: __dirname
 global.__dirname = dirname(fileURLToPath(import.meta.url));
@@ -24,11 +24,16 @@ const eventFiles: string[] = fs.readdirSync(eventsPath).filter((file: string) =>
 
 for (const file of eventFiles) {
     const fileUrl: string = new URL(`file://${path.join(eventsPath, file)}`).href;
-    const event: EventModule<AllowedEventParam> = (await import(fileUrl)).default;
-    if (event.once) {
-        client.once(event.event_name, async (...args: [Message | Interaction | Client]) => { await event.execute(...args); });
+    const eventUnknown: unknown = await import(fileUrl);
+    if (isEventModule(eventUnknown)) {
+        const event: EventModule<AllowedEventParam> = eventUnknown.default;
+        if (event.once) {
+            client.once(event.event_name, (...args: [Message | Interaction | Client]) => { void event.execute(...args).catch(console.error); });
+        } else {
+            client.on(event.event_name, (...args: [Message | Interaction]) => { void event.execute(...args).catch(console.error); });
+        }
     } else {
-        client.on(event.event_name, async (...args: [Message | Interaction]) => { await event.execute(...args); });
+        console.warn(`No default import found in file ${fileUrl}.`);
     }
 }
 
@@ -42,15 +47,8 @@ async function shutdown(signal: string): Promise<void> {
 }
 
 // Handle termination signals
-process.on('SIGINT', async () => { await shutdown('SIGINT'); });  // Ctrl + C
-process.on('SIGTERM', async () => { await shutdown('SIGTERM'); }); // System termination signal
-
-// // Handle uncaught exceptions
-// process.on('uncaughtException', async (err) => {
-//     console.error('Unhandled Exception:', err);
-//     await shutdown('uncaughtException');
-// })
-
+process.on('SIGINT', () => { void shutdown('SIGINT').catch(console.error); });  // Ctrl + C
+process.on('SIGTERM', () => { void shutdown('SIGTERM').catch(console.error); }); // System termination signal
 
 // Log in to Discord with your client's token
-client.login(process.env.TOKEN);
+await client.login(process.env.TOKEN);

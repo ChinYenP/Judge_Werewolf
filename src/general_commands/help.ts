@@ -14,16 +14,15 @@ const help_command: CommandModule<helpStates> = {
     states: {
         help: {
             cooldown_sec: command_cooldown_sec.help,
-            execute: async function(message: Message, args: string[]): Promise<void> {
-                args.length; //Just to get through typescript warning compiler
+            execute: async function(message: Message, _args: string[]): Promise<void> {
                 const clientId: string = message.author.id;
 
                 const cooldown_status: t_cooldown_status = await check_cooldown(clientId, 'help', this.cooldown_sec);
                 if (cooldown_status.status == 'cooldown') {
-                    message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)] })
+                    await message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)], components: [] })
                     return;
                 } else if (cooldown_status.status == 'fatal') {
-                    message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)] })
+                    await message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)], components: [] })
                     return;
                 }
 
@@ -67,7 +66,7 @@ const help_command: CommandModule<helpStates> = {
                     .setTimestamp()
 
                 try {
-                    await message.reply({ embeds: [helpEmbed] });
+                    await message.reply({ embeds: [helpEmbed], components: [] });
                 } catch (error) {
                     console.error(error);
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'M1');

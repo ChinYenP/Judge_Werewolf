@@ -14,28 +14,27 @@ const ping_command: CommandModule<pingStates> = {
     states: {
         ping: {
             cooldown_sec: command_cooldown_sec.ping,
-            execute: async function (message: Message, args: string[]): Promise<void> {
-                args.length; //Just to get through typescript warning compiler
+            execute: async function (message: Message, _args: string[]): Promise<void> {
                 const clientId: string = message.author.id;
 
                 const cooldown_status: t_cooldown_status = await check_cooldown(clientId, 'ping', this.cooldown_sec);
                 if (cooldown_status.status == 'cooldown') {
-                    message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)] })
+                    await message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)], components: [] })
                     return;
                 } else if (cooldown_status.status == 'fatal') {
-                    message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)] })
+                    await message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)], components: [] })
                     return;
                 }
 
                 const [ping_text, pong_text, latency_text, ws_latency_text]: string[]
                     = await get_display_text(['ping.ping', 'ping.pong', 'ping.latency', 'ping.ws_latency'], clientId);
 
-                const pingEmbed = new EmbedBuilder()
+                const pingEmbed: EmbedBuilder = new EmbedBuilder()
                     .setColor(embed_hex_color)
                     .setTitle(ping_text ?? display_error_str)
                     .setTimestamp()
 
-                let sent: Message = await message.reply({ embeds: [pingEmbed] });
+                let sent: Message = await message.reply({ embeds: [pingEmbed], components: [] });
                 sent = await sent.fetch();
                 const latency: number = sent.createdTimestamp - message.createdTimestamp;
 
@@ -55,7 +54,7 @@ const ping_command: CommandModule<pingStates> = {
                     .setTimestamp()
 
                 try {
-                    await sent.edit({ embeds: [pongEmbed] });
+                    await sent.edit({ embeds: [pongEmbed], components: [] });
                 } catch (error) {
                     console.error(error);
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'M1');

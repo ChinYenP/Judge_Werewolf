@@ -18,6 +18,8 @@ async function ui_error_fatal(clientId: string, error_code: t_error_code): Promi
     const [ title_text, description_text ]: string[]
         = await get_display_text(['general.error.title', 'general.error.description'], clientId);
 
+        console.log(title_text);
+        console.log(description_text);
     const errorEmbed: EmbedBuilder = new EmbedBuilder()
         .setColor(embed_hex_color)
         .setTitle(title_text ?? display_error_str)

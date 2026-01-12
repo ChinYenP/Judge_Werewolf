@@ -1,9 +1,9 @@
 import { t_languages, t_command_cooldown_type, t_timeout_type } from './types/list_str.js';
 
-const display_error_str = "Something has gone wrong during the code runtime: Error DSPY";
-const default_prefix = "jw";
+const display_error_str: string = "Something has gone wrong during the code runtime: Error DSPY";
+const default_prefix: string = "jw";
 const default_language: t_languages = 'eng';
-const embed_hex_color = 0x00aaff;
+const embed_hex_color: number = 0x00aaff;
 const command_cooldown_sec: Record<t_command_cooldown_type, number> = {
     overall: 1,
     help: 5,

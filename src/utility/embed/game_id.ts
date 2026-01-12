@@ -29,11 +29,11 @@ async function ui_game_id(clientId: string, title: string, description: string, 
             [game_rule_desc_text] = await get_display_text(['game_id.valid_embed.game_rule.kill_either'], clientId);
         }
     
-        let role_list_content = '';
-        let i = 1;
-        const role_order: [t_role_id, number][] = await get_role_list_order(data.roles_list);
+        let role_list_content: string = '';
+        let i: number = 1;
+        const role_order: [t_role_id, number][] = get_role_list_order(data.roles_list);
         for (const [each_role_id, count] of role_order) {
-            role_list_content += `${await get_game_text(each_role_id, 'name', clientId)} x${count}`;
+            role_list_content += `${await get_game_text(each_role_id, 'name', clientId)} x${String(count)}`;
             if (i != role_order.length) {
                 role_list_content += '\n';
             }

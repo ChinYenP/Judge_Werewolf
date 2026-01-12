@@ -7,12 +7,13 @@ async function check_cooldown(clientId: string, cooldown_type: t_command_cooldow
     const command_cooldown: CommandCooldownInstance | null = await COMMAND_COOLDOWN.findOne({ where: { clientId: clientId, command_type: cooldown_type } });
     if (command_cooldown !== null) {
         //data exist
-        const expired_date: bigint = command_cooldown.expired_date;
-        const date_now: number = Date.now();
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-conversion
+        const expired_date: bigint = BigInt(command_cooldown.expired_date);
+        const date_now: bigint = BigInt(Date.now());
         if (date_now < expired_date) {
             return ({
                 status: 'cooldown',
-                remaining_sec: time_sec
+                remaining_sec: Number(expired_date - date_now) / 1000
             });
         }
     }

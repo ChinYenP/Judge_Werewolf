@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import 'dotenv/config';
 
-let n = 10;
+let n: number = 10;
 if (process.argv.length === 3) {
     n = parseInt(process.argv[2] ?? "10");
 }
@@ -22,7 +22,7 @@ async function readAndProcessFiles() {
 
     const filePromises: Promise<{ file_path: string, modification_time: Date }>[] = file_arr.map(async (file) => {
         const filePath: string = path.join(directory_path, file);
-        const stats = await fs.promises.stat(filePath);
+        const stats: fs.Stats = await fs.promises.stat(filePath);
         return ({file_path: filePath, modification_time: stats.mtime});
     })
 

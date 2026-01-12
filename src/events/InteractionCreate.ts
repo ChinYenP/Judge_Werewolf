@@ -9,6 +9,18 @@ async function get_select_module(interaction_name: t_interaction_name): Promise<
     switch (interaction_name) {
         case ('select_settings_user_lang'):
             return ((await import('../features/settings/user/select_lang.js')).default);
+        case ('select_create_initial_game_rule'):
+            return ((await import('../features/create_game/interactions/initial/select_game_rule.js')).default);
+        case ('select_create_initial_preset_custom'):
+            return ((await import('../features/create_game/interactions/initial/select_preset_custom.js')).default);
+        case ('select_create_initial_num_player'):
+            return ((await import('../features/create_game/interactions/initial/select_num_player.js')).default);
+        case ('select_create_roles_werewolf'):
+            return ((await import('../features/create_game/interactions/roles/select_add_role_werewolf.js')).default);
+        case ('select_create_roles_village_team'):
+            return ((await import('../features/create_game/interactions/roles/select_add_role_village.js')).default);
+        case ('select_create_roles_delete_roles'):
+            return ((await import('../features/create_game/interactions/roles/select_delete_roles.js')).default);
         default:
             return (undefined);
     }
@@ -20,6 +32,14 @@ async function get_button_module(interaction_name: t_interaction_name): Promise<
             return ((await import('../features/settings/prefix/button_no.js')).default);
         case ('button_settings_prefix_yes'):
             return ((await import('../features/settings/prefix/button_yes.js')).default);
+        case ('button_create_cancel'):
+            return ((await import('../features/create_game/interactions/button_cancel.js')).default);
+        case ('button_create_initial_next'):
+            return ((await import('../features/create_game/interactions/initial/button_next.js')).default);
+        case ('button_create_roles_next'):
+            return ((await import('../features/create_game/interactions/roles/button_next.js')).default);
+        case ('button_create_final_start_game'):
+            return ((await import('../features/create_game/interactions/final/button_start_game.js')).default);
         default:
             return (undefined);
     }
