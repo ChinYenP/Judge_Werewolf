@@ -21,6 +21,20 @@ async function get_select_module(interaction_name: t_interaction_name): Promise<
             return ((await import('../features/create_game/interactions/roles/select_add_role_village.js')).default);
         case ('select_create_roles_delete_roles'):
             return ((await import('../features/create_game/interactions/roles/select_delete_roles.js')).default);
+        case 'select_gameplay_night_target1':
+            return ((await import('../features/gameplay/game_state/night/interactions/select_target1.js')).default);
+        case 'select_gameplay_night_target2':
+            return ((await import('../features/gameplay/game_state/night/interactions/select_target2.js')).default);
+        case 'select_gameplay_night_ability_num':
+            return ((await import('../features/gameplay/game_state/night/interactions/select_ability_num.js')).default);
+        case 'select_gameplay_night_delete_action':
+            return ((await import('../features/gameplay/game_state/night/interactions/select_delete_action.js')).default);
+        case 'select_gameplay_guess_roles':
+            return ((await import('../features/gameplay/game_state/guess/interactions/select_guess_roles.js')).default);
+        case 'select_gameplay_day_vote_lynch':
+            return ((await import('../features/gameplay/game_state/day_vote/interactions/select_lynch.js')).default);
+        case 'select_gameplay_hunter_target':
+            return ((await import('../features/gameplay/game_state/roles/hunter/interactions/select_target.js')).default);
         default:
             return (undefined);
     }
@@ -40,6 +54,18 @@ async function get_button_module(interaction_name: t_interaction_name): Promise<
             return ((await import('../features/create_game/interactions/roles/button_next.js')).default);
         case ('button_create_final_start_game'):
             return ((await import('../features/create_game/interactions/final/button_start_game.js')).default);
+        case 'button_gameplay_cancel':
+            return ((await import('../features/gameplay/game_state/global/button_cancel_interaction.js')).default);
+        case 'button_gameplay_guess':
+            return ((await import('../features/gameplay/game_state/global/button_guess_interaction.js')).default);
+        case 'button_gameplay_night_add':
+            return ((await import('../features/gameplay/game_state/night/interactions/button_add.js')).default);
+        case 'button_gameplay_night_next_day':
+            return ((await import('../features/gameplay/game_state/night/interactions/button_next_day.js')).default);
+        case 'button_gameplay_day_vote_confirm':
+            return ((await import('../features/gameplay/game_state/day_vote/interactions/button_confirm.js')).default);
+        case 'button_gameplay_hunter_confirm':
+            return ((await import('../features/gameplay/game_state/roles/hunter/interactions/button_confirm.js')).default);
         default:
             return (undefined);
     }

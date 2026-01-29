@@ -1,4 +1,4 @@
-import { t_languages, t_command_cooldown_type, t_timeout_type } from './types/list_str.js';
+import { t_languages, t_command_cooldown_type, t_timeout_type, t_gameplay_config_data } from './types/list_str.js';
 
 const display_error_str: string = "Something has gone wrong during the code runtime: Error DSPY";
 const default_prefix: string = "jw";
@@ -21,7 +21,7 @@ const timeout_sec: Record<t_timeout_type, number> = {
     create: 30,
     gameplay: 5 * 60
 }
-const gameplay: Record<string, number> = {
+const gameplay: Record<t_gameplay_config_data, number> = {
     consecutive_no_death: 3
 }
 

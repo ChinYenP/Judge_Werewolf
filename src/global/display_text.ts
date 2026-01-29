@@ -914,8 +914,26 @@ const display_text: DisplayTextType = {
         }
     },
     "gameplay": {
+        "last_word": {
+            "eng": "My role is",
+            "malay": "Peranan saya ialah",
+            "schi": "我的角色是",
+            "tchi": "我的角色是",
+            "yue": "我嘅角色係"
+        },
         "guess_button": {
-
+            "eng": "Guess Roles",
+            "malay": "Teka Peranan",
+            "schi": "猜测角色",
+            "tchi": "猜測角色",
+            "yue": "估角色"
+        },
+        "cancel_button": {
+            "eng": "Cancel Game",
+            "malay": "Batal Permainan",
+            "schi": "取消游戏",
+            "tchi": "取消遊戲",
+            "yue": "取消遊戲"
         },
         "info_embed": {
             "title": {
@@ -1009,36 +1027,324 @@ const display_text: DisplayTextType = {
                 "yue": "狼人可以偽裝的角色"
             },
             "survived": {
-
+                "eng": "Survived",
+                "malay": "Terselamat",
+                "schi": "幸存",
+                "tchi": "倖存",
+                "yue": "生還"
             },
             "dead": {
-
+                "eng": "Dead",
+                "malay": "Mati",
+                "schi": "死亡",
+                "tchi": "死亡",
+                "yue": "死亡"
             }
         },
         "night": {
             "title": {
-
+                "eng": "Night",
+                "malay": "Malam",
+                "schi": "夜晚",
+                "tchi": "夜晚",
+                "yue": "夜晚"
             },
             "description": {
-
+                "eng": "Please instruct player(s) to use an ability towards other player(s).",
+                "malay": "Sila arahkan pemain untuk menggunakan kebolehan terhadap pemain lain.",
+                "schi": "请指示玩家对其他玩家使用技能。",
+                "tchi": "請指示玩家對其他玩家使用技能。",
+                "yue": "請指示玩家對其他玩家使用技能。"
+            },
+            "actions": {
+                "eng": "Action(s)",
+                "malay": "Tindakan",
+                "schi": "行动",
+                "tchi": "行動",
+                "yue": "行動"
             },
             "select_target_1": {
-
+                "eng": "Select Target 1",
+                "malay": "Pilih Sasaran 1",
+                "schi": "选择目标1",
+                "tchi": "選擇目標1",
+                "yue": "選擇目標1"
             },
             "select_target_2": {
-
+                "eng": "Select Target 2",
+                "malay": "Pilih Sasaran 2",
+                "schi": "选择目标2",
+                "tchi": "選擇目標2",
+                "yue": "選擇目標2"
             },
             "ability_num": {
-
+                "eng": "Ability Number",
+                "malay": "Nombor Kebolehan",
+                "schi": "技能编号",
+                "tchi": "技能編號",
+                "yue": "技能編號"
             },
-            "delete_ability": {
-
+            "delete_action": {
+                "eng": "Delete Action",
+                "malay": "Padam Tindakan",
+                "schi": "删除行动",
+                "tchi": "刪除行動",
+                "yue": "刪除行動"
             },
             "add_button": {
-
+                "eng": "Add Action",
+                "malay": "Tambah Tindakan",
+                "schi": "添加行动",
+                "tchi": "新增行動",
+                "yue": "新增行動"
             },
-            "next_button": {
-                
+            "next_day_button": {
+                "eng": "Next Day",
+                "malay": "Hari Seterusnya",
+                "schi": "下一天",
+                "tchi": "下一天",
+                "yue": "下一日"
+            },
+            "logic": {
+                "last_night_title": {
+                    "eng": "Last Night Information",
+                    "malay": "Maklumat Malam Tadi",
+                    "schi": "昨晚资讯",
+                    "tchi": "昨晚資訊",
+                    "yue": "昨晚資訊"
+                },
+                "death_message": {
+                    "died": {
+                        "eng": "Deceased Players",
+                        "malay": "Pemain Maut",
+                        "schi": "死亡玩家",
+                        "tchi": "死亡玩家",
+                        "yue": "死亡玩家"
+                    },
+                    "safe": {
+                        "eng": "Peaceful Night",
+                        "malay": "Malam Aman",
+                        "schi": "昨晚平安夜",
+                        "tchi": "昨晚平安夜",
+                        "yue": "噚晚平安夜"
+                    }
+                },
+                "G00": {
+                    "seer_result": {
+                        "eng": "Seer Result",
+                        "malay": "Keputusan Peramal",
+                        "schi": "预言家结果",
+                        "tchi": "預言家結果",
+                        "yue": "預言家結果"
+                    },
+                    "good": {
+                        "eng": "Good Person",
+                        "malay": "Orang Baik",
+                        "schi": "好人",
+                        "tchi": "好人",
+                        "yue": "好人"
+                    },
+                    "werewolf": {
+                        "eng": "Werewolf",
+                        "malay": "Serigala Jadian",
+                        "schi": "狼人",
+                        "tchi": "狼人",
+                        "yue": "狼人"
+                    }
+                }
+            }
+        },
+        "day_vote": {
+            "embed": {
+                "title": {
+                    "eng": "Day",
+                    "malay": "Siang",
+                    "schi": "白天",
+                    "tchi": "白天",
+                    "yue": "白天"
+                },
+                "description": {
+                    "eng": "Choose a player to lynch. Choose nothing to skip lynching.",
+                    "malay": "Pilih seorang pemain untuk digantung. Jangan pilih apa-apa untuk melangkau hukuman gantung.",
+                    "schi": "选择一名玩家进行处刑。不选择任何人则跳过处刑。",
+                    "tchi": "選擇一名玩家進行處刑。不選擇任何人則跳過處刑。",
+                    "yue": "揀一個玩家嚟處刑；如果唔揀，就會跳過處刑。"
+                }
+            },
+            "select_lynch": {
+                "eng": "Lynch",
+                "malay": "Gantung",
+                "schi": "处刑",
+                "tchi": "處刑",
+                "yue": "處刑"
+            },
+            "button_confirm": {
+                "eng": "Confirm",
+                "malay": "Sahkan",
+                "schi": "确认",
+                "tchi": "確認",
+                "yue": "確認"
+            },
+            "logic": {
+                "last_day_vote_title": {
+                    "eng": "Last Day Lynching Info",
+                    "malay": "Maklumat Penggantung Hari Sebelumnya",
+                    "schi": "前一天的处决信息",
+                    "tchi": "前一天的處決資訊",
+                    "yue": "前一日處決資訊"
+                },
+                "lynched": {
+                    "eng": "x is lynched.",
+                    "malay": "x digantung.",
+                    "schi": "x 被处死。",
+                    "tchi": "x 被處死。",
+                    "yue": "x 被處決。"
+                },
+                "no_lynch": {
+                    "eng": "No one is lynched.",
+                    "malay": "Tiada siapa digantung.",
+                    "schi": "无人被处死。",
+                    "tchi": "無人被處死。",
+                    "yue": "無人被處決。"
+                }
+            }
+        },
+        "hunter": {
+            "embed": {
+                "title": {
+                    "eng": "Hunter's Action",
+                    "malay": "Tindakan Pemburu",
+                    "schi": "猎人的行动",
+                    "tchi": "獵人的行動",
+                    "yue": "獵人行動"
+                },
+                "description": {
+                    "eng": "Help the hunter to choose a player to shoot. Choose nothing to skip shooting.",
+                    "malay": "Bantu pemburu memilih pemain untuk ditembak. Pilih tiada sesiapa untuk melangkau tembakan.",
+                    "schi": "帮助猎人选择一名玩家射击。不选择任何人则跳过射击。",
+                    "tchi": "幫助獵人選擇一名玩家射擊。不選擇任何人則跳過射擊。",
+                    "yue": "幫獵人揀一個玩家嚟射擊；如果唔揀，就會跳過射擊。"
+                }
+            },
+            "select_target": {
+                "eng": "Shoot",
+                "malay": "Tembak",
+                "schi": "射击",
+                "tchi": "射擊",
+                "yue": "射擊"
+            },
+            "button_confirm": {
+                "eng": "Confirm",
+                "malay": "Sahkan",
+                "schi": "确认",
+                "tchi": "確認",
+                "yue": "確認"
+            },
+            "shot": {
+                "eng": "The hunter shot",
+                "malay": "Pemburu menembak",
+                "schi": "猎人射击了",
+                "tchi": "獵人射擊了",
+                "yue": "獵人射咗"
+            },
+            "hunter_phase_title": {
+                "eng": "Hunter Phase Info",
+                "malay": "Maklumat Fasa Pemburu",
+                "schi": "猎人阶段信息",
+                "tchi": "獵人階段資訊",
+                "yue": "獵人階段資訊"
+            }
+        },
+        "guessing": {
+            "embed": {
+                "title": {
+                    "eng": "Guess all roles in order!!",
+                    "malay": "Teka semua peranan mengikut turutan!!",
+                    "schi": "按顺序猜出所有角色！！",
+                    "tchi": "按順序猜出所有角色！！",
+                    "yue": "按順序估晒所有角色！！"
+                },
+                "description": {
+                    "eng": "You __cannot__ change your guesses later.",
+                    "malay": "Anda __tidak boleh__ mengubah tekaan anda kemudian.",
+                    "schi": "你__不能__在之后更改你的猜测。",
+                    "tchi": "你__不能__在之後更改你的猜測。",
+                    "yue": "之後__唔可以__改你嘅估計。"
+                },
+                "your_guesses": {
+                    "eng": "Your Guesses",
+                    "malay": "Tekaaan Anda",
+                    "schi": "你的猜测",
+                    "tchi": "你的猜測",
+                    "yue": "你嘅估計"
+                }
+            },
+            "select_role_placeholder": {
+                "eng": "Player",
+                "malay": "Pemain",
+                "schi": "玩家",
+                "tchi": "玩家",
+                "yue": "玩家"
+            }
+        },
+        "result": {
+            "title": {
+                "werewolf": {
+                    "eng": "Game Ended: Werewolves Win",
+                    "malay": "Permainan Tamat: Serigala Manusia Menang",
+                    "schi": "游戏结束: 狼人胜利",
+                    "tchi": "遊戲結束: 狼人勝利",
+                    "yue": "遊戲結束: 狼人勝利"
+                },
+                "village": {
+                    "eng": "Game Ended: Village Wins",
+                    "malay": "Permainan Tamat: Penduduk Kampung Menang",
+                    "schi": "游戏结束: 村民胜利",
+                    "tchi": "遊戲結束: 村民勝利",
+                    "yue": "遊戲結束: 村民勝利"
+                },
+                "tie": {
+                    "eng": "Game Ended: Game Tied",
+                    "malay": "Permainan Tamat: Seri",
+                    "schi": "游戏结束: 平局",
+                    "tchi": "遊戲結束: 平局",
+                    "yue": "遊戲結束: 和局"
+                },
+                "guessed": {
+                    "eng": "Game Ended: Check Your Score",
+                    "malay": "Permainan Tamat: Semak Skor Anda",
+                    "schi": "游戏结束: 查看你的分数",
+                    "tchi": "遊戲結束: 查看你的分數",
+                    "yue": "遊戲結束: 查看你嘅分數"
+                },
+                "timeout": {
+                    "eng": "Game Ended: Game Timeout",
+                    "malay": "Permainan Tamat: Masa Tamat",
+                    "schi": "游戏结束: 游戏超时",
+                    "tchi": "遊戲結束: 遊戲逾時",
+                    "yue": "遊戲結束: 遊戲超時"
+                },
+                "cancel": {
+                    "eng": "Game Ended: Game Cancelled",
+                    "malay": "Permainan Tamat: Permainan Dibatalkan",
+                    "schi": "游戏结束: 游戏已取消",
+                    "tchi": "遊戲結束: 遊戲已取消",
+                    "yue": "遊戲結束: 遊戲已取消"
+                }
+            },
+            "score": {
+                "eng": "Score",
+                "malay": "Skor",
+                "schi": "分数",
+                "tchi": "分數",
+                "yue": "分數"
+            },
+            "player_roles": {
+                "eng": "Player Roles",
+                "malay": "Peranan Pemain",
+                "schi": "玩家角色",
+                "tchi": "玩家角色",
+                "yue": "玩家角色"
             }
         }
     }

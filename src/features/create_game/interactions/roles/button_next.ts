@@ -29,7 +29,7 @@ const button_roles_next_interaction: InteractionModule<ButtonInteraction, button
                     code: t_error_code
                 } = await roles_common_process(clientId, {action: 'none'});
                 if (roles_process_obj.error) {
-                    await interaction.update({ embeds: [await ui_error_fatal(clientId, roles_process_obj.code)], components: [] })
+                    await interaction.reply({ embeds: [await ui_error_fatal(clientId, roles_process_obj.code)], components: [] })
                     return;
                 }
 
@@ -46,7 +46,7 @@ const button_roles_next_interaction: InteractionModule<ButtonInteraction, button
             timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, rolesEmbed: EmbedBuilder): Promise<void> {
                 const timeoutObj: {embed: EmbedBuilder, error: boolean} = await common_delete_create_timeout(clientId, timeout_sec);
                 if (timeoutObj.error) {
-                    await reply_msg.reply({embeds: [timeoutObj.embed], components: []});
+                    await reply_msg.edit({embeds: [timeoutObj.embed], components: []});
                     return;
                 }
                 await reply_msg.edit({ embeds: [rolesEmbed, timeoutObj.embed], components: [] });
@@ -65,7 +65,7 @@ const button_roles_next_interaction: InteractionModule<ButtonInteraction, button
                     code: t_error_code
                 } = await final_common_process(clientId);
                 if (final_process_obj.error) {
-                    await interaction.update({ embeds: [await ui_error_fatal(clientId, final_process_obj.code)], components: [] })
+                    await interaction.reply({ embeds: [await ui_error_fatal(clientId, final_process_obj.code)], components: [] })
                     return;
                 }
 
@@ -80,7 +80,7 @@ const button_roles_next_interaction: InteractionModule<ButtonInteraction, button
             timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, finalEmbed: EmbedBuilder): Promise<void> {
                 const timeoutObj: {embed: EmbedBuilder, error: boolean} = await common_delete_create_timeout(clientId, timeout_sec);
                 if (timeoutObj.error) {
-                    await reply_msg.reply({embeds: [timeoutObj.embed], components: []});
+                    await reply_msg.edit({embeds: [timeoutObj.embed], components: []});
                     return;
                 }
                 await reply_msg.edit({ embeds: [finalEmbed, timeoutObj.embed], components: [] });
@@ -111,7 +111,7 @@ const button_roles_next_interaction: InteractionModule<ButtonInteraction, button
         const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
         if (game_create === null || game_create.is_preset === null || game_create.num_players === null || game_create.game_rule === null
             || game_create.sheriff === null || game_create.players_role === null) {
-            await interaction.update({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
+            await interaction.reply({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
             return;
         }
         if (game_create.players_role.length !== game_create.num_players || win_condition_in_role(game_create.players_role, game_create.game_rule) !== 'unknown') {

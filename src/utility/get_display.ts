@@ -1,7 +1,7 @@
 import { display_text } from '../global/display_text.js';
 import { UserSettingsInstance, USER_SETTINGS } from '../global/sqlite_db.js';
 import { display_error_str } from '../global/config.js';
-import { isRoleId, t_role_id } from '../global/types/other_types.js';
+import { t_role_id } from '../global/types/other_types.js';
 import { t_languages, isLanguages, t_error_code, t_game_rule } from '../global/types/list_str.js';
 import { DisplayTextType, isDisplayText, isDisplayTestUnit } from '../global/types/recursive_record.js';
 import { compareRoleCount } from './compareFn.js';
@@ -75,8 +75,7 @@ async function get_display_error_code(error_code: t_error_code, clientId: string
     return (`${error_desc_text ?? display_error_str}${error_code}`);
 }
 
-async function get_game_text(role_id: string, query_str: string, clientId: string): Promise<string> {
-    if (!isRoleId(role_id)) return (display_error_str);
+async function get_game_text(role_id: t_role_id, query_str: string, clientId: string): Promise<string> {
     return ((await get_display_text([`game_text.${role_id}.${query_str}`], clientId))[0] ?? display_error_str);
 }
 

@@ -17,7 +17,7 @@ const select_num_player_interaction: InteractionModule<StringSelectMenuInteracti
                 const clientId: string = interaction.user.id;
 
                 if (interaction.values[0] === undefined || !isNumPlayer(interaction.values[0])) {
-                    await interaction.update({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
+                    await interaction.reply({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
                     return;
                 }
 
@@ -31,7 +31,7 @@ const select_num_player_interaction: InteractionModule<StringSelectMenuInteracti
                     code: t_error_code
                 } = await initial_common_process(clientId, {replace: 'num_player', value: parseInt(interaction.values[0])});
                 if (initial_process_obj.error) {
-                    await interaction.update({ embeds: [await ui_error_fatal(clientId, initial_process_obj.code)], components: [] })
+                    await interaction.reply({ embeds: [await ui_error_fatal(clientId, initial_process_obj.code)], components: [] })
                     return;
                 }
 
@@ -48,7 +48,7 @@ const select_num_player_interaction: InteractionModule<StringSelectMenuInteracti
             timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, initialEmbed: EmbedBuilder): Promise<void> {
                 const timeoutObj: {embed: EmbedBuilder, error: boolean} = await common_delete_create_timeout(clientId, timeout_sec);
                 if (timeoutObj.error) {
-                    await reply_msg.reply({embeds: [timeoutObj.embed], components: []});
+                    await reply_msg.edit({embeds: [timeoutObj.embed], components: []});
                     return;
                 }
                 await reply_msg.edit({ embeds: [initialEmbed, timeoutObj.embed], components: [] });

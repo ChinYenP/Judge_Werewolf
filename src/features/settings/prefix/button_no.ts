@@ -17,7 +17,7 @@ const button_no_interaction: InteractionModule<ButtonInteraction, buttonPrefixNo
                 const messageId: string = interaction.message.id;
 
                 if (interaction.guildId === null) {
-                    await interaction.update({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
+                    await interaction.reply({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
                     return;
                 }
                 const settings: TempPrefixSettingInstance | null = await TEMP_PREFIX_SETTINGS.findOne({ where: { guildId: interaction.guildId } });
@@ -27,7 +27,7 @@ const button_no_interaction: InteractionModule<ButtonInteraction, buttonPrefixNo
                     } catch (error) {
                         console.error(error);
                         const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D2');
-                        await interaction.update({embeds: [errorEmbed], components: []});
+                        await interaction.reply({embeds: [errorEmbed], components: []});
                         return;
                     }
                 }

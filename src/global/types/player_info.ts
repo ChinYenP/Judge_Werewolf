@@ -1,14 +1,26 @@
-import { t_role_id, t_fake_role_id } from './other_types.js';
+import { t_fake_role_id, t_werewolf_role_id, t_villager_role_id, t_god_identity_role_id } from './other_types.js';
 
-export type ExtraInfo<T extends t_role_id> =
-    T extends 'W00' ? { role_id: T; act: t_fake_role_id } //What role to act
-    : T extends 'G01' ? { role_id: T; target: number } //Who to aim the gun at
-    : { role_id: T };
-
-export interface i_player_info {
-    role_id: t_role_id;
+interface BasePlayerInfo {
     dead: boolean;
     sheriff: boolean;
-    target: [number, number]; //[target_player, ability_num]
-    extra_info: ExtraInfo<this['role_id']>;
-};
+}
+
+interface WerewolfPlayer extends BasePlayerInfo {
+    role_id: t_werewolf_role_id;
+    extra_info: {
+        role_id: t_werewolf_role_id,
+        act: t_fake_role_id;
+    };
+}
+interface VillagerPlayer extends BasePlayerInfo {
+    role_id: t_villager_role_id;
+    extra_info: { role_id: t_villager_role_id }
+}
+interface GodIdentityPlayer extends BasePlayerInfo {
+    role_id: t_god_identity_role_id;
+    extra_info:
+        | { role_id: 'G00' }
+        | { role_id: 'G01'; target: number | null };
+}
+
+export type i_player_info = WerewolfPlayer | VillagerPlayer | GodIdentityPlayer;

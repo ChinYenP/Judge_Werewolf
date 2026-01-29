@@ -19,7 +19,7 @@ const button_yes_interaction: InteractionModule<ButtonInteraction, buttonPrefixY
 
                 if (interaction.guildId === null) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
-                    await interaction.update({embeds: [errorEmbed], components: []});
+                    await interaction.reply({embeds: [errorEmbed], components: []});
                     return;
                 };
                 

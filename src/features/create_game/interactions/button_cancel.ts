@@ -17,7 +17,7 @@ const button_cancel_interaction: InteractionModule<ButtonInteraction, buttonCrea
                 const messageId: string = interaction.message.id;
 
                 if (interaction.guildId === null) {
-                    await interaction.update({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
+                    await interaction.reply({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
                     return;
                 }
                 const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
@@ -27,7 +27,7 @@ const button_cancel_interaction: InteractionModule<ButtonInteraction, buttonCrea
                     } catch (error) {
                         console.error(error);
                         const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D2');
-                        await interaction.update({embeds: [errorEmbed], components: []});
+                        await interaction.reply({embeds: [errorEmbed], components: []});
                         return;
                     }
                 }

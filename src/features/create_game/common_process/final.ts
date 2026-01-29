@@ -19,6 +19,10 @@ async function final_common_process(clientId: string): Promise<{
     if (win_condition_in_role(game_create.players_role, game_create.game_rule) !== 'unknown') {
         return ({error: true, code: 'U'});
     }
+    const [affectedCount] = await GAME_CREATE.update({ status: 'final' }, { where: { clientId: clientId } });
+    if (affectedCount <= 0) {
+        return ({error: true, code: 'D3'});
+    }
     const [ActionRowArr, finalEmbed]: [[ActionRowBuilder<ButtonBuilder>], EmbedBuilder]
     = await ui_create_final(clientId, {
         "num_roles_max": game_create.num_players,

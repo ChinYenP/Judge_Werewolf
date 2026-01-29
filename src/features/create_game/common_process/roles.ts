@@ -27,7 +27,7 @@ async function roles_common_process(clientId: string,
     }
     let new_players_role: t_role_id[] = [];
     if (change.action === 'just_next') {
-        const [affectedCount] = await GAME_CREATE.update({ sheriff: false }, { where: { clientId: clientId } });
+        const [affectedCount] = await GAME_CREATE.update({ sheriff: false, status: 'roles' }, { where: { clientId: clientId } });
         if (affectedCount <= 0) {
             return ({error: true, code: 'D3'});
         }

@@ -20,7 +20,7 @@ const select_lang_interaction: InteractionModule<StringSelectMenuInteraction, se
 
                 if (interaction.values[0] === undefined || !isLanguages(interaction.values[0])) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
-                    await interaction.update({embeds: [errorEmbed], components: []});
+                    await interaction.reply({embeds: [errorEmbed], components: []});
                     return
                 };
                 const lang: t_languages = interaction.values[0];

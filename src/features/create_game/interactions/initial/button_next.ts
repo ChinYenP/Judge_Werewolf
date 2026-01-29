@@ -36,7 +36,7 @@ const button_initial_next_interaction: InteractionModule<ButtonInteraction, butt
                 const [ActionRowArr, initialEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>,
                     ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder]
                     = initial_process_obj.value;
-                await interaction.reply({ embeds: [initialEmbed], components: ActionRowArr });
+                await interaction.update({ embeds: [initialEmbed], components: ActionRowArr });
                 const update_msg: Message = await interaction.fetchReply();
                 timeout_set('create', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, initialEmbed);
             },
@@ -45,7 +45,7 @@ const button_initial_next_interaction: InteractionModule<ButtonInteraction, butt
             timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, initialEmbed: EmbedBuilder): Promise<void> {
                 const timeoutObj: {embed: EmbedBuilder, error: boolean} = await common_delete_create_timeout(clientId, timeout_sec);
                 if (timeoutObj.error) {
-                    await reply_msg.reply({embeds: [timeoutObj.embed], components: []});
+                    await reply_msg.edit({embeds: [timeoutObj.embed], components: []});
                     return;
                 }
                 await reply_msg.edit({ embeds: [initialEmbed, timeoutObj.embed], components: [] });
@@ -66,7 +66,7 @@ const button_initial_next_interaction: InteractionModule<ButtonInteraction, butt
                 } = await roles_common_process(clientId, {action: 'just_next'});
                 if (roles_process_obj.error) {
                     console.log(roles_process_obj.error)
-                    await interaction.update({ embeds: [await ui_error_fatal(clientId, roles_process_obj.code)], components: [] })
+                    await interaction.reply({ embeds: [await ui_error_fatal(clientId, roles_process_obj.code)], components: [] })
                     return;
                 }
 
@@ -83,7 +83,7 @@ const button_initial_next_interaction: InteractionModule<ButtonInteraction, butt
             timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, rolesEmbed: EmbedBuilder): Promise<void> {
                 const timeoutObj: {embed: EmbedBuilder, error: boolean} = await common_delete_create_timeout(clientId, timeout_sec);
                 if (timeoutObj.error) {
-                    await reply_msg.reply({embeds: [timeoutObj.embed], components: []});
+                    await reply_msg.edit({embeds: [timeoutObj.embed], components: []});
                     return;
                 }
                 await reply_msg.edit({ embeds: [rolesEmbed, timeoutObj.embed], components: [] });

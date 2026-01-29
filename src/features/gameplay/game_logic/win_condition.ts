@@ -1,4 +1,4 @@
-import { t_game_rule, t_win_con } from "../../../global/types/list_str";
+import { t_game_rule, t_win_con } from "../../../global/types/list_str.js";
 import { t_role_id } from "../../../global/types/other_types";
 import { i_player_info } from '../../../global/types/player_info.js';
 

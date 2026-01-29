@@ -1,9 +1,8 @@
 import { DataTypes, Sequelize, Model, InferAttributes, InferCreationAttributes, ModelStatic } from 'sequelize';
-import { t_role_id, t_fake_role_id } from './types/other_types.js';
+import { t_role_id, t_fake_role_id, t_game_match_state, t_game_match_status } from './types/other_types.js';
 import { i_player_info } from './types/player_info.js';
 import { t_languages, languages_list, t_create_status, create_status_list,
-    t_game_rule, game_rule_list, t_game_match_status, 
-    game_match_status_list, t_command_cooldown_type, command_cooldown_type_list
+    t_game_rule, game_rule_list, t_command_cooldown_type, command_cooldown_type_list
 } from './types/list_str.js';
 import { default_prefix } from './config.js';
 //Connect Database: SQLite
@@ -158,7 +157,7 @@ const GAME_CREATE: ModelStatic<GameCreateInstance> = sequelize.define<GameCreate
 interface GameMatchInstance extends Model<InferAttributes<GameMatchInstance>, InferCreationAttributes<GameMatchInstance>> {
     clientId: string;
     status: t_game_match_status;
-    turn_order: t_game_match_status[];
+    turn_order: t_game_match_state[];
     num_days: number;
     sheriff: boolean;
     game_rule: t_game_rule;
@@ -174,7 +173,7 @@ const GAME_MATCH: ModelStatic<GameMatchInstance> = sequelize.define<GameMatchIns
         primaryKey: true
     },
     status: {
-        type: DataTypes.ENUM(...game_match_status_list),
+        type: DataTypes.JSON,
         allowNull: false
     },
     turn_order: {

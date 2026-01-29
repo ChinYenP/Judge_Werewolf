@@ -41,7 +41,3 @@ export function isDisplayText(value: unknown): value is DisplayTextType {
     }
     return (true);
 }
-
-// export interface RecursiveNumberRecordType {
-//     [key: string]: number | RecursiveNumberRecordType;
-// }
