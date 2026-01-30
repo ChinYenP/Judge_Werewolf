@@ -1,7 +1,7 @@
 import { ActionRowBuilder, EmbedBuilder, Message, StringSelectMenuBuilder, StringSelectMenuInteraction } from "discord.js";
 import { InteractionModule } from "../../../../../global/types/module.js";
 import { selectGameplayGuessRole } from "../../../../../global/types/interaction_states.js";
-import { is_valid_interaction, timeout_set } from "../../../../../utility/timeout/timeout.js";
+import { is_valid_interaction, timeout_delete, timeout_set } from "../../../../../utility/timeout/timeout.js";
 import { ui_error_fatal, ui_error_non_fatal } from "../../../../../utility/embed/error.js";
 import { get_display_text } from "../../../../../utility/get_display.js";
 import { ui_guess } from "../../guess/ui.js";
@@ -81,6 +81,7 @@ const button_game_guess_interaction: InteractionModule<StringSelectMenuInteracti
                     return;
                 }
                 await interaction.update({ embeds: [gameUIObj.resultEmbed], components: [] });
+                timeout_delete(interaction.message.id);
             },
             timeout: false
         }

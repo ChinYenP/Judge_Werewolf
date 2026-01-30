@@ -49,12 +49,6 @@ export async function ui_hunter(clientId: string, num_days: number, target: numb
         .setColor(embed_hex_color)
         .setTitle(`${title_text ?? display_error_str} ${String(num_days)}`)
         .setDescription(description_text ?? display_error_str)
-        .addFields(
-            {
-                name: title_text ?? display_error_str,
-                value: description_text ?? display_error_str
-            }
-        )
         .setTimestamp()
         
     return ({action_rows: [rowTarget, rowButton], embed: dayVoteEmbed});
