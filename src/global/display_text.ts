@@ -1210,11 +1210,11 @@ const display_text: DisplayTextType = {
                     "yue": "前一日處決資訊"
                 },
                 "lynched": {
-                    "eng": "x is lynched.",
-                    "malay": "x digantung.",
-                    "schi": "x 被处死。",
-                    "tchi": "x 被處死。",
-                    "yue": "x 被處決。"
+                    "eng": "is lynched.",
+                    "malay": "digantung.",
+                    "schi": "被处死。",
+                    "tchi": "被處死。",
+                    "yue": "被處決。"
                 },
                 "no_lynch": {
                     "eng": "No one is lynched.",
