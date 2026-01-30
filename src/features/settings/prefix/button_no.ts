@@ -14,7 +14,6 @@ const button_no_interaction: InteractionModule<ButtonInteraction, buttonPrefixNo
         prefix_no: {
             execute: async function (interaction: ButtonInteraction): Promise<void> {
                 const clientId: string = interaction.user.id;
-                const messageId: string = interaction.message.id;
 
                 if (interaction.guildId === null) {
                     await interaction.reply({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
@@ -35,7 +34,7 @@ const button_no_interaction: InteractionModule<ButtonInteraction, buttonPrefixNo
                 const [cancel_text]: string[] = await get_display_text(['settings.server_settings.prefix.cancellation'], clientId);
                 const cancelEmbed: EmbedBuilder = await ui_cancel(clientId, cancel_text ?? display_error_str);
                 await interaction.update({ embeds: [cancelEmbed], components: []});
-                timeout_delete(messageId);
+                timeout_delete(clientId, 'settings_prefix');
             },
             timeout: false
         }

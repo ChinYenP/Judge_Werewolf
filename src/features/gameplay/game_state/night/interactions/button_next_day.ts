@@ -276,7 +276,7 @@ const button_night_next_day_interaction: InteractionModule<ButtonInteraction, bu
                 if (gameUIObj.end) {
                     await interaction.update({embeds: [gameUIObj.prevStateEmbed], components: []});
                     await interaction.followUp({embeds: [gameUIObj.resultEmbed], components: []});
-                    timeout_delete(interaction.message.id);
+                    timeout_delete(clientId, 'gameplay');
                     return;
                 }
                 await interaction.update({embeds: [gameUIObj.prevStateEmbed], components: []});

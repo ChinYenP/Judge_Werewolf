@@ -15,7 +15,6 @@ const button_yes_interaction: InteractionModule<ButtonInteraction, buttonPrefixY
         prefix_yes: {
             execute: async function (interaction: ButtonInteraction): Promise<void> {
                 const clientId: string = interaction.user.id;
-                const messageId: string = interaction.message.id;
 
                 if (interaction.guildId === null) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
@@ -42,7 +41,7 @@ const button_yes_interaction: InteractionModule<ButtonInteraction, buttonPrefixY
                 const [success_text]: string[] = await get_display_text(['settings.server_settings.prefix.success'], clientId);
                 const successEmbed: EmbedBuilder = await ui_success(clientId, `${success_text ?? display_error_str}${prefix}`);
                 await interaction.update({ embeds: [successEmbed], components: []});
-                timeout_delete(messageId);
+                timeout_delete(clientId, 'settings_prefix');
             },
             timeout: false
         }

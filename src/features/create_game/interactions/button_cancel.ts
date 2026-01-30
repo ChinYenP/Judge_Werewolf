@@ -14,7 +14,6 @@ const button_cancel_interaction: InteractionModule<ButtonInteraction, buttonCrea
         cancel: {
             execute: async function (interaction: ButtonInteraction): Promise<void> {
                 const clientId: string = interaction.user.id;
-                const messageId: string = interaction.message.id;
 
                 if (interaction.guildId === null) {
                     await interaction.reply({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
@@ -35,7 +34,7 @@ const button_cancel_interaction: InteractionModule<ButtonInteraction, buttonCrea
                 const [cancel_text]: string[] = await get_display_text(['create.cancel'], clientId);
                 const cancelEmbed: EmbedBuilder = await ui_cancel(clientId, cancel_text ?? display_error_str);
                 await interaction.update({ embeds: [cancelEmbed], components: []});
-                timeout_delete(messageId);
+                timeout_delete(clientId, 'create');
             },
             timeout: false
         }

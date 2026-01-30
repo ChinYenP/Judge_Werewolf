@@ -1,4 +1,4 @@
-import { is_valid_interaction, timeout_set } from '../../../../utility/timeout/timeout.js';
+import { is_valid_interaction, timeout_delete, timeout_set } from '../../../../utility/timeout/timeout.js';
 import { get_display_text, get_role_list_order } from '../../../../utility/get_display.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, EmbedBuilder, Message, StringSelectMenuBuilder } from 'discord.js';
 import { display_error_str, gameplay, timeout_sec } from '../../../../global/config.js';
@@ -94,6 +94,7 @@ const button_start_game_interaction: InteractionModule<ButtonInteraction, button
                     await interaction.reply({embeds: [errorEmbed], components: []});
                     return;
                 }
+                timeout_delete(clientId, 'create');
                 await interaction.update({embeds: [gameUIObj.infoEmbed, gameUIObj.stateEmbed], components: gameUIObj.components});
                 const update_msg: Message = await interaction.fetchReply();
                 timeout_set('gameplay', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, undefined);

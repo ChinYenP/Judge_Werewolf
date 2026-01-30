@@ -9,8 +9,15 @@ const messageDelete: EventModule<Message> = {
     async execute(message: Message): Promise<void> {
         if (message.author.id !== message.client.user.id) return;
         if (!isTextChannel(message.channel)) return;
-        if (!external_delete_check(message.id)) return;
-        timeout_delete(message.id);
+        const exist_obj: {
+            exist: false;
+        } | {
+            exist: true;
+            clientId: string;
+            timeout_type: "create" | "user_settings" | "settings_prefix" | "gameplay";
+        } = external_delete_check(message.id);
+        if (!exist_obj.exist) return;
+        timeout_delete(exist_obj.clientId, exist_obj.timeout_type);
         await message.channel.send({ content: 'External deletion to the bot\'s message is detected!', embeds: [], components: [] });
     }
 }

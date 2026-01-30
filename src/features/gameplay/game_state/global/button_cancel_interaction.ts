@@ -24,7 +24,7 @@ const button_game_cancel_interaction: InteractionModule<ButtonInteraction, butto
                     return;
                 }
                 await interaction.update({ embeds: [gameUIObj.resultEmbed], components: [] });
-                timeout_delete(interaction.message.id);
+                timeout_delete(clientId, 'gameplay');
             },
             timeout: false
         }

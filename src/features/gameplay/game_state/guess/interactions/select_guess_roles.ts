@@ -81,7 +81,7 @@ const button_game_guess_interaction: InteractionModule<StringSelectMenuInteracti
                     return;
                 }
                 await interaction.update({ embeds: [gameUIObj.resultEmbed], components: [] });
-                timeout_delete(interaction.message.id);
+                timeout_delete(clientId, 'gameplay');
             },
             timeout: false
         }
