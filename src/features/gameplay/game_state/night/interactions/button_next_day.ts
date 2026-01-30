@@ -33,23 +33,39 @@ const button_night_next_day_interaction: InteractionModule<ButtonInteraction, bu
                 }
 
                 let new_players_info: i_player_info[] = game_match.players_info;
-                let target_from_to: Collection<number,number[]> = new Collection<number,number[]>(); //Some roles might allow multiple targets, this should also resolve any redundant targets.
+                let target_from_to: Collection<number,{ability:number,to:number}[]> = new Collection<number,{ability:number,to:number}[]>();
+                //Some roles might allow multiple targets, this should also resolve any redundant targets.
                 for (const action of game_match.status.actions) {
                     const main_target: number = action.target1;
                     const target_to: number = action.target2;
+                    let ability_num: number = action.ability;
                     if (new_players_info[main_target] === undefined || new_players_info[target_to] === undefined) {
                         console.error('new_players_info[main_target or target_to] is undefined.');
                         const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
                         await interaction.reply({embeds: [errorEmbed], components: []});
                         return;
                     }
+                    //Here we will also resolve any ability num issue.
+                    switch (new_players_info[main_target].extra_info.role_id) {
+                        case 'G02':
+                            if (ability_num > 1) ability_num = 1;
+                            if (ability_num === 1 && new_players_info[main_target].extra_info.poison === false) ability_num = 0;
+                            break;
+                        default:
+                            ability_num = 0;
+                    }
                     //For now all roles can only have one target.
-                    target_from_to.set(main_target, [target_to]);
+                    target_from_to.set(main_target, [{ability: ability_num, to: target_to}]);
                 }
                 //Now then we modify the data based on roles.
+                const [last_night_title, died_death_message, safe_death_message, hunter_shot_message]: string[]
+                    = await get_display_text(['gameplay.night.logic.last_night_title', 'gameplay.night.logic.death_message.died',
+                        'gameplay.night.logic.death_message.safe', 'gameplay.hunter.shot'], clientId);
                 let additional_info: string[] = [];
                 let werewolf_votes: number[] = [];
                 let werewolf_touched: Set<number> = new Set<number>();
+                let witch_saving: boolean = false;
+                let any_death: boolean = false;
                 for (const [from, to] of target_from_to) {
                     if (to[0] === undefined) {
                         console.error('to[0] is undefined.');
@@ -58,11 +74,13 @@ const button_night_next_day_interaction: InteractionModule<ButtonInteraction, bu
                         return;
                     }
                     for (const each_to of to) {
-                        if (new_players_info[each_to] !== undefined && isWerewolfRoleId(new_players_info[each_to].role_id)) {
-                            werewolf_touched.add(each_to);
+                        const to_index: number = each_to.to;
+                        if (new_players_info[to_index] !== undefined && isWerewolfRoleId(new_players_info[to_index].role_id)) {
+                            werewolf_touched.add(to_index);
                         }
                     }
-                    const first_to: number = to[0];
+                    const first_to: number = to[0].to;
+                    const ability_num: number = to[0].ability
                     if (new_players_info[from] === undefined || new_players_info[first_to] === undefined) {
                         console.error('new_players_info[from or first_to] is undefined.');
                         const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
@@ -85,6 +103,36 @@ const button_night_next_day_interaction: InteractionModule<ButtonInteraction, bu
                             player_from.extra_info.target = null;
                         } else {
                             player_from.extra_info.target = first_to;
+                        }
+                    } else if (player_from.extra_info.role_id === 'G02') {
+                        if (ability_num === 0 && player_from.extra_info.heal) {
+                            witch_saving = true;
+                            player_from.extra_info.heal = false;
+                        } else if (ability_num === 1 && player_from.extra_info.poison) {
+                            any_death = true;
+                            if (new_players_info[first_to] === undefined) {
+                                console.error('The player who witch tries to poison to does not exist.');
+                                const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
+                                await interaction.reply({embeds: [errorEmbed], components: []});
+                                return;
+                            }
+                            new_players_info[first_to].dead = true;
+                            if (new_players_info[first_to].extra_info.role_id === 'G01') {
+                                //Hunter cannot shoot since he is poisoned.
+                                new_players_info[first_to].extra_info.witch_poisoned = true;
+                            }
+                            additional_info.push(`${died_death_message}: ${String(first_to + 1)}`);
+                            if (game_match.num_days === 1) {
+                                const last_word_obj: {error: true, code: t_error_code} | {error: false, last_word: string}
+                                    = await get_last_word(clientId, new_players_info[first_to], first_to + 1);
+                                if (last_word_obj.error) {
+                                    const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, last_word_obj.code);
+                                    await interaction.reply({embeds: [errorEmbed], components: []});
+                                    return;
+                                }
+                                additional_info.push(last_word_obj.last_word);
+                            }
+                            player_from.extra_info.poison = false;
                         }
                     } else if (isWerewolfRoleId(player_from.role_id)) {
                         werewolf_votes.push(first_to);
@@ -112,17 +160,10 @@ const button_night_next_day_interaction: InteractionModule<ButtonInteraction, bu
                             }
                     }
                 }
-                //Decide on killing
-                const [last_night_title, died_death_message, safe_death_message, hunter_shot_message]: string[]
-                    = await get_display_text(['gameplay.night.logic.last_night_title', 'gameplay.night.logic.death_message.died',
-                        'gameplay.night.logic.death_message.safe', 'gameplay.hunter.shot'], clientId);
+                //Decide on werewolf killing
                 let new_turn_order: t_game_match_state[] = game_match.turn_order;
                 let new_consecutive_death: number = game_match.consecutive_no_death;
-                //For now, only werewolves can kill at night (other than hunter).
-                if (werewolf_votes.length === 0) {
-                    additional_info.push(`${safe_death_message}`);
-                    new_consecutive_death--;
-                } else {
+                if (werewolf_votes.length !== 0) {
                     const random_num: number = Math.floor(Math.random() * werewolf_votes.length);
                     if (werewolf_votes[random_num] === undefined) {
                         console.error('Math.floor(Math.random() * werewolf_votes.length) does not randomly choose correct index.');
@@ -137,47 +178,54 @@ const button_night_next_day_interaction: InteractionModule<ButtonInteraction, bu
                         await interaction.reply({embeds: [errorEmbed], components: []});
                         return;
                     }
-                    new_players_info[killed].dead = true;
-                    additional_info.push(`${died_death_message}: ${String(killed + 1)}`);
-                    new_consecutive_death = gameplay.consecutive_no_death;
-                    if (game_match.num_days === 1) {
-                        const last_word_obj: {error: true, code: t_error_code} | {error: false, last_word: string}
-                            = await get_last_word(clientId, new_players_info[killed], killed + 1);
-                        if (last_word_obj.error) {
-                            const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, last_word_obj.code);
-                            await interaction.reply({embeds: [errorEmbed], components: []});
-                            return;
-                        }
-                        additional_info.push(last_word_obj.last_word);
-                    }
-                    //Check if he is a hunter:
-                    if (new_players_info[killed].extra_info.role_id === 'G01') {
-                        if (new_players_info[killed].extra_info.target !== null && new_players_info[killed].extra_info.target !== killed) {
-                            const hunter_target: number = new_players_info[killed].extra_info.target;
-                            if (new_players_info[hunter_target] === undefined) {
-                                console.error('The hunter\'s target does not exist.');
-                                const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
+                    if (!witch_saving || (witch_saving && new_players_info[killed].role_id === 'G02')) {
+                        any_death = true;
+                        new_players_info[killed].dead = true;
+                        additional_info.push(`${died_death_message}: ${String(killed + 1)}`);
+                        new_consecutive_death = gameplay.consecutive_no_death;
+                        if (game_match.num_days === 1) {
+                            const last_word_obj: {error: true, code: t_error_code} | {error: false, last_word: string}
+                                = await get_last_word(clientId, new_players_info[killed], killed + 1);
+                            if (last_word_obj.error) {
+                                const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, last_word_obj.code);
                                 await interaction.reply({embeds: [errorEmbed], components: []});
                                 return;
                             }
-                            new_players_info[hunter_target].dead = true;
-                            additional_info.push(`${died_death_message}: ${String(hunter_target + 1)}`);
-                            additional_info.push(`${String(killed + 1)}: ${hunter_shot_message} ${String(hunter_target + 1)}`);
-                            if (game_match.num_days === 1) {
-                                const last_word_obj: {error: true, code: t_error_code} | {error: false, last_word: string}
-                                    = await get_last_word(clientId, new_players_info[hunter_target], hunter_target + 1);
-                                if (last_word_obj.error) {
-                                    const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, last_word_obj.code);
+                            additional_info.push(last_word_obj.last_word);
+                        }
+                        //Check if he is a hunter:
+                        if (new_players_info[killed].extra_info.role_id === 'G01' && !new_players_info[killed].extra_info.witch_poisoned) {
+                            if (new_players_info[killed].extra_info.target !== null && new_players_info[killed].extra_info.target !== killed) {
+                                const hunter_target: number = new_players_info[killed].extra_info.target;
+                                if (new_players_info[hunter_target] === undefined) {
+                                    console.error('The hunter\'s target does not exist.');
+                                    const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
                                     await interaction.reply({embeds: [errorEmbed], components: []});
                                     return;
                                 }
-                                additional_info.push(last_word_obj.last_word);
+                                new_players_info[hunter_target].dead = true;
+                                additional_info.push(`${died_death_message}: ${String(hunter_target + 1)}`);
+                                additional_info.push(`${String(killed + 1)}: ${hunter_shot_message} ${String(hunter_target + 1)}`);
+                                if (game_match.num_days === 1) {
+                                    const last_word_obj: {error: true, code: t_error_code} | {error: false, last_word: string}
+                                        = await get_last_word(clientId, new_players_info[hunter_target], hunter_target + 1);
+                                    if (last_word_obj.error) {
+                                        const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, last_word_obj.code);
+                                        await interaction.reply({embeds: [errorEmbed], components: []});
+                                        return;
+                                    }
+                                    additional_info.push(last_word_obj.last_word);
+                                }
+                            } else {
+                                //Let the judge do manual hunter shooting.
+                                new_turn_order.push('hunter_night');
                             }
-                        } else {
-                            //Let the judge do manual hunter shooting.
-                            new_turn_order.push('hunter_night');
                         }
                     }
+                }
+                if (!any_death) {
+                    additional_info.push(`${safe_death_message}`);
+                    new_consecutive_death--;
                 }
                 new_turn_order.push('day_vote');
                 //Create the additional info message

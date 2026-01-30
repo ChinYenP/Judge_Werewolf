@@ -12,7 +12,11 @@ async function start_turn_order(role_list: t_role_id[]): Promise<t_game_match_st
 
 async function start_num_ability(role_list: t_role_id[]): Promise<number> {
     let ability: number = 1;
-    role_list.length;
+    for (const role of role_list) {
+        if (role === 'G02') {
+            ability = 2;
+        }
+    }
     return (ability);
 }
 
@@ -30,13 +34,13 @@ async function start_players_info(role_list: t_role_id[], fake_role_list: t_fake
                     extra_info: { role_id: each_role_id, act: await random_fake_role(fake_role_list) }
                 }
                 break;
-            case 'G01':
+            case 'V00':
                 player_info = {
                     role_id: each_role_id,
                     dead: false,
                     sheriff: false,
-                    extra_info: { role_id: each_role_id, target: null }
-                }
+                    extra_info: { role_id: each_role_id }
+                };
                 break;
             case 'G00':
                 player_info = {
@@ -46,18 +50,28 @@ async function start_players_info(role_list: t_role_id[], fake_role_list: t_fake
                     extra_info: { role_id: each_role_id }
                 };
                 break;
-            case 'V00':
+            case 'G01':
                 player_info = {
                     role_id: each_role_id,
                     dead: false,
                     sheriff: false,
-                    extra_info: { role_id: each_role_id }
+                    extra_info: { role_id: each_role_id, target: null, witch_poisoned: false }
+                }
+                break;
+            case 'G02':
+                player_info = {
+                    role_id: each_role_id,
+                    dead: false,
+                    sheriff: false,
+                    extra_info: { role_id: each_role_id, heal: true, poison: true }
                 };
                 break;
         }
         players_info.push(player_info);
     }
-    return (randomise_array<i_player_info>(players_info));
+    players_info = randomise_array<i_player_info>(players_info);
+    console.log(players_info);
+    return (players_info);
 
 
     async function random_fake_role(fake_role_list: t_fake_role_id[]): Promise<t_fake_role_id> {

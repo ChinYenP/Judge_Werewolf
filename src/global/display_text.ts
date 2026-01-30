@@ -911,6 +911,22 @@ const display_text: DisplayTextType = {
                 "tchi": "一個神職, 可以在死亡時射擊玩家。",
                 "yue": "一個神職, 可以喺死咗嘅時候射擊玩家。"
             }
+        },
+        "G02": {
+            "name": {
+                "eng": "Witch",
+                "malay": "Penyihir",
+                "schi": "女巫",
+                "tchi": "女巫",
+                "yue": "女巫"
+            },
+            "description": {
+                "eng": "A god identity with a heal potion and a poison potion.",
+                "malay": "Identiti tuhan dengan ramuan penyembuh dan ramuan beracun.",
+                "schi": "拥有解药和毒药的神职。",
+                "tchi": "擁有解藥和毒藥的神職。",
+                "yue": "擁有解藥同毒藥嘅神職。"
+            }
         }
     },
     "gameplay": {
