@@ -34,11 +34,13 @@ const button_night_next_day_interaction: InteractionModule<ButtonInteraction, bu
 
                 let new_players_info: i_player_info[] = game_match.players_info;
                 let target_from_to: Collection<number,{ability:number,to:number}[]> = new Collection<number,{ability:number,to:number}[]>();
+                let action_description_text: string = '';
                 //Some roles might allow multiple targets, this should also resolve any redundant targets.
                 for (const action of game_match.status.actions) {
                     const main_target: number = action.target1;
                     const target_to: number = action.target2;
                     let ability_num: number = action.ability;
+                    action_description_text += `${String(main_target + 1)}--${String(ability_num + 1)}-->${String(target_to + 1)}\n`
                     if (new_players_info[main_target] === undefined || new_players_info[target_to] === undefined) {
                         console.error('new_players_info[main_target or target_to] is undefined.');
                         const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
@@ -58,9 +60,9 @@ const button_night_next_day_interaction: InteractionModule<ButtonInteraction, bu
                     target_from_to.set(main_target, [{ability: ability_num, to: target_to}]);
                 }
                 //Now then we modify the data based on roles.
-                const [last_night_title, died_death_message, safe_death_message, hunter_shot_message]: string[]
+                const [last_night_title, died_death_message, safe_death_message, hunter_shot_message, action_title_text]: string[]
                     = await get_display_text(['gameplay.night.logic.last_night_title', 'gameplay.night.logic.death_message.died',
-                        'gameplay.night.logic.death_message.safe', 'gameplay.hunter.shot'], clientId);
+                        'gameplay.night.logic.death_message.safe', 'gameplay.hunter.shot', 'gameplay.night.actions'], clientId);
                 let additional_info: string[] = [];
                 let werewolf_votes: number[] = [];
                 let werewolf_touched: Set<number> = new Set<number>();
@@ -256,6 +258,12 @@ const button_night_next_day_interaction: InteractionModule<ButtonInteraction, bu
                     .setColor(embed_hex_color)
                     .setTitle(last_night_title ?? display_error_str)
                     .setDescription(night_result_desc)
+                    .addFields(
+                        {
+                            name: action_title_text ?? display_error_str,
+                            value: action_description_text
+                        }
+                    )
                     .setTimestamp()
                 
                 const gameUIObj: {error: true, code: t_error_code} |

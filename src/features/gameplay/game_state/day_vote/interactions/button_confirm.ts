@@ -41,7 +41,7 @@ const button_day_vote_confirm_interaction: InteractionModule<ButtonInteraction, 
                 let new_consecutive_death: number = game_match.consecutive_no_death;
                 let additional_info: string[] = [];
                 //For now, only werewolves can kill at night (other than hunter).
-                if (lynched_index === null) {
+                if (lynched_index === null ) {
                     additional_info.push(`${no_lynch_message}`);
                     new_consecutive_death--;
                 } else {

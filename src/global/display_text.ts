@@ -1194,6 +1194,13 @@ const display_text: DisplayTextType = {
                 "tchi": "處刑",
                 "yue": "處刑"
             },
+            "no_lynch_option": {
+                "eng": "No Lynch",
+                "malay": "Tiada Gantung",
+                "schi": "不处刑",
+                "tchi": "不處刑",
+                "yue": "不處刑"
+            },
             "button_confirm": {
                 "eng": "Confirm",
                 "malay": "Sahkan",
@@ -1248,6 +1255,13 @@ const display_text: DisplayTextType = {
                 "schi": "射击",
                 "tchi": "射擊",
                 "yue": "射擊"
+            },
+            "no_shoot_option": {
+                "eng": "No Shoot",
+                "malay": "Tidak Menembak",
+                "schi": "闷枪",
+                "tchi": "悶槍",
+                "yue": "唔開槍"
             },
             "button_confirm": {
                 "eng": "Confirm",

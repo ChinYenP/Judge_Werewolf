@@ -8,10 +8,17 @@ import { must_have_buttons } from "../global/must_have_buttons.js";
 export async function ui_day(clientId: string, num_days: number, lynch: number | null, players_info: i_player_info[])
 : Promise<{action_rows: [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], embed: EmbedBuilder}> {
     
-    const [title_text, description_text, select_lynch_placeholder, button_confirm_text]: string[]
-        = await get_display_text(['gameplay.day_vote.embed.title', 'gameplay.day_vote.embed.description', 'gameplay.day_vote.select_lynch', 'gameplay.day_vote.button_confirm'], clientId);
+    const [title_text, description_text, select_lynch_placeholder, button_confirm_text, no_lynch_option]: string[]
+        = await get_display_text(['gameplay.day_vote.embed.title', 'gameplay.day_vote.embed.description',
+            'gameplay.day_vote.select_lynch', 'gameplay.day_vote.button_confirm', 'gameplay.day_vote.no_lynch_option'], clientId);
 
     const lynch_survived_arr: {label: string, description: string, value: string, default: boolean}[] = [];
+    lynch_survived_arr.push({
+        label: no_lynch_option ?? display_error_str,
+        description: no_lynch_option ?? display_error_str,
+        value: 'null',
+        default: false
+    });
     let i: number = 1;
     for (const player_info of players_info) {
         if (player_info.dead) {

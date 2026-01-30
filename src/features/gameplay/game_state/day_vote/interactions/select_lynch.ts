@@ -31,7 +31,11 @@ const select_day_vote_lynch_interaction: InteractionModule<StringSelectMenuInter
                 }
 
                 let new_status: t_game_match_status = game_match.status;
-                new_status.lynch = Number(interaction.values[0]);
+                if (interaction.values[0] === 'null') {
+                    new_status.lynch = null;
+                } else {
+                    new_status.lynch = Number(interaction.values[0]);
+                }
                 const [affectedCountPlayer]: [number] = await GAME_MATCH.update({ status: new_status }, { where: { clientId: clientId } });
                 if (affectedCountPlayer <= 0) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D3');

@@ -116,7 +116,7 @@ export async function ui_night(clientId: string, num_days: number, num_ability: 
         .addFields(
             {
                 name: action_title_text ?? display_error_str,
-                value: action_description_text ?? display_error_str
+                value: action_description_text
             }
         )
         .setTimestamp()
