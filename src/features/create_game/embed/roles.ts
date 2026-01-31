@@ -43,6 +43,11 @@ async function ui_create_roles(clientId: string, num_players_max: number, roles_
                         label: await get_game_text('W00', 'name', clientId),
                         description: await get_game_text('W00', 'description', clientId),
                         value: 'W00'
+                    },
+                    {
+                        label: await get_game_text('W01', 'name', clientId),
+                        description: await get_game_text('W01', 'description', clientId),
+                        value: 'W01'
                     }
                 )
         )

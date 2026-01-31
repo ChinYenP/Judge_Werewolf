@@ -7,7 +7,7 @@ import { InteractionModule } from '../../../../global/types/module.js';
 import { selectCreateAddRoleWerewolf } from '../../../../global/types/interaction_states.js';
 import { t_error_code } from '../../../../global/types/list_str.js';
 import { common_delete_create_timeout } from '../../common_process/delete_create_timeout.js';
-import { isRoleId } from '../../../../global/types/other_types.js';
+import { isWerewolfRoleId } from '../../../../global/types/other_types.js';
 import { roles_common_process } from '../../common_process/roles.js';
 
 const select_add_role_werewolf_interaction: InteractionModule<StringSelectMenuInteraction, selectCreateAddRoleWerewolf> = {
@@ -17,11 +17,7 @@ const select_add_role_werewolf_interaction: InteractionModule<StringSelectMenuIn
             execute: async function (interaction: StringSelectMenuInteraction): Promise<void> {
                 const clientId: string = interaction.user.id;
 
-                if (interaction.values[0] === undefined) {
-                    await interaction.reply({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
-                    return;
-                };
-                if (!isRoleId(interaction.values[0])) {
+                if (interaction.values[0] === undefined || !isWerewolfRoleId(interaction.values[0])) {
                     await interaction.reply({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
                     return;
                 };

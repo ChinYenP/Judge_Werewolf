@@ -33,13 +33,13 @@ export async function ui_night(clientId: string, num_days: number, num_ability: 
         };
         target1_survived_arr.push({
             label: String(i),
-            description: String(i),
+            description: select_target_1_text ?? display_error_str,
             value: String(i - 1),
             default: (selecting.target1 !== null && i - 1 === selecting.target1)
         });
         target2_survived_arr.push({
             label: String(i),
-            description: String(i),
+            description: select_target_2_text ?? display_error_str,
             value: String(i - 1),
             default: (selecting.target2 !== null && i - 1 === selecting.target2)
         });
@@ -49,7 +49,7 @@ export async function ui_night(clientId: string, num_days: number, num_ability: 
     for (let j = 1; j <= num_ability; j++) {
         num_abilities_arr.push({
             label: String(j),
-            description: String(j),
+            description: ability_num_text ?? display_error_str,
             value: String(j - 1),
             default: (selecting.ability !== null && j - 1 === selecting.ability)
         });

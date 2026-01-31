@@ -26,7 +26,7 @@ export async function ui_hunter(clientId: string, num_days: number, target: numb
         };
         target_survived_arr.push({
             label: String(i),
-            description: String(i),
+            description: select_target_placeholder ?? display_error_str,
             value: String(i - 1),
             default: (target !== null && i - 1 === target)
         });

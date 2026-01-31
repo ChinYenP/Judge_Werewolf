@@ -18,7 +18,7 @@ export type t_cooldown_status = {
 type Extends<T, U extends T> = U;
 
 // eslint-disable-next-line @typescript-eslint/typedef
-const werewolf_role_id_arr = ['W00'] as const;
+const werewolf_role_id_arr = ['W00', 'W01'] as const;
 const villager_role_id_arr = ['V00'] as const;
 const god_identity_role_id_arr = ['G00', 'G01', 'G02'] as const;
 export type t_werewolf_role_id = typeof werewolf_role_id_arr[number];

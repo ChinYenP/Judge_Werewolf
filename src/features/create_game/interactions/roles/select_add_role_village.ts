@@ -7,7 +7,7 @@ import { InteractionModule } from '../../../../global/types/module.js';
 import { selectCreateAddRoleVillage } from '../../../../global/types/interaction_states.js';
 import { t_error_code } from '../../../../global/types/list_str.js';
 import { common_delete_create_timeout } from '../../common_process/delete_create_timeout.js';
-import { isRoleId } from '../../../../global/types/other_types.js';
+import { isGodIdentityRoleId, isVillagerRoleId } from '../../../../global/types/other_types.js';
 import { roles_common_process } from '../../common_process/roles.js';
 
 const select_add_role_village_interaction: InteractionModule<StringSelectMenuInteraction, selectCreateAddRoleVillage> = {
@@ -17,7 +17,7 @@ const select_add_role_village_interaction: InteractionModule<StringSelectMenuInt
             execute: async function (interaction: StringSelectMenuInteraction): Promise<void> {
                 const clientId: string = interaction.user.id;
 
-                if (interaction.values[0] === undefined || !isRoleId(interaction.values[0])) {
+                if (interaction.values[0] === undefined || !(isVillagerRoleId(interaction.values[0]) || isGodIdentityRoleId(interaction.values[0]))) {
                     await interaction.reply({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
                     return;
                 }

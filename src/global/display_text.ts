@@ -864,6 +864,22 @@ const display_text: DisplayTextType = {
                 "yue": "一個普通嘅狼人, 可以喺夜晚投票殺死一個玩家。"
             }
         },
+        "W01": {
+            "name": {
+                "eng": "Snow Wolf",
+                "malay": "Serigala Salji",
+                "schi": "雪狼",
+                "tchi": "雪狼",
+                "yue": "雪狼"
+            },
+            "description": {
+                "eng": "A werewolf that will be seen as good by the Seer.",
+                "malay": "Seorang manusia serigala yang akan dilihat sebagai baik oleh Peramal.",
+                "schi": "一个会被预言家查验为好人的狼人。",
+                "tchi": "一個會被預言家查驗為好人的狼人。",
+                "yue": "一個會俾預言家睇成好人嘅狼人。"
+            }
+        },
         "V00": {
             "name": {
                 "eng": "Villager",

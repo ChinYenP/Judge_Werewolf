@@ -34,6 +34,14 @@ async function start_players_info(role_list: t_role_id[], fake_role_list: t_fake
                     extra_info: { role_id: each_role_id, act: await random_fake_role(fake_role_list) }
                 }
                 break;
+            case 'W01':
+                player_info = {
+                    role_id: each_role_id,
+                    dead: false,
+                    sheriff: false,
+                    extra_info: { role_id: each_role_id, act: await random_fake_role(fake_role_list) }
+                }
+                break;
             case 'V00':
                 player_info = {
                     role_id: each_role_id,

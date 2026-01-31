@@ -94,7 +94,7 @@ const button_night_next_day_interaction: InteractionModule<ButtonInteraction, bu
                         if (from !== first_to) {
                             const [seer_result_text, good_text, werewolf_text]: string[]
                                 = await get_display_text(['gameplay.night.logic.G00.seer_result', 'gameplay.night.logic.G00.good', 'gameplay.night.logic.G00.werewolf'], clientId);
-                            if (isWerewolfRoleId(new_players_info[first_to].role_id)) {
+                            if (isWerewolfRoleId(new_players_info[first_to].role_id) && new_players_info[first_to].role_id !== 'W01') {
                                 additional_info.push(`${seer_result_text}: ${werewolf_text}`);
                             } else {
                                 additional_info.push(`${seer_result_text}: ${good_text}`);

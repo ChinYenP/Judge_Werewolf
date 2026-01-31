@@ -27,7 +27,7 @@ export async function ui_day(clientId: string, num_days: number, lynch: number |
         };
         lynch_survived_arr.push({
             label: String(i),
-            description: String(i),
+            description: select_lynch_placeholder ?? display_error_str,
             value: String(i - 1),
             default: (lynch !== null && i - 1 === lynch)
         });
