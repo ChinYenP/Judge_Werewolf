@@ -30,7 +30,7 @@ const select_hunter_target_interaction: InteractionModule<StringSelectMenuIntera
                     return;
                 }
 
-                let new_status: t_game_match_status = game_match.status;
+                const new_status: t_game_match_status = game_match.status;
                 if (interaction.values[0] === 'null') {
                     new_status.target = null;
                 } else {
@@ -59,9 +59,7 @@ const select_hunter_target_interaction: InteractionModule<StringSelectMenuIntera
             },
             timeout: true,
             timeout_sec: timeout_sec.gameplay,
-            timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, nothing: undefined): Promise<void> {
-                nothing;
-                timeout_sec;
+            timeout_execute: async function(reply_msg: Message, clientId: string, _timeout_sec: number, _nothing: undefined): Promise<void> {
                 const gameUIObj: {error: true, code: t_error_code} |
                     {error: false, end: true, prevStateEmbed: EmbedBuilder | null, resultEmbed: EmbedBuilder}
                     = await game_result(clientId, 'timeout', null);

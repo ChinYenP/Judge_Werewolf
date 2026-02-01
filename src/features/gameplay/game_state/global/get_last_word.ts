@@ -1,3 +1,4 @@
+import { display_error_str } from "../../../../global/config.js";
 import { t_error_code } from "../../../../global/types/list_str.js";
 import { isWerewolfRoleId, t_role_id } from "../../../../global/types/other_types.js";
 import { i_player_info } from "../../../../global/types/player_info.js";
@@ -15,5 +16,5 @@ export async function get_last_word(clientId: string, player_info: i_player_info
     } else {
         last_word_role = player_info.role_id;
     }
-    return ({error: false, last_word: `${String(player_num)}: ${last_word_text} ${await get_game_text(last_word_role, 'name', clientId)}`});
+    return ({error: false, last_word: `${String(player_num)}: ${last_word_text ?? display_error_str} ${await get_game_text(last_word_role, 'name', clientId)}`});
 }

@@ -30,7 +30,7 @@ const select_night_target2_interaction: InteractionModule<StringSelectMenuIntera
                     return;
                 }
 
-                let new_status: t_game_match_status = game_match.status;
+                const new_status: t_game_match_status = game_match.status;
                 new_status.selecting.target2 = Number(interaction.values[0]);
                 const [affectedCountPlayer]: [number] = await GAME_MATCH.update({ status: new_status }, { where: { clientId: clientId } });
                 if (affectedCountPlayer <= 0) {
@@ -40,7 +40,7 @@ const select_night_target2_interaction: InteractionModule<StringSelectMenuIntera
                 }
 
                 game_match = await GAME_MATCH.findOne({ where: { clientId: clientId } });
-                if (game_match === null || game_match.status.status !== 'night') {
+                if (game_match?.status.status !== 'night') {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D4');
                     await interaction.reply({embeds: [errorEmbed], components: []});
                     return;
@@ -55,9 +55,7 @@ const select_night_target2_interaction: InteractionModule<StringSelectMenuIntera
             },
             timeout: true,
             timeout_sec: timeout_sec.gameplay,
-            timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, nothing: undefined): Promise<void> {
-                nothing;
-                timeout_sec;
+            timeout_execute: async function(reply_msg: Message, clientId: string, _timeout_sec: number, _nothing: undefined): Promise<void> {
                 const gameUIObj: {error: true, code: t_error_code} |
                     {error: false, end: true, prevStateEmbed: EmbedBuilder | null, resultEmbed: EmbedBuilder}
                     = await game_result(clientId, 'timeout', null);

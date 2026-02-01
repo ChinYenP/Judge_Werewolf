@@ -2,15 +2,14 @@ import { t_role_id, t_fake_role_id, t_game_match_state } from "../../../global/t
 import { i_player_info } from '../../../global/types/player_info.js';
 import { randomise_array } from "../../../utility/randomise_array.js";
 
-async function start_turn_order(role_list: t_role_id[]): Promise<t_game_match_state[]> {
-    let turn_order: t_game_match_state[] = [];
+function start_turn_order(_role_list: t_role_id[]): t_game_match_state[] {
+    const turn_order: t_game_match_state[] = [];
     //If there are roles that has actions at the start of the game, place them before night.
-    role_list.length;
     turn_order.push('night');
     return (turn_order);
 }
 
-async function start_num_ability(role_list: t_role_id[]): Promise<number> {
+function start_num_ability(role_list: t_role_id[]): number {
     let ability: number = 1;
     for (const role of role_list) {
         if (role === 'G02') {
@@ -31,7 +30,7 @@ async function start_players_info(role_list: t_role_id[], fake_role_list: t_fake
                     role_id: each_role_id,
                     dead: false,
                     sheriff: false,
-                    extra_info: { role_id: each_role_id, act: await random_fake_role(fake_role_list) }
+                    extra_info: { role_id: each_role_id, act: random_fake_role(fake_role_list) }
                 }
                 break;
             case 'W01':
@@ -39,7 +38,7 @@ async function start_players_info(role_list: t_role_id[], fake_role_list: t_fake
                     role_id: each_role_id,
                     dead: false,
                     sheriff: false,
-                    extra_info: { role_id: each_role_id, act: await random_fake_role(fake_role_list) }
+                    extra_info: { role_id: each_role_id, act: random_fake_role(fake_role_list) }
                 }
                 break;
             case 'V00':
@@ -74,6 +73,14 @@ async function start_players_info(role_list: t_role_id[], fake_role_list: t_fake
                     extra_info: { role_id: each_role_id, heal: true, poison: true }
                 };
                 break;
+            case 'G03':
+                player_info = {
+                    role_id: each_role_id,
+                    dead: false,
+                    sheriff: false,
+                    extra_info: { role_id: each_role_id, prev_protect: null }
+                };
+                break;
         }
         players_info.push(player_info);
     }
@@ -82,7 +89,7 @@ async function start_players_info(role_list: t_role_id[], fake_role_list: t_fake
     return (players_info);
 
 
-    async function random_fake_role(fake_role_list: t_fake_role_id[]): Promise<t_fake_role_id> {
+    function random_fake_role(fake_role_list: t_fake_role_id[]): t_fake_role_id {
         return (fake_role_list[Math.floor(Math.random() * fake_role_list.length)] ?? 'V00');
     }
 }

@@ -23,7 +23,7 @@ async function initial_common_process(clientId: string,
         switch (change.replace) {
             case 'none':
                 break;
-            case 'num_player':
+            case 'num_player': {
                 const [affectedCountPlayer]: [number] = await GAME_CREATE.update({ num_players: change.value }, { where: { clientId: clientId } });
                 if (affectedCountPlayer <= 0) {
                     return ({error: true, code: 'D3'});
@@ -32,7 +32,8 @@ async function initial_common_process(clientId: string,
                 preset_selected = game_create.is_preset;
                 game_rule_selected = game_create.game_rule;
                 break;
-            case 'preset':
+            }
+            case 'preset': {
                 const [affectedCountPreset]: [number] = await GAME_CREATE.update({ is_preset: change.value }, { where: { clientId: clientId } });
                 if (affectedCountPreset <= 0) {
                     return ({error: true, code: 'D3'});
@@ -41,7 +42,8 @@ async function initial_common_process(clientId: string,
                 preset_selected = change.value;
                 game_rule_selected = game_create.game_rule;
                 break;
-            case 'game_rule':
+            }
+            case 'game_rule': {
                 const [affectedCountRule]: [number] = await GAME_CREATE.update({ game_rule: change.value }, { where: { clientId: clientId } });
                 if (affectedCountRule <= 0) {
                     return ({error: true, code: 'D3'});
@@ -50,6 +52,7 @@ async function initial_common_process(clientId: string,
                 preset_selected = game_create.is_preset;
                 game_rule_selected = change.value;
                 break;
+            }
         }
     } else {
         //Create new game

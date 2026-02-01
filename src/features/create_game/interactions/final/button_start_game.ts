@@ -55,12 +55,12 @@ const button_start_game_interaction: InteractionModule<ButtonInteraction, button
                     await GAME_MATCH.create({
                         clientId: clientId,
                         status: {status: 'night', selecting: { target1: null, target2: null, ability: null }, actions: []},
-                        turn_order: await start_turn_order(game_create.players_role),
+                        turn_order: start_turn_order(game_create.players_role),
                         num_days: 0,
                         sheriff: game_create.sheriff,
                         game_rule: game_create.game_rule,
                         consecutive_no_death: gameplay.consecutive_no_death,
-                        num_ability: await start_num_ability(game_create.players_role),
+                        num_ability: start_num_ability(game_create.players_role),
                         role_count: get_role_list_order(game_create.players_role),
                         fake_role_list: fake_role_list.sort(compareRoleId),
                         players_info: await start_players_info(game_create.players_role, fake_role_list)
@@ -101,9 +101,7 @@ const button_start_game_interaction: InteractionModule<ButtonInteraction, button
             },
             timeout: true,
             timeout_sec: timeout_sec.gameplay,
-            timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, nothing: undefined): Promise<void> {
-                nothing;
-                timeout_sec;
+            timeout_execute: async function(reply_msg: Message, clientId: string, _timeout_sec: number, _nothing: undefined): Promise<void> {
                 const gameUIObj: {error: true, code: t_error_code} |
                     {error: false, end: true, prevStateEmbed: EmbedBuilder | null, resultEmbed: EmbedBuilder}
                     = await game_result(clientId, 'timeout', null);

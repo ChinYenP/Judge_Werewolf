@@ -19,7 +19,7 @@ const button_hunter_confirm_interaction: InteractionModule<ButtonInteraction, bu
         next_state: {
             execute: async function (interaction: ButtonInteraction): Promise<void> {
                 const clientId: string = interaction.user.id;
-                let game_match: GameMatchInstance | null = await GAME_MATCH.findOne({ where: { clientId: clientId } });
+                const game_match: GameMatchInstance | null = await GAME_MATCH.findOne({ where: { clientId: clientId } });
                 if (game_match === null) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D4');
                     await interaction.reply({embeds: [errorEmbed], components: []});
@@ -32,8 +32,8 @@ const button_hunter_confirm_interaction: InteractionModule<ButtonInteraction, bu
                 }
 
                 //Decide on shooting.
-                let new_players_info: i_player_info[] = game_match.players_info;
-                let target_index: number | null = game_match.status.target;
+                const new_players_info: i_player_info[] = game_match.players_info;
+                const target_index: number | null = game_match.status.target;
                 const [hunter_phase_title, hunter_shot_message]: string[]
                     = await get_display_text(['gameplay.hunter.hunter_phase_title', 'gameplay.hunter.shot'], clientId);
                 let new_consecutive_death: number = game_match.consecutive_no_death;
@@ -47,7 +47,7 @@ const button_hunter_confirm_interaction: InteractionModule<ButtonInteraction, bu
                         return;
                     }
                     new_players_info[target_index].dead = true;
-                    additional_info.push(`${hunter_shot_message} ${String(target_index + 1)}`);
+                    additional_info.push(`${hunter_shot_message ?? display_error_str} ${String(target_index + 1)}`);
                     new_consecutive_death = gameplay.consecutive_no_death;
                     if ((game_match.status.status === 'hunter_night' && game_match.num_days === 1) || game_match.status.status === 'hunter_day') {
                         const last_word_obj: {error: true, code: t_error_code} | {error: false, last_word: string}
@@ -64,7 +64,7 @@ const button_hunter_confirm_interaction: InteractionModule<ButtonInteraction, bu
                 //Create the additional info message
                 additional_info = randomise_array<string>(additional_info);
                 let hunter_result_desc: string = '';
-                let i: number = 0;
+                const i: number = 0;
                 for (const text of additional_info) {
                     hunter_result_desc += text;
                     if (i !== additional_info.length - 1) {
@@ -117,9 +117,7 @@ const button_hunter_confirm_interaction: InteractionModule<ButtonInteraction, bu
             },
             timeout: true,
             timeout_sec: timeout_sec.gameplay,
-            timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, nothing: undefined): Promise<void> {
-                nothing;
-                timeout_sec;
+            timeout_execute: async function(reply_msg: Message, clientId: string, _timeout_sec: number, _nothing: undefined): Promise<void> {
                 const gameUIObj: {error: true, code: t_error_code} |
                     {error: false, end: true, prevStateEmbed: EmbedBuilder | null, resultEmbed: EmbedBuilder}
                     = await game_result(clientId, 'timeout', null);

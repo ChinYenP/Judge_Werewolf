@@ -30,7 +30,7 @@ const select_day_vote_lynch_interaction: InteractionModule<StringSelectMenuInter
                     return;
                 }
 
-                let new_status: t_game_match_status = game_match.status;
+                const new_status: t_game_match_status = game_match.status;
                 if (interaction.values[0] === 'null') {
                     new_status.lynch = null;
                 } else {
@@ -44,7 +44,7 @@ const select_day_vote_lynch_interaction: InteractionModule<StringSelectMenuInter
                 }
 
                 game_match = await GAME_MATCH.findOne({ where: { clientId: clientId } });
-                if (game_match === null || game_match.status.status !== 'day_vote') {
+                if (game_match?.status.status !== 'day_vote') {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D4');
                     await interaction.reply({embeds: [errorEmbed], components: []});
                     return;
@@ -59,9 +59,7 @@ const select_day_vote_lynch_interaction: InteractionModule<StringSelectMenuInter
             },
             timeout: true,
             timeout_sec: timeout_sec.gameplay,
-            timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, nothing: undefined): Promise<void> {
-                nothing;
-                timeout_sec;
+            timeout_execute: async function(reply_msg: Message, clientId: string, _timeout_sec: number, _nothing: undefined): Promise<void> {
                 const gameUIObj: {error: true, code: t_error_code} |
                     {error: false, end: true, prevStateEmbed: EmbedBuilder | null, resultEmbed: EmbedBuilder}
                     = await game_result(clientId, 'timeout', null);

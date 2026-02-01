@@ -19,14 +19,16 @@ type Extends<T, U extends T> = U;
 
 // eslint-disable-next-line @typescript-eslint/typedef
 const werewolf_role_id_arr = ['W00', 'W01'] as const;
+// eslint-disable-next-line @typescript-eslint/typedef
 const villager_role_id_arr = ['V00'] as const;
-const god_identity_role_id_arr = ['G00', 'G01', 'G02'] as const;
+// eslint-disable-next-line @typescript-eslint/typedef
+const god_identity_role_id_arr = ['G00', 'G01', 'G02', 'G03'] as const;
 export type t_werewolf_role_id = typeof werewolf_role_id_arr[number];
 export type t_villager_role_id = typeof villager_role_id_arr[number];
 export type t_god_identity_role_id = typeof god_identity_role_id_arr[number];
 export type t_role_id = t_werewolf_role_id | t_villager_role_id | t_god_identity_role_id;
 // eslint-disable-next-line @typescript-eslint/typedef
-export const fake_role_id = ['V00', 'G00'] as const;
+export const fake_role_id = ['V00', 'G00', 'G03'] as const;
 export type t_fake_role_id = Extends<t_role_id, typeof fake_role_id[number]>;
 
 export function isRoleId(query: string): query is t_role_id {
@@ -45,7 +47,7 @@ export function isGodIdentityRoleId(query: string): query is t_god_identity_role
     return (god_identity_role_id_arr.includes(query as t_god_identity_role_id));
 }
 
-// eslint-disable-next-line @typescript-eslint/typedef
+ 
 export type t_game_match_status =
 {status: 'guessing', guesses: t_role_id[], remaining_guesses: t_role_id[]} |
 {status: 'night', selecting: {

@@ -32,7 +32,7 @@ const button_night_add_interaction: InteractionModule<ButtonInteraction, buttonG
                     return;
                 }
 
-                let new_status: t_game_match_status = game_match.status;
+                const new_status: t_game_match_status = game_match.status;
                 new_status.actions.push({
                     target1: game_match.status.selecting.target1,
                     target2: game_match.status.selecting.target2,
@@ -47,7 +47,7 @@ const button_night_add_interaction: InteractionModule<ButtonInteraction, buttonG
                 }
 
                 game_match = await GAME_MATCH.findOne({ where: { clientId: clientId } });
-                if (game_match === null || game_match.status.status !== 'night') {
+                if (game_match?.status.status !== 'night') {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D4');
                     await interaction.reply({embeds: [errorEmbed], components: []});
                     return;
@@ -62,9 +62,7 @@ const button_night_add_interaction: InteractionModule<ButtonInteraction, buttonG
             },
             timeout: true,
             timeout_sec: timeout_sec.gameplay,
-            timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, nothing: undefined): Promise<void> {
-                nothing;
-                timeout_sec;
+            timeout_execute: async function(reply_msg: Message, clientId: string, _timeout_sec: number, _nothing: undefined): Promise<void> {
                 const gameUIObj: {error: true, code: t_error_code} |
                     {error: false, end: true, prevStateEmbed: EmbedBuilder | null, resultEmbed: EmbedBuilder}
                     = await game_result(clientId, 'timeout', null);

@@ -20,7 +20,7 @@ const button_day_vote_confirm_interaction: InteractionModule<ButtonInteraction, 
         next_state: {
             execute: async function (interaction: ButtonInteraction): Promise<void> {
                 const clientId: string = interaction.user.id;
-                let game_match: GameMatchInstance | null = await GAME_MATCH.findOne({ where: { clientId: clientId } });
+                const game_match: GameMatchInstance | null = await GAME_MATCH.findOne({ where: { clientId: clientId } });
                 if (game_match === null) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D4');
                     await interaction.reply({embeds: [errorEmbed], components: []});
@@ -33,16 +33,16 @@ const button_day_vote_confirm_interaction: InteractionModule<ButtonInteraction, 
                 }
 
                 //Decide on lynching.
-                let new_players_info: i_player_info[] = game_match.players_info;
-                let lynched_index: number | null = game_match.status.lynch;
+                const new_players_info: i_player_info[] = game_match.players_info;
+                const lynched_index: number | null = game_match.status.lynch;
                 const [last_day_vote_title, lynched_message, no_lynch_message, hunter_shot_message]: string[]
                     = await get_display_text(['gameplay.day_vote.logic.last_day_vote_title', 'gameplay.day_vote.logic.lynched', 'gameplay.day_vote.logic.no_lynch', 'gameplay.hunter.shot'], clientId);
-                let new_turn_order: t_game_match_state[] = game_match.turn_order;
+                const new_turn_order: t_game_match_state[] = game_match.turn_order;
                 let new_consecutive_death: number = game_match.consecutive_no_death;
                 let additional_info: string[] = [];
                 //For now, only werewolves can kill at night (other than hunter).
                 if (lynched_index === null ) {
-                    additional_info.push(`${no_lynch_message}`);
+                    additional_info.push(no_lynch_message ?? display_error_str);
                     new_consecutive_death--;
                 } else {
                     if (new_players_info[lynched_index] === undefined) {
@@ -52,7 +52,7 @@ const button_day_vote_confirm_interaction: InteractionModule<ButtonInteraction, 
                         return;
                     }
                     new_players_info[lynched_index].dead = true;
-                    additional_info.push(`${String(lynched_index + 1)} ${lynched_message}`);
+                    additional_info.push(`${String(lynched_index + 1)} ${lynched_message ?? display_error_str}`);
                     new_consecutive_death = gameplay.consecutive_no_death;
                     const last_word_obj: {error: true, code: t_error_code} | {error: false, last_word: string}
                         = await get_last_word(clientId, new_players_info[lynched_index], lynched_index + 1);
@@ -73,7 +73,7 @@ const button_day_vote_confirm_interaction: InteractionModule<ButtonInteraction, 
                                 return;
                             }
                             new_players_info[hunter_target].dead = true;
-                            additional_info.push(`${String(lynched_index + 1)}: ${hunter_shot_message} ${String(hunter_target + 1)}`);
+                            additional_info.push(`${String(lynched_index + 1)}: ${hunter_shot_message ?? display_error_str} ${String(hunter_target + 1)}`);
                             const last_word_obj: {error: true, code: t_error_code} | {error: false, last_word: string}
                                 = await get_last_word(clientId, new_players_info[hunter_target], hunter_target + 1);
                             if (last_word_obj.error) {
@@ -92,7 +92,7 @@ const button_day_vote_confirm_interaction: InteractionModule<ButtonInteraction, 
                 //Create the additional info message
                 additional_info = randomise_array<string>(additional_info);
                 let day_vote_result_desc: string = '';
-                let i: number = 0;
+                const i: number = 0;
                 for (const text of additional_info) {
                     day_vote_result_desc += text;
                     if (i !== additional_info.length - 1) {
@@ -146,9 +146,7 @@ const button_day_vote_confirm_interaction: InteractionModule<ButtonInteraction, 
             },
             timeout: true,
             timeout_sec: timeout_sec.gameplay,
-            timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, nothing: undefined): Promise<void> {
-                nothing;
-                timeout_sec;
+            timeout_execute: async function(reply_msg: Message, clientId: string, _timeout_sec: number, _nothing: undefined): Promise<void> {
                 const gameUIObj: {error: true, code: t_error_code} |
                     {error: false, end: true, prevStateEmbed: EmbedBuilder | null, resultEmbed: EmbedBuilder}
                     = await game_result(clientId, 'timeout', null);

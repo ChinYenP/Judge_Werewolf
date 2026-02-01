@@ -22,6 +22,7 @@ interface GodIdentityPlayer extends BasePlayerInfo {
         | { role_id: 'G00' }
         | { role_id: 'G01', target: number | null, witch_poisoned: boolean }
         | { role_id: 'G02', heal: boolean, poison: boolean }
+        | { role_id: 'G03', prev_protect: number | null }
 }
 
 export type i_player_info = WerewolfPlayer | VillagerPlayer | GodIdentityPlayer;

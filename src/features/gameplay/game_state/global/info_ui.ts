@@ -16,13 +16,13 @@ async function ui_gameplay_info(clientId: string, game_match: GameMatchInstance)
         'gameplay.info_embed.death_requirement.description_back', 'gameplay.info_embed.role_list',
         'gameplay.info_embed.fake_role_list', 'gameplay.info_embed.survived', 'gameplay.info_embed.dead'], clientId);
     
-    let sheriff_desc_text: string | undefined = game_match.sheriff ? sheriff_enabled : sheriff_disabled;
-    let game_rule_desc_text: string | undefined = (game_match.game_rule === 'kill_all') ? kill_all_text : kill_either_text;
+    const sheriff_desc_text: string | undefined = game_match.sheriff ? sheriff_enabled : sheriff_disabled;
+    const game_rule_desc_text: string | undefined = (game_match.game_rule === 'kill_all') ? kill_all_text : kill_either_text;
 
     let role_list_content: string = '';
     let i: number = 1;
     for (const [each_role_id, count] of game_match.role_count) {
-        role_list_content += `${await get_game_text(each_role_id, 'name', clientId)} x${count}`;
+        role_list_content += `${await get_game_text(each_role_id, 'name', clientId)} x${String(count)}`;
         if (i != game_match.role_count.length) {
             role_list_content += '\n';
         }
@@ -71,23 +71,23 @@ async function ui_gameplay_info(clientId: string, game_match: GameMatchInstance)
             },
             {
                 name: death_title ?? display_error_str,
-                value: `${death_front_text}${String(game_match.consecutive_no_death)}${death_back_text}`
+                value: `${death_front_text ?? display_error_str}${String(game_match.consecutive_no_death)}${death_back_text ?? display_error_str}`
             },
             {
                 name: role_list_title ?? display_error_str,
-                value: role_list_content ?? display_error_str
+                value: role_list_content
             },
             {
                 name: fake_role_list_title ?? display_error_str,
-                value: fake_role_list_content ?? display_error_str
+                value: fake_role_list_content
             },
             {
                 name: survived_text ?? display_error_str,
-                value: survived_content ?? display_error_str
+                value: survived_content
             },
             {
                 name: dead_text ?? display_error_str,
-                value: dead_content ?? display_error_str
+                value: dead_content
             }
         )
         .setTimestamp()

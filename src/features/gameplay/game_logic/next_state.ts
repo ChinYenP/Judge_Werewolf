@@ -36,7 +36,7 @@ async function game_next_state(clientId: string, prevStateEmbed: EmbedBuilder | 
     const infoEmbed: EmbedBuilder = await ui_gameplay_info(clientId, game_match);
     
     //Set respective next turn
-    let new_turn_order: t_game_match_state[] = game_match.turn_order;
+    const new_turn_order: t_game_match_state[] = game_match.turn_order;
     const first_state: t_game_match_state | undefined = new_turn_order.shift();
     if (first_state === undefined) {
         console.error('first_state is empty. Impossible case.');
@@ -47,7 +47,7 @@ async function game_next_state(clientId: string, prevStateEmbed: EmbedBuilder | 
     DO NOT append any states here.
     */
     switch (first_state) {
-        case 'night':
+        case 'night': {
             const [affectedCount1] = await GAME_MATCH.update({ num_days: game_match.num_days + 1, turn_order: new_turn_order, status: {status: 'night', selecting: { target1: null, target2: null, ability: null }, actions: []} }, { where: { clientId: clientId } });
             if (affectedCount1 <= 0) {
                 return ({error: true, code: 'D3'});
@@ -55,7 +55,8 @@ async function game_next_state(clientId: string, prevStateEmbed: EmbedBuilder | 
             const ui_data_night: {action_rows: (ActionRowBuilder<StringSelectMenuBuilder> | ActionRowBuilder<ButtonBuilder>)[], embed: EmbedBuilder}
                 = await ui_night(clientId, game_match.num_days + 1, game_match.num_ability, { target1: null, target2: null, ability: null }, [], game_match.players_info);
             return ({error: false, end: false, infoEmbed: infoEmbed, prevStateEmbed: prevStateEmbed, stateEmbed: ui_data_night.embed, components: ui_data_night.action_rows});
-        case 'day_vote':
+        }
+        case 'day_vote': {
             const [affectedCount2] = await GAME_MATCH.update({ turn_order: new_turn_order, status: {status: 'day_vote', lynch: null} }, { where: { clientId: clientId } });
             if (affectedCount2 <= 0) {
                 return ({error: true, code: 'D3'});
@@ -63,8 +64,9 @@ async function game_next_state(clientId: string, prevStateEmbed: EmbedBuilder | 
             const ui_data_day_vote: {action_rows: [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], embed: EmbedBuilder}
                 = await ui_day(clientId, game_match.num_days, null, game_match.players_info);
             return ({error: false, end: false, infoEmbed: infoEmbed, prevStateEmbed: prevStateEmbed, stateEmbed: ui_data_day_vote.embed, components: ui_data_day_vote.action_rows});
+        }
         case 'hunter_night':
-        case 'hunter_day':
+        case 'hunter_day': {
             const [affectedCount3] = await GAME_MATCH.update({ turn_order: new_turn_order, status: {status: first_state, target: null} }, { where: { clientId: clientId } });
             if (affectedCount3 <= 0) {
                 return ({error: true, code: 'D3'});
@@ -72,6 +74,7 @@ async function game_next_state(clientId: string, prevStateEmbed: EmbedBuilder | 
             const ui_data_hunter: {action_rows: [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], embed: EmbedBuilder}
                 = await ui_hunter(clientId, game_match.num_days, null, game_match.players_info);
             return ({error: false, end: false, infoEmbed: infoEmbed, prevStateEmbed: prevStateEmbed, stateEmbed: ui_data_hunter.embed, components: ui_data_hunter.action_rows});
+        }
     }
     console.error('No matching states.');
     return ({error: true, code: 'U'});

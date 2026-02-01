@@ -91,12 +91,12 @@ function timeout_set<Tdatas>(
 
 
 function timeout_delete(clientId: string, timeout_type: t_timeout_type): void {
-    let client_timeout: Collection<string, [t_timeout_type, Message, NodeJS.Timeout]> | undefined = timeouts.get(clientId);
+    const client_timeout: Collection<string, [t_timeout_type, Message, NodeJS.Timeout]> | undefined = timeouts.get(clientId);
     if (client_timeout === undefined) return;
-    let messageId_to_delete: string[] = [];
+    const messageId_to_delete: string[] = [];
     for (const clientObj of client_timeout) {
         const messageId: string = clientObj[0];
-        if (clientObj[1] === undefined || clientObj[1][0] !== timeout_type) continue;
+        if (clientObj[1][0] !== timeout_type) continue;
         const message_timeout: [t_timeout_type, Message, NodeJS.Timeout] | undefined = client_timeout.get(messageId);
         if (message_timeout === undefined) return;
         clearTimeout(message_timeout[2]);

@@ -14,35 +14,41 @@ export async function game_result(clientId: string, win_con: Exclude<t_win_con,'
     const [score_title, player_roles_title]: string[] = await get_display_text(['gameplay.result.score', 'gameplay.result.player_roles'], clientId);
     let title_text: string = '';
     switch (win_con) {
-        case 'werewolf':
+        case 'werewolf': {
             const [text1]: string[] = await get_display_text(['gameplay.result.title.werewolf'], clientId);
             title_text = text1 ?? display_error_str;
             score = 0;
             break;
-        case 'village':
+        }
+        case 'village': {
             const [text2]: string[] = await get_display_text(['gameplay.result.title.village'], clientId);
             title_text = text2 ?? display_error_str;
             score = 0;
             break;
-        case 'tie':
+        }
+        case 'tie': {
             const [text3]: string[] = await get_display_text(['gameplay.result.title.tie'], clientId);
             title_text = text3 ?? display_error_str;
             score = 0;
             break;
-        case 'guessed':
+        }
+        case 'guessed': {
             const [text4]: string[] = await get_display_text(['gameplay.result.title.guessed'], clientId);
             title_text = text4 ?? display_error_str;
             break;
-        case 'timeout':
+        }
+        case 'timeout': {
             const [text5]: string[] = await get_display_text(['gameplay.result.title.timeout'], clientId);
             title_text = text5 ?? display_error_str;
             score = 0;
             break;
-        case 'cancel':
+        }
+        case 'cancel': {
             const [text6]: string[] = await get_display_text(['gameplay.result.title.cancel'], clientId);
             title_text = text6 ?? display_error_str;
             score = 0;
             break;
+        }
     }
 
     let player_roles_desc: string = '';
@@ -55,7 +61,7 @@ export async function game_result(clientId: string, win_con: Exclude<t_win_con,'
 
     const resultEmbed: EmbedBuilder = new EmbedBuilder()
         .setColor(embed_hex_color)
-        .setTitle(title_text ?? display_error_str)
+        .setTitle(title_text)
         .addFields(
             {
                 name: score_title ?? display_error_str,
@@ -63,7 +69,7 @@ export async function game_result(clientId: string, win_con: Exclude<t_win_con,'
             },
             {
                 name: player_roles_title ?? display_error_str,
-                value: player_roles_desc ?? display_error_str
+                value: player_roles_desc
             }
         )
         .setTimestamp()

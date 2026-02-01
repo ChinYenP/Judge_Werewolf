@@ -38,13 +38,13 @@ export async function ui_guess(clientId: string, num_player: number, guesses: t_
         your_guesses_description_text += `${String(i)}: `;
         i++;
     }
-    const actual_select_role_placeholder: string = `${select_role_placeholder} ${String(guesses.length + 1)}`;
+    const actual_select_role_placeholder: string = `${select_role_placeholder ?? display_error_str} ${String(guesses.length + 1)}`;
 
     const rowSelectRoles: ActionRowBuilder<StringSelectMenuBuilder> = new ActionRowBuilder<StringSelectMenuBuilder>()
         .addComponents(
             new StringSelectMenuBuilder()
                 .setCustomId('select_gameplay_guess_roles' satisfies t_interaction_name)
-                .setPlaceholder(actual_select_role_placeholder ?? display_error_str)
+                .setPlaceholder(actual_select_role_placeholder)
                 .addOptions(select_roles_arr)
         )
         
@@ -55,7 +55,7 @@ export async function ui_guess(clientId: string, num_player: number, guesses: t_
         .addFields(
             {
                 name: your_guesses_title_text ?? display_error_str,
-                value: your_guesses_description_text ?? display_error_str
+                value: your_guesses_description_text
             }
         )
         .setTimestamp()

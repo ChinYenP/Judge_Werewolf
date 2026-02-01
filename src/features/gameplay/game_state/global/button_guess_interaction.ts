@@ -31,7 +31,7 @@ const button_game_guess_interaction: InteractionModule<ButtonInteraction, button
                 }
                 role_list = role_list.sort(compareRoleId);
 
-                let new_status: t_game_match_status = {status: 'guessing', guesses: [], remaining_guesses: role_list};
+                const new_status: t_game_match_status = {status: 'guessing', guesses: [], remaining_guesses: role_list};
                 const [affectedCountPlayer]: [number] = await GAME_MATCH.update({ status: new_status }, { where: { clientId: clientId } });
                 if (affectedCountPlayer <= 0) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D3');
@@ -40,7 +40,7 @@ const button_game_guess_interaction: InteractionModule<ButtonInteraction, button
                 }
 
                 game_match = await GAME_MATCH.findOne({ where: { clientId: clientId } });
-                if (game_match === null || game_match.status.status !== 'guessing') {
+                if (game_match?.status.status !== 'guessing') {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D4');
                     await interaction.reply({embeds: [errorEmbed], components: []});
                     return;
@@ -54,9 +54,7 @@ const button_game_guess_interaction: InteractionModule<ButtonInteraction, button
             },
             timeout: true,
             timeout_sec: timeout_sec.gameplay,
-            timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, nothing: undefined): Promise<void> {
-                nothing;
-                timeout_sec;
+            timeout_execute: async function(reply_msg: Message, clientId: string, _timeout_sec: number, _nothing: undefined): Promise<void> {
                 const gameUIObj: {error: true, code: t_error_code} |
                     {error: false, end: true, prevStateEmbed: EmbedBuilder | null, resultEmbed: EmbedBuilder}
                     = await game_result(clientId, 'timeout', null);

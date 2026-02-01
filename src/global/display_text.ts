@@ -943,6 +943,22 @@ const display_text: DisplayTextType = {
                 "tchi": "擁有解藥和毒藥的神職。",
                 "yue": "擁有解藥同毒藥嘅神職。"
             }
+        },
+        "G03": {
+            "name": {
+                "eng": "Guard",
+                "malay": "Pengawal",
+                "schi": "守卫",
+                "tchi": "守衛",
+                "yue": "守衛"
+            },
+            "description": {
+                "eng": "A god identity that can protect a player from being attacked by a werewolf.",
+                "malay": "Identiti tuhan yang boleh melindungi seorang pemain daripada diserang oleh serigala jadian.",
+                "schi": "可以保护一名玩家免受狼人袭击的神职。",
+                "tchi": "可以保護一名玩家免受狼人襲擊的神職。",
+                "yue": "可以保護一名玩家免受狼人襲擊嘅神職。"
+            }
         }
     },
     "gameplay": {

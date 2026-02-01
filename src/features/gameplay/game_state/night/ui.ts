@@ -46,7 +46,7 @@ export async function ui_night(clientId: string, num_days: number, num_ability: 
         i++;
     }
     const num_abilities_arr: {label: string, description: string, value: string, default: boolean}[] = [];
-    for (let j = 1; j <= num_ability; j++) {
+    for (let j: number = 1; j <= num_ability; j++) {
         num_abilities_arr.push({
             label: String(j),
             description: ability_num_text ?? display_error_str,

@@ -44,7 +44,7 @@ async function roles_common_process(clientId: string,
                     new_players_role.push(change.value);
                 }
                 break;
-            case ('delete_role'):
+            case ('delete_role'): {
                 for (const number of change.value) {
                     if (Number.isNaN(number)) {
                         return ({error: true, code: 'U'});
@@ -53,6 +53,7 @@ async function roles_common_process(clientId: string,
                 const indicesToRemove: Set<number> = new Set<number>(change.value);
                 new_players_role = new_players_role.filter((_, index) => !indicesToRemove.has(index));
                 break;
+            }
         }
     }
     const [affectedCount] = await GAME_CREATE.update({ players_role: new_players_role }, { where: { clientId: clientId } });
