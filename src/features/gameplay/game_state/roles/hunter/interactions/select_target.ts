@@ -51,7 +51,7 @@ const select_hunter_target_interaction: InteractionModule<StringSelectMenuIntera
                 }
                 const infoEmbed: EmbedBuilder = await ui_gameplay_info(clientId, game_match);
                 const gameUIObj: {action_rows: [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], embed: EmbedBuilder}
-                    = await ui_hunter(clientId, game_match.num_days, game_match.status.target, game_match.players_info);
+                    = await ui_hunter(clientId, game_match.status.target, game_match.players_info);
                 
                 await interaction.update({embeds: [infoEmbed, gameUIObj.embed], components: gameUIObj.action_rows});
                 const update_msg: Message = await interaction.fetchReply();

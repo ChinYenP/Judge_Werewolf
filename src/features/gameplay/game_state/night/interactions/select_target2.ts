@@ -49,7 +49,7 @@ const select_night_target2_interaction: InteractionModule<StringSelectMenuIntera
                 const gameUIObj: {action_rows: (ActionRowBuilder<StringSelectMenuBuilder> | ActionRowBuilder<ButtonBuilder>)[], embed: EmbedBuilder}
                     = await ui_night(clientId, game_match.num_days, game_match.num_ability, game_match.status.selecting, game_match.status.actions, game_match.players_info);
                 
-                await interaction.update({embeds: [infoEmbed, gameUIObj.embed], components: gameUIObj.action_rows});
+                    await interaction.update({embeds: [infoEmbed, gameUIObj.embed], components: gameUIObj.action_rows});
                 const update_msg: Message = await interaction.fetchReply();
                 timeout_set('gameplay', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, undefined);
             },

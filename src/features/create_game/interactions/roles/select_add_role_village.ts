@@ -40,7 +40,7 @@ const select_add_role_village_interaction: InteractionModule<StringSelectMenuInt
                 const [ActionRowArr, rolesEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>]
                         | [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder]
                     = roles_process_obj.value;
-                await interaction.update({ embeds: [rolesEmbed], components: ActionRowArr })
+                await interaction.update({ embeds: [rolesEmbed], components: ActionRowArr });
                 const update_msg: Message = await interaction.fetchReply();
                 timeout_set('create', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, rolesEmbed);
             },

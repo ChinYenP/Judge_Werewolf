@@ -72,7 +72,7 @@ async function game_next_state(clientId: string, prevStateEmbed: EmbedBuilder | 
                 return ({error: true, code: 'D3'});
             }
             const ui_data_hunter: {action_rows: [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], embed: EmbedBuilder}
-                = await ui_hunter(clientId, game_match.num_days, null, game_match.players_info);
+                = await ui_hunter(clientId, null, game_match.players_info);
             return ({error: false, end: false, infoEmbed: infoEmbed, prevStateEmbed: prevStateEmbed, stateEmbed: ui_data_hunter.embed, components: ui_data_hunter.action_rows});
         }
     }

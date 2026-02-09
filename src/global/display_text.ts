@@ -991,6 +991,13 @@ const display_text: DisplayTextType = {
                 "tchi": "遊戲資訊",
                 "yue": "遊戲資訊"
             },
+            "game_id_title": {
+                "eng": "Game ID",
+                "malay": "ID Permainan",
+                "schi": "游戏ID",
+                "tchi": "遊戲ID",
+                "yue": "遊戲ID"
+            },
             "sheriff_mode": {
                 "title": {
                     "eng": "Sheriff Mode",
@@ -1112,18 +1119,18 @@ const display_text: DisplayTextType = {
                 "yue": "行動"
             },
             "select_target_1": {
-                "eng": "Select Target 1",
-                "malay": "Pilih Sasaran 1",
-                "schi": "选择目标1",
-                "tchi": "選擇目標1",
-                "yue": "選擇目標1"
+                "eng": "Select Player",
+                "malay": "Pilih Pemain",
+                "schi": "选择玩家",
+                "tchi": "選擇玩家",
+                "yue": "選擇玩家"
             },
             "select_target_2": {
-                "eng": "Select Target 2",
-                "malay": "Pilih Sasaran 2",
-                "schi": "选择目标2",
-                "tchi": "選擇目標2",
-                "yue": "選擇目標2"
+                "eng": "Select Target",
+                "malay": "Pilih Sasaran",
+                "schi": "选择目标",
+                "tchi": "選擇目標",
+                "yue": "選擇目標"
             },
             "ability_num": {
                 "eng": "Ability Number",

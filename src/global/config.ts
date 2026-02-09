@@ -17,9 +17,9 @@ const command_cooldown_sec: Record<t_command_cooldown_type, number> = {
 }
 const timeout_sec: Record<t_timeout_type, number> = {
     user_settings: 30,
-    settings_prefix: 15,
-    create: 30,
-    gameplay: 5 * 60
+    settings_prefix: 20,
+    create: 60,
+    gameplay: 10 * 60
 }
 const gameplay: Record<t_gameplay_config_data, number> = {
     consecutive_no_death: 3

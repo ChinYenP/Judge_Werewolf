@@ -5,7 +5,7 @@ import { display_error_str, embed_hex_color } from "../../../../../global/config
 import { i_player_info } from "../../../../../global/types/player_info.js";
 import { must_have_buttons } from "../../global/must_have_buttons.js";
 
-export async function ui_hunter(clientId: string, num_days: number, target: number | null, players_info: i_player_info[])
+export async function ui_hunter(clientId: string, target: number | null, players_info: i_player_info[])
 : Promise<{action_rows: [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], embed: EmbedBuilder}> {
     
     const [title_text, description_text, select_target_placeholder, button_confirm_text, no_shoot_option]: string[]
@@ -53,7 +53,7 @@ export async function ui_hunter(clientId: string, num_days: number, target: numb
     
     const dayVoteEmbed: EmbedBuilder = new EmbedBuilder()
         .setColor(embed_hex_color)
-        .setTitle(`${title_text ?? display_error_str} ${String(num_days)}`)
+        .setTitle(`${title_text ?? display_error_str}`)
         .setDescription(description_text ?? display_error_str)
         .setTimestamp()
         
