@@ -9,7 +9,7 @@ import { GAME_MATCH, GameMatchInstance } from "../../../../../global/sqlite_db.j
 import { t_game_match_status, t_role_id } from "../../../../../global/types/other_types.js";
 import { display_error_str, timeout_sec } from "../../../../../global/config.js";
 import { t_error_code } from "../../../../../global/types/list_str.js";
-import { game_result } from "../../global/result.js";
+import { delete_game_database, game_result } from "../../global/result.js";
 
 const button_game_guess_interaction: InteractionModule<StringSelectMenuInteraction, selectGameplayGuessRole> = {
     interaction_name: 'select_gameplay_guess_roles',
@@ -21,15 +21,24 @@ const button_game_guess_interaction: InteractionModule<StringSelectMenuInteracti
                 const game_match: GameMatchInstance | null = await GAME_MATCH.findOne({ where: { clientId: clientId } });
                 if (game_match?.status.status !== 'guessing') {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D4');
-                    await interaction.reply({embeds: [errorEmbed], components: []});
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
                 const gameUIObj: {action_rows: [ActionRowBuilder<StringSelectMenuBuilder>], embed: EmbedBuilder}
                     = await ui_guess(clientId, game_match.players_info.length, game_match.status.guesses, game_match.status.remaining_guesses);
                 
-                await interaction.update({embeds: [gameUIObj.embed], components: gameUIObj.action_rows});
-                const update_msg: Message = await interaction.fetchReply();
-                timeout_set('gameplay', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, undefined);
+                try {
+                    await interaction.update({embeds: [gameUIObj.embed], components: gameUIObj.action_rows});
+                    const update_msg: Message = await interaction.fetchReply();
+                    timeout_set('gameplay', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, undefined);
+                } catch (e) {
+                    console.log(e);
+                    await delete_game_database(clientId);
+                }
             },
             timeout: true,
             timeout_sec: timeout_sec.gameplay,
@@ -39,10 +48,18 @@ const button_game_guess_interaction: InteractionModule<StringSelectMenuInteracti
                     = await game_result(clientId, 'timeout', null);
                 if (gameUIObj.error) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, gameUIObj.code);
-                    await reply_msg.edit({embeds: [errorEmbed], components: []});
+                    try {
+                        await reply_msg.edit({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
-                await reply_msg.edit({ embeds: [gameUIObj.resultEmbed], components: [] });
+                try {
+                    await reply_msg.edit({ embeds: [gameUIObj.resultEmbed], components: [] });
+                } catch (e) {
+                    console.log(e);
+                }
             }
         },
         result: {
@@ -52,7 +69,11 @@ const button_game_guess_interaction: InteractionModule<StringSelectMenuInteracti
                 const game_match: GameMatchInstance | null = await GAME_MATCH.findOne({ where: { clientId: clientId } });
                 if (game_match?.status.status !== 'guessing') {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D4');
-                    await interaction.reply({embeds: [errorEmbed], components: []});
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
 
@@ -63,7 +84,11 @@ const button_game_guess_interaction: InteractionModule<StringSelectMenuInteracti
                     if (game_match.status.guesses[i] === undefined) {
                         console.error('game_match.status.guesses[i] is undefined, impossible case.');
                         const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
-                        await interaction.reply({embeds: [errorEmbed], components: []});
+                        try {
+                            await interaction.reply({embeds: [errorEmbed], components: []});
+                        } catch (e) {
+                            console.log(e);
+                        }
                         return;
                     }
                     if (game_match.status.guesses[i] === player_info.role_id) score++;
@@ -75,10 +100,18 @@ const button_game_guess_interaction: InteractionModule<StringSelectMenuInteracti
                     = await game_result(clientId, 'guessed', null, score);
                 if (gameUIObj.error) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, gameUIObj.code);
-                    await interaction.reply({embeds: [errorEmbed], components: []});
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
-                await interaction.update({ embeds: [gameUIObj.resultEmbed], components: [] });
+                try {
+                    await interaction.update({ embeds: [gameUIObj.resultEmbed], components: [] });
+                } catch (e) {
+                    console.log(e);
+                }
                 timeout_delete(clientId, 'gameplay');
             },
             timeout: false
@@ -100,7 +133,11 @@ const button_game_guess_interaction: InteractionModule<StringSelectMenuInteracti
             if (interaction_check.type === 'outdated') {
                 const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
                 const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? display_error_str);
-                await interaction.update({embeds: [outdated_embed], components: []});
+                try {
+                    await interaction.update({embeds: [outdated_embed], components: []});
+                } catch (e) {
+                    console.log(e);
+                }
             }
             return;
         }
@@ -108,13 +145,21 @@ const button_game_guess_interaction: InteractionModule<StringSelectMenuInteracti
         const game_match: GameMatchInstance | null = await GAME_MATCH.findOne({ where: { clientId: clientId } });
         if (game_match === null || interaction.values[0] === undefined || game_match.status.status !== 'guessing') {
             const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D4');
-            await interaction.reply({embeds: [errorEmbed], components: []});
+            try {
+                await interaction.reply({embeds: [errorEmbed], components: []});
+            } catch (e) {
+                console.log(e);
+            }
             return;
         }
         const guessed_role: t_role_id | undefined = game_match.status.remaining_guesses[Number(interaction.values[0])];
         if (guessed_role === undefined) {
             const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D4');
-            await interaction.reply({embeds: [errorEmbed], components: []});
+            try {
+                await interaction.reply({embeds: [errorEmbed], components: []});
+            } catch (e) {
+                console.log(e);
+            }
             return;
         }
 
@@ -127,7 +172,11 @@ const button_game_guess_interaction: InteractionModule<StringSelectMenuInteracti
         const [affectedCountPlayer]: [number] = await GAME_MATCH.update({ status: new_status }, { where: { clientId: clientId } });
         if (affectedCountPlayer <= 0) {
             const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D3');
-            await interaction.reply({embeds: [errorEmbed], components: []});
+            try {
+                await interaction.reply({embeds: [errorEmbed], components: []});
+            } catch (e) {
+                console.log(e);
+            }
             return;
         }
 

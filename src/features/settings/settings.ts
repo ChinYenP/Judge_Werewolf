@@ -23,18 +23,30 @@ const settings_command: CommandModule<settingsStates> = {
                 const clientId: string = message.author.id;
                 const cooldown_status: t_cooldown_status = await check_cooldown(clientId, 'user_settings', this.cooldown_sec);
                 if (cooldown_status.status == 'cooldown') {
-                    await message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)], components: [] })
+                    try {
+                        await message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)], components: [] })
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 } else if (cooldown_status.status == 'fatal') {
-                    await message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)], components: [] })
+                    try {
+                        await message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)], components: [] })
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
                 await delete_message(clientId, 'user_settings');
                 const userEmbed: EmbedBuilder = await ui_user_info_embed(clientId);
                 const serverEmbed: EmbedBuilder = await ui_server_info_embed(clientId);
                 const rowLang: ActionRowBuilder<StringSelectMenuBuilder>[] = await user_settings_action_row(clientId);
-                const bot_reply: Message = await message.reply({ embeds: [userEmbed, serverEmbed], components: rowLang });
-                timeout_set('user_settings', bot_reply.id, clientId, this.timeout_sec, this.timeout_execute, bot_reply, [userEmbed, serverEmbed]);
+                try {
+                    const bot_reply: Message = await message.reply({ embeds: [userEmbed, serverEmbed], components: rowLang });
+                    timeout_set('user_settings', bot_reply.id, clientId, this.timeout_sec, this.timeout_execute, bot_reply, [userEmbed, serverEmbed]);
+                } catch (e) {
+                    console.log(e);
+                }
             },
             timeout: true,
             timeout_sec: timeout_sec.user_settings,
@@ -43,7 +55,11 @@ const settings_command: CommandModule<settingsStates> = {
                 const serverEmbed: EmbedBuilder = data_passed[1];
                 const [timeout_text]: string[] = await get_display_text(['settings.embed.timeout_text'], clientId);
                 const timeoutEmbed: EmbedBuilder = await ui_timeout(clientId, timeout_sec, timeout_text ?? display_error_str);
-                await reply_msg.edit({ embeds: [userEmbed, serverEmbed, timeoutEmbed], components: [] });
+                try {
+                    await reply_msg.edit({ embeds: [userEmbed, serverEmbed, timeoutEmbed], components: [] });
+                } catch (e) {
+                    console.log(e);
+                }
             }
         },
         prefix_confirmation: {
@@ -69,7 +85,11 @@ const settings_command: CommandModule<settingsStates> = {
                     const [affectedCount] = await TEMP_PREFIX_SETTINGS.update({ prefix: new_prefix }, { where: { guildId: message.guildId } });
                     if (affectedCount <= 0) {
                         const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D3');
-                        await message.reply({embeds: [errorEmbed], components: []});
+                        try {
+                            await message.reply({embeds: [errorEmbed], components: []});
+                        } catch (e) {
+                            console.log(e);
+                        }
                         return;
                     }
                 } else {
@@ -83,7 +103,11 @@ const settings_command: CommandModule<settingsStates> = {
                     catch (error) {
                         console.log(error);
                         const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D1');
-                        await message.reply({embeds: [errorEmbed], components: []});
+                        try {
+                            await message.reply({embeds: [errorEmbed], components: []});
+                        } catch (e) {
+                            console.log(e);
+                        }
                         return;
                     }
                 }
@@ -113,9 +137,12 @@ const settings_command: CommandModule<settingsStates> = {
                     )
                     .setTimestamp()
 
-                const bot_reply: Message = await message.reply({ embeds: [prefixEmbed], components: [rowButton] });
-                timeout_set('settings_prefix', bot_reply.id, clientId, time_sec, this.timeout_execute, bot_reply, prefixEmbed);
-
+                try {
+                    const bot_reply: Message = await message.reply({ embeds: [prefixEmbed], components: [rowButton] });
+                    timeout_set('settings_prefix', bot_reply.id, clientId, time_sec, this.timeout_execute, bot_reply, prefixEmbed);
+                } catch (e) {
+                    console.log(e);
+                }
             },
             timeout: true,
             timeout_sec: timeout_sec.settings_prefix,
@@ -128,7 +155,11 @@ const settings_command: CommandModule<settingsStates> = {
                         } catch (error) {
                             console.error(error);
                             const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D2');
-                            await reply_msg.reply({embeds: [errorEmbed], components: []});
+                            try {
+                                await reply_msg.reply({embeds: [errorEmbed], components: []});
+                            } catch (e) {
+                                console.log(e);
+                            }
                             return;
                         }
                     }
@@ -136,7 +167,11 @@ const settings_command: CommandModule<settingsStates> = {
                     console.error('message.guildId should exists.');
                 }
                 const [timeout_text]: string[] = await get_display_text(['settings.server_settings.prefix.timeout_text'], clientId);
-                await reply_msg.edit({ embeds: [prefixEmbed, await ui_timeout(clientId, timeout_sec, timeout_text ?? display_error_str)], components: [] });
+                try {
+                    await reply_msg.edit({ embeds: [prefixEmbed, await ui_timeout(clientId, timeout_sec, timeout_text ?? display_error_str)], components: [] });
+                } catch (e) {
+                    console.log(e);
+                }
             }
         }
     },
@@ -151,14 +186,22 @@ const settings_command: CommandModule<settingsStates> = {
             //Too less arguments
             const [less_args_text]: string[] = await get_display_text(['general.command_args_error.less_args'], clientId);
             const less_args_embed: EmbedBuilder = await ui_error_non_fatal(clientId, `settings ${less_args_text ?? display_error_str}`);
-            await message.reply({embeds: [less_args_embed], components: []});
+            try {
+                await message.reply({embeds: [less_args_embed], components: []});
+            } catch (e) {
+                console.log(e);
+            }
             return;
         }
         if (args.length > 2) {
             //Too much arguments;
             const [much_args_text]: string[] = await get_display_text(['general.command_args_error.much_args'], clientId);
             const much_args_embed: EmbedBuilder = await ui_error_non_fatal(clientId, `settings ${much_args_text ?? display_error_str}`);
-            await message.reply({embeds: [much_args_embed], components: []});
+            try {
+                await message.reply({embeds: [much_args_embed], components: []});
+            } catch (e) {
+                console.log(e);
+            }
             return;
         }
         //Check administrator permission
@@ -166,7 +209,11 @@ const settings_command: CommandModule<settingsStates> = {
             //No permission for server settings
             const [no_perm_text]: string[] = await get_display_text(['general.permission_error.not_administrator'], clientId);
             const no_perm_embed: EmbedBuilder = await ui_error_non_fatal(clientId, no_perm_text ?? display_error_str);
-            await message.reply({embeds: [no_perm_embed], components: []});
+            try {
+                await message.reply({embeds: [no_perm_embed], components: []});
+            } catch (e) {
+                console.log(e);
+            }
             return;
         }
 
@@ -186,13 +233,21 @@ const settings_command: CommandModule<settingsStates> = {
                     .setColor(embed_hex_color)
                     .setTitle(title_text ?? display_error_str)
                     .setDescription(`${description_text ?? display_error_str}\n\`\`\`${process.env.ALLOWED_PREFIX_CHARACTERS}\`\`\``)
-                await message.reply({ embeds: [invalidEmbed], components: [] });
+                try {
+                    await message.reply({ embeds: [invalidEmbed], components: [] });
+                } catch (e) {
+                    console.log(e);
+                }
                 return;
             }
             //Does not match any server settings
             const [wrong_args_text]: string[] = await get_display_text(['general.command_args_error.wrong_args'], clientId);
             const wrong_args_embed: EmbedBuilder = await ui_error_non_fatal(clientId, `settings ${wrong_args_text ?? display_error_str}${args[0]}`);
-            await message.reply({embeds: [wrong_args_embed], components: []});
+            try {
+                await message.reply({embeds: [wrong_args_embed], components: []});
+            } catch (e) {
+                console.log(e);
+            }
             return;
         }
 

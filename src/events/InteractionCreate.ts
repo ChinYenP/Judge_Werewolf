@@ -87,14 +87,22 @@ const interaction_create: EventModule<Interaction> = {
             const interact: AllSelectModules | undefined = await get_select_module(interactionName);
             if (!interact) {
                 const [cmd_not_exist_text]: string[] = await get_display_text(['general.interaction_not_implemented'], clientId);
-                await interaction.reply(`${cmd_not_exist_text ?? display_error_str}${interactionName}`);
+                try {
+                    await interaction.reply(`${cmd_not_exist_text ?? display_error_str}${interactionName}`);
+                } catch (e) {
+                    console.log(e);
+                }
                 console.error(`Interaction matching ${interactionName} is not implemented yet.`);
                 return;
             }
             try {
                 await interact.entry(interaction);
             } catch (error) {
-                await interaction.reply((await get_display_error_code('C2', clientId))[0] ?? display_error_str);
+                try {
+                    await interaction.reply((await get_display_error_code('C2', clientId))[0] ?? display_error_str);
+                } catch (e) {
+                    console.log(e);
+                }
                 console.error(error);
             }
 
@@ -103,14 +111,22 @@ const interaction_create: EventModule<Interaction> = {
             const interact: AllButtonModules | undefined = await get_button_module(interactionName);
             if (!interact) {
                 const [cmd_not_exist_text]: string[] = await get_display_text(['general.interaction_not_implemented'], clientId);
-                await interaction.reply(`${cmd_not_exist_text ?? display_error_str}${interactionName}`);
+                try {
+                    await interaction.reply(`${cmd_not_exist_text ?? display_error_str}${interactionName}`);
+                } catch (e) {
+                    console.log(e);
+                }
                 console.error(`Interaction matching ${interactionName} is not implemented yet.`);
                 return;
             }
             try {
                 await interact.entry(interaction);
             } catch (error) {
-                await interaction.reply((await get_display_error_code('C2', clientId))[0] ?? display_error_str);
+                try {
+                    await interaction.reply((await get_display_error_code('C2', clientId))[0] ?? display_error_str);
+                } catch (e) {
+                    console.log(e);
+                }
                 console.error(error);
             }
 

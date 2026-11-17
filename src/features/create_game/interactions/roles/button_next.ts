@@ -11,6 +11,7 @@ import { GAME_CREATE, GameCreateInstance } from '../../../../global/sqlite_db.js
 import { roles_common_process } from '../../common_process/roles.js';
 import { final_common_process } from '../../common_process/final.js';
 import { win_condition_in_role } from '../../../gameplay/game_logic/win_condition.js';
+import { create_delete_database } from '../button_cancel.js';
 
 const button_roles_next_interaction: InteractionModule<ButtonInteraction, buttonCreateRolesNext> = {
     interaction_name: 'button_create_initial_next',
@@ -29,7 +30,12 @@ const button_roles_next_interaction: InteractionModule<ButtonInteraction, button
                     code: t_error_code
                 } = await roles_common_process(clientId, {action: 'none'});
                 if (roles_process_obj.error) {
-                    await interaction.reply({ embeds: [await ui_error_fatal(clientId, roles_process_obj.code)], components: [] })
+                    const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, roles_process_obj.code);
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
 
@@ -37,19 +43,32 @@ const button_roles_next_interaction: InteractionModule<ButtonInteraction, button
                 const [ActionRowArr, rolesEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>]
                         | [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder]
                     = roles_process_obj.value;
-                await interaction.update({ embeds: [rolesEmbed], components: ActionRowArr })
-                const update_msg: Message = await interaction.fetchReply();
-                timeout_set('create', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, rolesEmbed);
+                try {
+                    await interaction.update({ embeds: [rolesEmbed], components: ActionRowArr })
+                    const update_msg: Message = await interaction.fetchReply();
+                    timeout_set('create', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, rolesEmbed);
+                } catch (e) {
+                    console.log(e);
+                    await create_delete_database(clientId);
+                }
             },
             timeout: true,
             timeout_sec: timeout_sec.create,
             timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, rolesEmbed: EmbedBuilder): Promise<void> {
                 const timeoutObj: {embed: EmbedBuilder, error: boolean} = await common_delete_create_timeout(clientId, timeout_sec);
                 if (timeoutObj.error) {
-                    await reply_msg.edit({embeds: [timeoutObj.embed], components: []});
+                    try {
+                        await reply_msg.edit({embeds: [timeoutObj.embed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
-                await reply_msg.edit({ embeds: [rolesEmbed, timeoutObj.embed], components: [] });
+                try {
+                    await reply_msg.edit({embeds: [rolesEmbed, timeoutObj.embed], components: []});
+                } catch (e) {
+                    console.log(e);
+                }
             }
         },
         final: {
@@ -65,25 +84,43 @@ const button_roles_next_interaction: InteractionModule<ButtonInteraction, button
                     code: t_error_code
                 } = await final_common_process(clientId);
                 if (final_process_obj.error) {
-                    await interaction.reply({ embeds: [await ui_error_fatal(clientId, final_process_obj.code)], components: [] })
+                    const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, final_process_obj.code);
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
 
                 //Success
                 const [ActionRowArr, rolesEmbed]: [[ActionRowBuilder<ButtonBuilder>], EmbedBuilder] = final_process_obj.value;
-                await interaction.update({ embeds: [rolesEmbed], components: ActionRowArr })
-                const update_msg: Message = await interaction.fetchReply();
-                timeout_set('create', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, rolesEmbed);
+                try {
+                    await interaction.update({ embeds: [rolesEmbed], components: ActionRowArr })
+                    const update_msg: Message = await interaction.fetchReply();
+                    timeout_set('create', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, rolesEmbed);
+                } catch (e) {
+                    console.log(e);
+                    await create_delete_database(clientId);
+                }
             },
             timeout: true,
             timeout_sec: timeout_sec.create,
             timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, finalEmbed: EmbedBuilder): Promise<void> {
                 const timeoutObj: {embed: EmbedBuilder, error: boolean} = await common_delete_create_timeout(clientId, timeout_sec);
                 if (timeoutObj.error) {
-                    await reply_msg.edit({embeds: [timeoutObj.embed], components: []});
+                    try {
+                        await reply_msg.edit({embeds: [timeoutObj.embed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
-                await reply_msg.edit({ embeds: [finalEmbed, timeoutObj.embed], components: [] });
+                try {
+                    await reply_msg.edit({embeds: [finalEmbed, timeoutObj.embed], components: []});
+                } catch (e) {
+                    console.log(e);
+                }
             }
         }
     },
@@ -103,7 +140,11 @@ const button_roles_next_interaction: InteractionModule<ButtonInteraction, button
             if (interaction_check.type === 'outdated') {
                 const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
                 const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? display_error_str);
-                await interaction.update({embeds: [outdated_embed], components: []});
+                try {
+                    await interaction.update({embeds: [outdated_embed], components: []});
+                } catch (e) {
+                    console.log(e);
+                }
             }
             return;
         }
@@ -111,7 +152,12 @@ const button_roles_next_interaction: InteractionModule<ButtonInteraction, button
         const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
         if (game_create === null || game_create.is_preset === null || game_create.num_players === null || game_create.game_rule === null
             || game_create.sheriff === null || game_create.players_role === null) {
-            await interaction.reply({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
+            const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
+            try {
+                await interaction.reply({embeds: [errorEmbed], components: []});
+            } catch (e) {
+                console.log(e);
+            }
             return;
         }
         if (game_create.players_role.length !== game_create.num_players || win_condition_in_role(game_create.players_role, game_create.game_rule) !== 'unknown') {

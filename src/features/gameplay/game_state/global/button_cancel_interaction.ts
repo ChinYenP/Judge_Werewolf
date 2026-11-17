@@ -17,13 +17,21 @@ const button_game_cancel_interaction: InteractionModule<ButtonInteraction, butto
 
                 const gameUIObj: {error: true, code: t_error_code} |
                     {error: false, end: true, prevStateEmbed: EmbedBuilder | null, resultEmbed: EmbedBuilder}
-                    = await game_result(clientId, 'timeout', null);
+                    = await game_result(clientId, 'cancel', null);
                 if (gameUIObj.error) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, gameUIObj.code);
-                    await interaction.reply({embeds: [errorEmbed], components: []});
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
-                await interaction.update({ embeds: [gameUIObj.resultEmbed], components: [] });
+                try {
+                    await interaction.update({ embeds: [gameUIObj.resultEmbed], components: [] });
+                } catch (e) {
+                    console.log(e);
+                }
                 timeout_delete(clientId, 'gameplay');
             },
             timeout: false
@@ -45,7 +53,11 @@ const button_game_cancel_interaction: InteractionModule<ButtonInteraction, butto
             if (interaction_check.type === 'outdated') {
                 const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
                 const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? display_error_str);
-                await interaction.update({embeds: [outdated_embed], components: []});
+                try {
+                    await interaction.update({embeds: [outdated_embed], components: []});
+                } catch (e) {
+                    console.log(e);
+                }
             }
             return;
         }

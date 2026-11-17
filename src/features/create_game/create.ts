@@ -18,6 +18,7 @@ import { initial_common_process } from './common_process/initial.js';
 import { common_delete_create_timeout } from './common_process/delete_create_timeout.js';
 import { roles_common_process } from './common_process/roles.js';
 import { final_common_process } from './common_process/final.js';
+import { create_delete_database } from './interactions/button_cancel.js';
 
 const create_command: CommandModule<createStates> = {
     command: 'create',
@@ -37,7 +38,11 @@ const create_command: CommandModule<createStates> = {
                     code: t_error_code
                 } = await initial_common_process(clientId, {replace: 'none'});
                 if (initial_process_obj.error) {
-                    await message.reply({ embeds: [await ui_error_fatal(clientId, initial_process_obj.code)], components: [] })
+                    try {
+                        await message.reply({ embeds: [await ui_error_fatal(clientId, initial_process_obj.code)], components: [] })
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
 
@@ -45,18 +50,31 @@ const create_command: CommandModule<createStates> = {
                 const [ActionRowArr, initialEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>,
                     ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder]
                     = initial_process_obj.value;
-                const bot_reply: Message = await message.reply({ embeds: [initialEmbed], components: ActionRowArr });
-                timeout_set('create', bot_reply.id, clientId, this.timeout_sec, this.timeout_execute, bot_reply, initialEmbed);
+                try {
+                    const bot_reply: Message = await message.reply({ embeds: [initialEmbed], components: ActionRowArr });
+                    timeout_set('create', bot_reply.id, clientId, this.timeout_sec, this.timeout_execute, bot_reply, initialEmbed);
+                } catch (e) {
+                    console.log(e);
+                    await create_delete_database(clientId);
+                }
             },
             timeout: true,
             timeout_sec: timeout_sec.create,
             timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, initialEmbed: EmbedBuilder): Promise<void> {
                 const timeoutObj: {embed: EmbedBuilder, error: boolean} = await common_delete_create_timeout(clientId, timeout_sec);
                 if (timeoutObj.error) {
-                    await reply_msg.reply({embeds: [timeoutObj.embed], components: []});
+                    try {
+                        await reply_msg.reply({embeds: [timeoutObj.embed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
-                await reply_msg.edit({ embeds: [initialEmbed, timeoutObj.embed], components: [] });
+                try {
+                    await reply_msg.edit({ embeds: [initialEmbed, timeoutObj.embed], components: [] });
+                } catch (e) {
+                    console.log(e);
+                }
             }
         },
         roles: {
@@ -74,7 +92,11 @@ const create_command: CommandModule<createStates> = {
                     code: t_error_code
                 } = await roles_common_process(clientId, {action: 'none'});
                 if (roles_process_obj.error) {
-                    await message.reply({ embeds: [await ui_error_fatal(clientId, roles_process_obj.code)], components: [] })
+                    try {
+                        await message.reply({ embeds: [await ui_error_fatal(clientId, roles_process_obj.code)], components: [] })
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
 
@@ -82,18 +104,31 @@ const create_command: CommandModule<createStates> = {
                 const [ActionRowArr, rolesEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>]
                         | [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder]
                     = roles_process_obj.value;
-                const bot_reply: Message = await message.reply({ embeds: [rolesEmbed], components: ActionRowArr });
-                timeout_set('create', bot_reply.id, clientId, this.timeout_sec, this.timeout_execute, bot_reply, rolesEmbed);
+                try {
+                    const bot_reply: Message = await message.reply({ embeds: [rolesEmbed], components: ActionRowArr });
+                    timeout_set('create', bot_reply.id, clientId, this.timeout_sec, this.timeout_execute, bot_reply, rolesEmbed);
+                } catch (e) {
+                    console.log(e);
+                    await create_delete_database(clientId);
+                }
             },
             timeout: true,
             timeout_sec: timeout_sec.create,
             timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, rolesEmbed: EmbedBuilder): Promise<void> {
                 const timeoutObj: {embed: EmbedBuilder, error: boolean} = await common_delete_create_timeout(clientId, timeout_sec);
                 if (timeoutObj.error) {
-                    await reply_msg.reply({embeds: [timeoutObj.embed], components: []});
+                    try {
+                        await reply_msg.reply({embeds: [timeoutObj.embed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
-                await reply_msg.edit({ embeds: [rolesEmbed, timeoutObj.embed], components: [] });
+                try {
+                    await reply_msg.edit({ embeds: [rolesEmbed, timeoutObj.embed], components: [] });
+                } catch (e) {
+                    console.log(e);
+                }
             }
         },
         final: {
@@ -110,24 +145,41 @@ const create_command: CommandModule<createStates> = {
                     code: t_error_code
                 } = await final_common_process(clientId);
                 if (final_process_obj.error) {
-                    await message.reply({ embeds: [await ui_error_fatal(clientId, final_process_obj.code)], components: [] })
+                    try {
+                        await message.reply({ embeds: [await ui_error_fatal(clientId, final_process_obj.code)], components: [] })
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
 
                 //Success
                 const [ActionRowArr, rolesEmbed]: [[ActionRowBuilder<ButtonBuilder>], EmbedBuilder] = final_process_obj.value;
-                const bot_reply: Message = await message.reply({ embeds: [rolesEmbed], components: ActionRowArr });
-                timeout_set('create', bot_reply.id, clientId, this.timeout_sec, this.timeout_execute, bot_reply, rolesEmbed);
+                try {
+                    const bot_reply: Message = await message.reply({ embeds: [rolesEmbed], components: ActionRowArr });
+                    timeout_set('create', bot_reply.id, clientId, this.timeout_sec, this.timeout_execute, bot_reply, rolesEmbed);
+                } catch (e) {
+                    console.log(e);
+                    await create_delete_database(clientId);
+                }
             },
             timeout: true,
             timeout_sec: timeout_sec.create,
             timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, finalEmbed: EmbedBuilder): Promise<void> {
                 const timeoutObj: {embed: EmbedBuilder, error: boolean} = await common_delete_create_timeout(clientId, timeout_sec);
                 if (timeoutObj.error) {
-                    await reply_msg.reply({embeds: [timeoutObj.embed], components: []});
+                    try {
+                        await reply_msg.reply({embeds: [timeoutObj.embed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
-                await reply_msg.edit({ embeds: [finalEmbed, timeoutObj.embed], components: [] });
+                try {
+                    await reply_msg.edit({ embeds: [finalEmbed, timeoutObj.embed], components: [] });
+                } catch (e) {
+                    console.log(e);
+                }
             }
         },
         createID: {
@@ -140,7 +192,11 @@ const create_command: CommandModule<createStates> = {
                 if (game_create !== null) {
                     const [creating_error_text]: string[] = await get_display_text(['create.creating_error'], clientId);
                     const creating_err_embed: EmbedBuilder = await ui_error_non_fatal(clientId, creating_error_text ?? display_error_str);
-                    await message.reply({embeds: [creating_err_embed], components: []});
+                    try {
+                        await message.reply({embeds: [creating_err_embed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
                 //Validate the game ID provided.
@@ -154,9 +210,7 @@ const create_command: CommandModule<createStates> = {
                     try {
                         await message.reply({ embeds: [invalidEmbed], components: [] });
                     } catch (error) {
-                        console.error(error);
-                        const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'M1');
-                        await message.reply({embeds: [errorEmbed], components: []});
+                        console.log(error);
                     }
                     return;
                 }
@@ -180,7 +234,11 @@ const create_command: CommandModule<createStates> = {
                 catch (error) {
                     console.log(error);
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D1');
-                    await message.reply({embeds: [errorEmbed], components: []});
+                    try {
+                        await message.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
 
@@ -194,7 +252,11 @@ const create_command: CommandModule<createStates> = {
                     code: t_error_code
                 } = await roles_common_process(clientId, {action: 'none'});
                 if (roles_process_obj.error) {
-                    await message.reply({ embeds: [await ui_error_fatal(clientId, roles_process_obj.code)], components: [] })
+                    try {
+                        await message.reply({ embeds: [await ui_error_fatal(clientId, roles_process_obj.code)], components: [] })
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
 
@@ -202,18 +264,31 @@ const create_command: CommandModule<createStates> = {
                 const [ActionRowArr, rolesEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>]
                         | [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder]
                     = roles_process_obj.value;
-                const bot_reply: Message = await message.reply({ embeds: [rolesEmbed], components: ActionRowArr });
-                timeout_set('create', bot_reply.id, clientId, this.timeout_sec, this.timeout_execute, bot_reply, rolesEmbed);
+                try {
+                    const bot_reply: Message = await message.reply({ embeds: [rolesEmbed], components: ActionRowArr });
+                    timeout_set('create', bot_reply.id, clientId, this.timeout_sec, this.timeout_execute, bot_reply, rolesEmbed);
+                } catch (e) {
+                    console.log(e);
+                    await create_delete_database(clientId);
+                }
             },
             timeout: true,
             timeout_sec: timeout_sec.create,
             timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, rolesEmbed: EmbedBuilder): Promise<void> {
                 const timeoutObj: {embed: EmbedBuilder, error: boolean} = await common_delete_create_timeout(clientId, timeout_sec);
                 if (timeoutObj.error) {
-                    await reply_msg.reply({embeds: [timeoutObj.embed], components: []});
+                    try {
+                        await reply_msg.reply({embeds: [timeoutObj.embed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
-                await reply_msg.edit({ embeds: [rolesEmbed, timeoutObj.embed], components: [] });
+                try {
+                    await reply_msg.edit({ embeds: [rolesEmbed, timeoutObj.embed], components: [] });
+                } catch (e) {
+                    console.log(e);
+                }
             }
         }
     },
@@ -222,10 +297,18 @@ const create_command: CommandModule<createStates> = {
         const clientId: string = message.author.id;
         const cooldown_status: t_cooldown_status = await check_cooldown(clientId, 'create', command_cooldown_sec.create);
         if (cooldown_status.status == 'cooldown') {
-            await message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)], components: [] })
+            try {
+                await message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)], components: [] })
+            } catch (e) {
+                console.log(e);
+            }
             return;
         } else if (cooldown_status.status == 'fatal') {
-            await message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)], components: [] })
+            try {
+                await message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)], components: [] })
+            } catch (e) {
+                console.log(e);
+            }
             return;
         }
 
@@ -234,7 +317,11 @@ const create_command: CommandModule<createStates> = {
             //Too much arguments
             const [much_args_text]: string[] = await get_display_text(['general.command_args_error.much_args'], clientId);
             const much_args_embed: EmbedBuilder = await ui_error_non_fatal(clientId, `create ${much_args_text ?? display_error_str}`);
-            await message.reply({embeds: [much_args_embed], components: []});
+            try {
+                await message.reply({embeds: [much_args_embed], components: []});
+            } catch (e) {
+                console.log(e);
+            }
             return;
         }
 

@@ -16,7 +16,11 @@ const button_no_interaction: InteractionModule<ButtonInteraction, buttonPrefixNo
                 const clientId: string = interaction.user.id;
 
                 if (interaction.guildId === null) {
-                    await interaction.reply({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
+                    try {
+                        await interaction.reply({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
                 const settings: TempPrefixSettingInstance | null = await TEMP_PREFIX_SETTINGS.findOne({ where: { guildId: interaction.guildId } });
@@ -26,14 +30,22 @@ const button_no_interaction: InteractionModule<ButtonInteraction, buttonPrefixNo
                     } catch (error) {
                         console.error(error);
                         const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D2');
-                        await interaction.reply({embeds: [errorEmbed], components: []});
+                        try {
+                            await interaction.reply({embeds: [errorEmbed], components: []});
+                        } catch (e) {
+                            console.log(e);
+                        }
                         return;
                     }
                 }
 
                 const [cancel_text]: string[] = await get_display_text(['settings.server_settings.prefix.cancellation'], clientId);
                 const cancelEmbed: EmbedBuilder = await ui_cancel(clientId, cancel_text ?? display_error_str);
-                await interaction.update({ embeds: [cancelEmbed], components: []});
+                try {
+                    await interaction.update({ embeds: [cancelEmbed], components: []});
+                } catch (e) {
+                    console.log(e);
+                }
                 timeout_delete(clientId, 'settings_prefix');
             },
             timeout: false
@@ -54,7 +66,11 @@ const button_no_interaction: InteractionModule<ButtonInteraction, buttonPrefixNo
             if (interaction_check.type === 'outdated') {
                 const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
                 const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? display_error_str);
-                await interaction.update({embeds: [outdated_embed], components: []});
+                try {
+                    await interaction.update({embeds: [outdated_embed], components: []});
+                } catch (e) {
+                    console.log(e);
+                }
             }
             return;
         }

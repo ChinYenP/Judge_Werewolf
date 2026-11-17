@@ -19,10 +19,18 @@ const ping_command: CommandModule<pingStates> = {
 
                 const cooldown_status: t_cooldown_status = await check_cooldown(clientId, 'ping', this.cooldown_sec);
                 if (cooldown_status.status == 'cooldown') {
-                    await message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)], components: [] })
+                    try {
+                        await message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)], components: [] })
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 } else if (cooldown_status.status == 'fatal') {
-                    await message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)], components: [] })
+                    try {
+                        await message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)], components: [] })
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
 
@@ -34,31 +42,29 @@ const ping_command: CommandModule<pingStates> = {
                     .setTitle(ping_text ?? display_error_str)
                     .setTimestamp()
 
-                let sent: Message = await message.reply({ embeds: [pingEmbed], components: [] });
-                sent = await sent.fetch();
-                const latency: number = sent.createdTimestamp - message.createdTimestamp;
-
-                const pongEmbed: EmbedBuilder = new EmbedBuilder()
-                    .setColor(embed_hex_color)
-                    .setTitle(`${ping_text ?? display_error_str}${pong_text ?? display_error_str}`)
-                    .addFields(
-                        {
-                            name: latency_text ?? display_error_str,
-                            value: `${latency.toString()} ms`
-                        },
-                        {
-                            name: ws_latency_text ?? display_error_str,
-                            value: `${message.client.ws.ping.toString()} ms`
-                        }
-                    )
-                    .setTimestamp()
-
                 try {
+                    let sent: Message = await message.reply({ embeds: [pingEmbed], components: [] });
+                    sent = await sent.fetch();
+                    const latency: number = sent.createdTimestamp - message.createdTimestamp;
+
+                    const pongEmbed: EmbedBuilder = new EmbedBuilder()
+                        .setColor(embed_hex_color)
+                        .setTitle(`${ping_text ?? display_error_str}${pong_text ?? display_error_str}`)
+                        .addFields(
+                            {
+                                name: latency_text ?? display_error_str,
+                                value: `${latency.toString()} ms`
+                            },
+                            {
+                                name: ws_latency_text ?? display_error_str,
+                                value: `${message.client.ws.ping.toString()} ms`
+                            }
+                        )
+                        .setTimestamp()
+
                     await sent.edit({ embeds: [pongEmbed], components: [] });
                 } catch (error) {
-                    console.error(error);
-                    const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'M1');
-                    await message.reply({embeds: [errorEmbed], components: []});
+                    console.log(error);
                 }
             },
             timeout: false

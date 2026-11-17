@@ -9,7 +9,7 @@ import { ui_hunter } from "../ui.js";
 import { is_valid_interaction, timeout_set } from "../../../../../../utility/timeout/timeout.js";
 import { display_error_str, timeout_sec } from "../../../../../../global/config.js";
 import { t_error_code } from "../../../../../../global/types/list_str.js";
-import { game_result } from "../../../global/result.js";
+import { delete_game_database, game_result } from "../../../global/result.js";
 import { get_display_text } from "../../../../../../utility/get_display.js";
 
 const select_hunter_target_interaction: InteractionModule<StringSelectMenuInteraction, selectGameplayHunterTarget> = {
@@ -21,12 +21,20 @@ const select_hunter_target_interaction: InteractionModule<StringSelectMenuIntera
                 let game_match: GameMatchInstance | null = await GAME_MATCH.findOne({ where: { clientId: clientId } });
                 if (game_match === null) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D4');
-                    await interaction.reply({embeds: [errorEmbed], components: []});
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
                 if (interaction.values[0] === undefined || (game_match.status.status !== 'hunter_day' && game_match.status.status !== 'hunter_night')) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
-                    await interaction.reply({embeds: [errorEmbed], components: []});
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
 
@@ -39,23 +47,36 @@ const select_hunter_target_interaction: InteractionModule<StringSelectMenuIntera
                 const [affectedCountPlayer]: [number] = await GAME_MATCH.update({ status: new_status }, { where: { clientId: clientId } });
                 if (affectedCountPlayer <= 0) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D3');
-                    await interaction.reply({embeds: [errorEmbed], components: []});
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
 
                 game_match = await GAME_MATCH.findOne({ where: { clientId: clientId } });
                 if (game_match === null || (game_match.status.status !== 'hunter_day' && game_match.status.status !== 'hunter_night')) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D4');
-                    await interaction.reply({embeds: [errorEmbed], components: []});
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
                 const infoEmbed: EmbedBuilder = await ui_gameplay_info(clientId, game_match);
                 const gameUIObj: {action_rows: [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], embed: EmbedBuilder}
                     = await ui_hunter(clientId, game_match.status.target, game_match.players_info);
                 
-                await interaction.update({embeds: [infoEmbed, gameUIObj.embed], components: gameUIObj.action_rows});
-                const update_msg: Message = await interaction.fetchReply();
-                timeout_set('gameplay', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, undefined);
+                try {
+                    await interaction.update({embeds: [infoEmbed, gameUIObj.embed], components: gameUIObj.action_rows});
+                    const update_msg: Message = await interaction.fetchReply();
+                    timeout_set('gameplay', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, undefined);
+                } catch (e) {
+                    console.log(e);
+                    await delete_game_database(clientId);
+                }
             },
             timeout: true,
             timeout_sec: timeout_sec.gameplay,
@@ -65,10 +86,18 @@ const select_hunter_target_interaction: InteractionModule<StringSelectMenuIntera
                     = await game_result(clientId, 'timeout', null);
                 if (gameUIObj.error) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, gameUIObj.code);
-                    await reply_msg.edit({embeds: [errorEmbed], components: []});
+                    try {
+                        await reply_msg.edit({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
-                await reply_msg.edit({ embeds: [gameUIObj.resultEmbed], components: [] });
+                try {
+                    await reply_msg.edit({ embeds: [gameUIObj.resultEmbed], components: [] });
+                } catch (e) {
+                    console.log(e);
+                }
             }
         }
     },
@@ -88,7 +117,11 @@ const select_hunter_target_interaction: InteractionModule<StringSelectMenuIntera
             if (interaction_check.type === 'outdated') {
                 const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
                 const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? display_error_str);
-                await interaction.update({embeds: [outdated_embed], components: []});
+                try {
+                    await interaction.update({embeds: [outdated_embed], components: []});
+                } catch (e) {
+                    console.log(e);
+                }
             }
             return;
         }

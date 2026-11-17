@@ -16,24 +16,31 @@ const button_cancel_interaction: InteractionModule<ButtonInteraction, buttonCrea
                 const clientId: string = interaction.user.id;
 
                 if (interaction.guildId === null) {
-                    await interaction.reply({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
+                    try {
+                        await interaction.reply({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
-                const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
-                if (game_create !== null) {
+
+                if (!(await create_delete_database(clientId))) {
+                    const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D2');
                     try {
-                        await GAME_CREATE.destroy({ where: { clientId: clientId } });
-                    } catch (error) {
-                        console.error(error);
-                        const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D2');
                         await interaction.reply({embeds: [errorEmbed], components: []});
-                        return;
+                    } catch (e) {
+                        console.log(e);
                     }
+                    return;
                 }
 
                 const [cancel_text]: string[] = await get_display_text(['create.cancel'], clientId);
                 const cancelEmbed: EmbedBuilder = await ui_cancel(clientId, cancel_text ?? display_error_str);
-                await interaction.update({ embeds: [cancelEmbed], components: []});
+                try {
+                    await interaction.update({ embeds: [cancelEmbed], components: []});
+                } catch (e) {
+                    console.log(e);
+                }
                 timeout_delete(clientId, 'create');
             },
             timeout: false
@@ -55,12 +62,29 @@ const button_cancel_interaction: InteractionModule<ButtonInteraction, buttonCrea
             if (interaction_check.type === 'outdated') {
                 const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
                 const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? display_error_str);
-                await interaction.update({embeds: [outdated_embed], components: []});
+                try {
+                    await interaction.update({embeds: [outdated_embed], components: []});
+                } catch (e) {
+                    console.log(e);
+                }
             }
             return;
         }
         await this.states.cancel.execute(interaction);
     }
+}
+
+export async function create_delete_database(clientId: string): Promise<boolean> {
+    const game_create: GameCreateInstance | null = await GAME_CREATE.findOne({ where: { clientId: clientId } });
+    if (game_create !== null) {
+        try {
+            await GAME_CREATE.destroy({ where: { clientId: clientId } });
+        } catch (error) {
+            console.error(error);
+            return (false);
+        }
+    }
+    return (true);
 }
 
 export default button_cancel_interaction;

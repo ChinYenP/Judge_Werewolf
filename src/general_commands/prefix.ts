@@ -21,10 +21,18 @@ const prefix_command: CommandModule<prefixStates> = {
 
                 const cooldown_status: t_cooldown_status = await check_cooldown(clientId, 'prefix', this.cooldown_sec);
                 if (cooldown_status.status == 'cooldown') {
-                    await message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)], components: [] })
+                    try {
+                        await message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)], components: [] });
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 } else if (cooldown_status.status == 'fatal') {
-                    await message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)], components: [] })
+                    try {
+                        await message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)], components: [] });
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
                 let prefix: string = default_prefix;
@@ -39,7 +47,11 @@ const prefix_command: CommandModule<prefixStates> = {
                 //Validate prefix
                 if (!prefix_validation(prefix)) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'C3');
-                    await message.reply({embeds: [errorEmbed], components: []});
+                    try {
+                        await message.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                 }
 
                 const [title_text, current_prefix_text, default_prefix_text, instruction_text]: string[]
@@ -67,9 +79,7 @@ const prefix_command: CommandModule<prefixStates> = {
                 try {
                     await message.reply({ embeds: [prefixEmbed], components: [] });
                 } catch (error) {
-                    console.error(error);
-                    const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'M1');
-                    await message.reply({embeds: [errorEmbed], components: []});
+                    console.log(error);
                 }
             },
             timeout: false

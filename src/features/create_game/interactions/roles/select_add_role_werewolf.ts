@@ -9,6 +9,7 @@ import { t_error_code } from '../../../../global/types/list_str.js';
 import { common_delete_create_timeout } from '../../common_process/delete_create_timeout.js';
 import { isWerewolfRoleId } from '../../../../global/types/other_types.js';
 import { roles_common_process } from '../../common_process/roles.js';
+import { create_delete_database } from '../button_cancel.js';
 
 const select_add_role_werewolf_interaction: InteractionModule<StringSelectMenuInteraction, selectCreateAddRoleWerewolf> = {
     interaction_name: 'select_create_roles_werewolf',
@@ -18,7 +19,12 @@ const select_add_role_werewolf_interaction: InteractionModule<StringSelectMenuIn
                 const clientId: string = interaction.user.id;
 
                 if (interaction.values[0] === undefined || !isWerewolfRoleId(interaction.values[0])) {
-                    await interaction.reply({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
+                    const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 };
 
@@ -32,7 +38,12 @@ const select_add_role_werewolf_interaction: InteractionModule<StringSelectMenuIn
                     code: t_error_code
                 } = await roles_common_process(clientId, {action: 'add_role', value: interaction.values[0]});
                 if (roles_process_obj.error) {
-                    await interaction.reply({ embeds: [await ui_error_fatal(clientId, roles_process_obj.code)], components: [] })
+                    const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, roles_process_obj.code);
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
 
@@ -40,19 +51,32 @@ const select_add_role_werewolf_interaction: InteractionModule<StringSelectMenuIn
                 const [ActionRowArr, rolesEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>]
                         | [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder]
                     = roles_process_obj.value;
-                await interaction.update({ embeds: [rolesEmbed], components: ActionRowArr })
-                const update_msg: Message = await interaction.fetchReply();
-                timeout_set('create', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, rolesEmbed);
+                try {
+                    await interaction.update({ embeds: [rolesEmbed], components: ActionRowArr })
+                    const update_msg: Message = await interaction.fetchReply();
+                    timeout_set('create', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, rolesEmbed);
+                } catch (e) {
+                    console.log(e);
+                    await create_delete_database(clientId);
+                }
             },
             timeout: true,
             timeout_sec: timeout_sec.create,
             timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, rolesEmbed: EmbedBuilder): Promise<void> {
                 const timeoutObj: {embed: EmbedBuilder, error: boolean} = await common_delete_create_timeout(clientId, timeout_sec);
                 if (timeoutObj.error) {
-                    await reply_msg.edit({embeds: [timeoutObj.embed], components: []});
+                    try {
+                        await reply_msg.edit({embeds: [timeoutObj.embed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
-                await reply_msg.edit({ embeds: [rolesEmbed, timeoutObj.embed], components: [] });
+                try {
+                    await reply_msg.edit({embeds: [rolesEmbed, timeoutObj.embed], components: []});
+                } catch (e) {
+                    console.log(e);
+                }
             }
         }
     },
@@ -72,7 +96,11 @@ const select_add_role_werewolf_interaction: InteractionModule<StringSelectMenuIn
             if (interaction_check.type === 'outdated') {
                 const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
                 const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? display_error_str);
-                await interaction.update({embeds: [outdated_embed], components: []});
+                try {
+                    await interaction.update({embeds: [outdated_embed], components: []});
+                } catch (e) {
+                    console.log(e);
+                }
             }
             return;
         }

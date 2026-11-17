@@ -7,7 +7,7 @@ import { ui_error_fatal, ui_error_non_fatal } from "../../../../../utility/embed
 import { display_error_str, embed_hex_color, gameplay, timeout_sec } from "../../../../../global/config.js";
 import { GAME_MATCH, GameMatchInstance } from "../../../../../global/sqlite_db.js";
 import { t_error_code } from "../../../../../global/types/list_str.js";
-import { game_result } from "../../global/result.js";
+import { delete_game_database, game_result } from "../../global/result.js";
 import { t_game_match_state } from "../../../../../global/types/other_types.js";
 import { i_player_info } from "../../../../../global/types/player_info.js";
 import { game_next_state } from "../../../game_logic/next_state.js";
@@ -23,12 +23,20 @@ const button_day_vote_confirm_interaction: InteractionModule<ButtonInteraction, 
                 const game_match: GameMatchInstance | null = await GAME_MATCH.findOne({ where: { clientId: clientId } });
                 if (game_match === null) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D4');
-                    await interaction.reply({embeds: [errorEmbed], components: []});
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
                 if (game_match.status.status !== 'day_vote') {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
-                    await interaction.reply({embeds: [errorEmbed], components: []});
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
 
@@ -48,7 +56,11 @@ const button_day_vote_confirm_interaction: InteractionModule<ButtonInteraction, 
                     if (new_players_info[lynched_index] === undefined) {
                         console.error('The lynched player must exist.');
                         const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
-                        await interaction.reply({embeds: [errorEmbed], components: []});
+                        try {
+                            await interaction.reply({embeds: [errorEmbed], components: []});
+                        } catch (e) {
+                            console.log(e);
+                        }
                         return;
                     }
                     new_players_info[lynched_index].dead = true;
@@ -58,7 +70,11 @@ const button_day_vote_confirm_interaction: InteractionModule<ButtonInteraction, 
                         = await get_last_word(clientId, new_players_info[lynched_index], lynched_index + 1);
                     if (last_word_obj.error) {
                         const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, last_word_obj.code);
-                        await interaction.reply({embeds: [errorEmbed], components: []});
+                        try {
+                            await interaction.reply({embeds: [errorEmbed], components: []});
+                        } catch (e) {
+                            console.log(e);
+                        }
                         return;
                     }
                     additional_info.push(last_word_obj.last_word);
@@ -69,7 +85,11 @@ const button_day_vote_confirm_interaction: InteractionModule<ButtonInteraction, 
                             if (new_players_info[hunter_target] === undefined) {
                                 console.error('The hunter\'s target does not exist.');
                                 const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
-                                await interaction.reply({embeds: [errorEmbed], components: []});
+                                try {
+                                    await interaction.reply({embeds: [errorEmbed], components: []});
+                                } catch (e) {
+                                    console.log(e);
+                                }
                                 return;
                             }
                             new_players_info[hunter_target].dead = true;
@@ -78,7 +98,11 @@ const button_day_vote_confirm_interaction: InteractionModule<ButtonInteraction, 
                                 = await get_last_word(clientId, new_players_info[hunter_target], hunter_target + 1);
                             if (last_word_obj.error) {
                                 const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, last_word_obj.code);
-                                await interaction.reply({embeds: [errorEmbed], components: []});
+                                try {
+                                    await interaction.reply({embeds: [errorEmbed], components: []});
+                                } catch (e) {
+                                    console.log(e);
+                                }
                                 return;
                             }
                             additional_info.push(last_word_obj.last_word);
@@ -108,7 +132,11 @@ const button_day_vote_confirm_interaction: InteractionModule<ButtonInteraction, 
                 }, { where: { clientId: clientId } });
                 if (affectedCountPlayer <= 0) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D3');
-                    await interaction.reply({embeds: [errorEmbed], components: []});
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
 
@@ -125,24 +153,41 @@ const button_day_vote_confirm_interaction: InteractionModule<ButtonInteraction, 
                     = await game_next_state(clientId, dayVoteResultEmbed);
                 if (gameUIObj.error) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, gameUIObj.code);
-                    await interaction.reply({embeds: [errorEmbed], components: []});
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
                 if (gameUIObj.prevStateEmbed === null) {
                     console.error('Logically, prevState should exist since it is the dayVoteResultEmbed.');
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
-                    await interaction.reply({embeds: [errorEmbed], components: []});
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
                 if (gameUIObj.end) {
-                    await interaction.update({embeds: [gameUIObj.prevStateEmbed], components: []});
-                    await interaction.followUp({embeds: [gameUIObj.resultEmbed], components: []});
+                    try {
+                        await interaction.update({embeds: [gameUIObj.prevStateEmbed], components: []});
+                        await interaction.followUp({embeds: [gameUIObj.resultEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     timeout_delete(clientId, 'gameplay');
                     return;
                 }
-                await interaction.update({embeds: [gameUIObj.prevStateEmbed], components: []});
-                const update_msg: Message = await interaction.followUp({embeds: [gameUIObj.infoEmbed, gameUIObj.stateEmbed], components: gameUIObj.components});
-                timeout_set('gameplay', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, undefined);
+                try {
+                    await interaction.update({embeds: [gameUIObj.prevStateEmbed], components: []});
+                    const update_msg: Message = await interaction.followUp({embeds: [gameUIObj.infoEmbed, gameUIObj.stateEmbed], components: gameUIObj.components});
+                    timeout_set('gameplay', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, undefined);
+                } catch (e) {
+                    console.log(e);
+                    await delete_game_database(clientId);
+                }
             },
             timeout: true,
             timeout_sec: timeout_sec.gameplay,
@@ -152,10 +197,18 @@ const button_day_vote_confirm_interaction: InteractionModule<ButtonInteraction, 
                     = await game_result(clientId, 'timeout', null);
                 if (gameUIObj.error) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, gameUIObj.code);
-                    await reply_msg.edit({embeds: [errorEmbed], components: []});
+                    try {
+                        await reply_msg.edit({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
-                await reply_msg.edit({ embeds: [gameUIObj.resultEmbed], components: [] });
+                try {
+                    await reply_msg.edit({ embeds: [gameUIObj.resultEmbed], components: [] });
+                } catch (e) {
+                    console.log(e);
+                }
             }
         }
     },
@@ -175,7 +228,11 @@ const button_day_vote_confirm_interaction: InteractionModule<ButtonInteraction, 
             if (interaction_check.type === 'outdated') {
                 const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
                 const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? display_error_str);
-                await interaction.update({embeds: [outdated_embed], components: []});
+                try {
+                    await interaction.update({embeds: [outdated_embed], components: []});
+                } catch (e) {
+                    console.log(e);
+                }
             }
             return;
         }

@@ -8,6 +8,7 @@ import { selectCreateGameRule } from '../../../../global/types/interaction_state
 import { t_error_code, isGameRule } from '../../../../global/types/list_str.js';
 import { initial_common_process } from '../../common_process/initial.js';
 import { common_delete_create_timeout } from '../../common_process/delete_create_timeout.js';
+import { create_delete_database } from '../button_cancel.js';
 
 const select_game_rule_interaction: InteractionModule<StringSelectMenuInteraction, selectCreateGameRule> = {
     interaction_name: 'select_create_initial_game_rule',
@@ -17,7 +18,12 @@ const select_game_rule_interaction: InteractionModule<StringSelectMenuInteractio
                 const clientId: string = interaction.user.id;
 
                 if (interaction.values[0] === undefined || !isGameRule(interaction.values[0])) {
-                    await interaction.reply({ embeds: [await ui_error_fatal(clientId, 'U')], components: [] })
+                    const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
 
@@ -31,7 +37,12 @@ const select_game_rule_interaction: InteractionModule<StringSelectMenuInteractio
                     code: t_error_code
                 } = await initial_common_process(clientId, {replace: 'game_rule', value: interaction.values[0]});
                 if (initial_process_obj.error) {
-                    await interaction.reply({ embeds: [await ui_error_fatal(clientId, initial_process_obj.code)], components: [] })
+                    const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, initial_process_obj.code);
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
 
@@ -39,19 +50,32 @@ const select_game_rule_interaction: InteractionModule<StringSelectMenuInteractio
                 const [ActionRowArr, initialEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>,
                     ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder]
                     = initial_process_obj.value;
-                await interaction.update({ embeds: [initialEmbed], components: ActionRowArr });
-                const update_msg: Message = await interaction.fetchReply();
-                timeout_set('create', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, initialEmbed);
+                try {
+                    await interaction.update({ embeds: [initialEmbed], components: ActionRowArr });
+                    const update_msg: Message = await interaction.fetchReply();
+                    timeout_set('create', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, initialEmbed);
+                } catch (e) {
+                    console.log(e);
+                    await create_delete_database(clientId);
+                }
             },
             timeout: true,
             timeout_sec: timeout_sec.create,
             timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, initialEmbed: EmbedBuilder): Promise<void> {
                 const timeoutObj: {embed: EmbedBuilder, error: boolean} = await common_delete_create_timeout(clientId, timeout_sec);
                 if (timeoutObj.error) {
-                    await reply_msg.edit({embeds: [timeoutObj.embed], components: []});
+                    try {
+                        await reply_msg.edit({embeds: [timeoutObj.embed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
-                await reply_msg.edit({ embeds: [initialEmbed, timeoutObj.embed], components: [] });
+                try {
+                    await reply_msg.edit({embeds: [initialEmbed, timeoutObj.embed], components: []});
+                } catch (e) {
+                    console.log(e);
+                }
             }
         }
     },
@@ -71,7 +95,11 @@ const select_game_rule_interaction: InteractionModule<StringSelectMenuInteractio
             if (interaction_check.type === 'outdated') {
                 const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
                 const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? display_error_str);
-                await interaction.update({embeds: [outdated_embed], components: []});
+                try {
+                    await interaction.update({embeds: [outdated_embed], components: []});
+                } catch (e) {
+                    console.log(e);
+                }
             }
             return;
         }

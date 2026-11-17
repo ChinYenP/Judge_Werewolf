@@ -19,10 +19,18 @@ const help_command: CommandModule<helpStates> = {
 
                 const cooldown_status: t_cooldown_status = await check_cooldown(clientId, 'help', this.cooldown_sec);
                 if (cooldown_status.status == 'cooldown') {
-                    await message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)], components: [] })
+                    try {
+                        await message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)], components: [] })
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 } else if (cooldown_status.status == 'fatal') {
-                    await message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)], components: [] })
+                    try {
+                        await message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)], components: [] })
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
 
@@ -68,9 +76,7 @@ const help_command: CommandModule<helpStates> = {
                 try {
                     await message.reply({ embeds: [helpEmbed], components: [] });
                 } catch (error) {
-                    console.error(error);
-                    const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'M1');
-                    await message.reply({embeds: [errorEmbed], components: []});
+                    console.log(error);
                 }
             },
             timeout: false

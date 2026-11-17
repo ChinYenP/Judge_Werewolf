@@ -74,13 +74,19 @@ export async function game_result(clientId: string, win_con: Exclude<t_win_con,'
         )
         .setTimestamp()
 
+    if (!(await delete_game_database(clientId))) {
+        return ({error: true, code: 'D2'});
+    }
+    return ({error: false, end: true, prevStateEmbed: prevStateEmbed, resultEmbed: resultEmbed});
+}
+
+export async function delete_game_database(clientId: string): Promise<boolean> {
     //Delete row from database
     try {
         await GAME_MATCH.destroy({ where: { clientId: clientId } });
     } catch (error) {
         console.error(error);
-        return ({error: true, code: 'D2'});
+        return (false);
     }
-
-    return ({error: false, end: true, prevStateEmbed: prevStateEmbed, resultEmbed: resultEmbed});
+    return (true);
 }

@@ -69,7 +69,6 @@ function timeout_set<Tdatas>(
     time_sec: number,
     timeout_execute: (bot_reply: Message, clientId: string, timeout_sec: number, data_passed: Tdatas) => Promise<void>,
     bot_reply: Message, datas: Tdatas): void {
-
     
     timeout_delete(clientId, timeout_type);
     //Set timer while add data to database:

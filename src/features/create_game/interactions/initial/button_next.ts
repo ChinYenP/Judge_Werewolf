@@ -10,6 +10,7 @@ import { initial_common_process } from '../../common_process/initial.js';
 import { common_delete_create_timeout } from '../../common_process/delete_create_timeout.js';
 import { GAME_CREATE, GameCreateInstance } from '../../../../global/sqlite_db.js';
 import { roles_common_process } from '../../common_process/roles.js';
+import { create_delete_database } from '../button_cancel.js';
 
 const button_initial_next_interaction: InteractionModule<ButtonInteraction, buttonCreateInitialNext> = {
     interaction_name: 'button_create_initial_next',
@@ -28,7 +29,12 @@ const button_initial_next_interaction: InteractionModule<ButtonInteraction, butt
                     code: t_error_code
                 } = await initial_common_process(clientId, {replace: 'none'});
                 if (initial_process_obj.error) {
-                    await interaction.reply({ embeds: [await ui_error_fatal(clientId, initial_process_obj.code)], components: [] })
+                    const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, initial_process_obj.code);
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
 
@@ -36,19 +42,32 @@ const button_initial_next_interaction: InteractionModule<ButtonInteraction, butt
                 const [ActionRowArr, initialEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>,
                     ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder]
                     = initial_process_obj.value;
-                await interaction.update({ embeds: [initialEmbed], components: ActionRowArr });
-                const update_msg: Message = await interaction.fetchReply();
-                timeout_set('create', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, initialEmbed);
+                try {
+                    await interaction.update({ embeds: [initialEmbed], components: ActionRowArr });
+                    const update_msg: Message = await interaction.fetchReply();
+                    timeout_set('create', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, initialEmbed);
+                } catch (e) {
+                    console.log(e);
+                    await create_delete_database(clientId);
+                }
             },
             timeout: true,
             timeout_sec: timeout_sec.create,
             timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, initialEmbed: EmbedBuilder): Promise<void> {
                 const timeoutObj: {embed: EmbedBuilder, error: boolean} = await common_delete_create_timeout(clientId, timeout_sec);
                 if (timeoutObj.error) {
-                    await reply_msg.edit({embeds: [timeoutObj.embed], components: []});
+                    try {
+                        await reply_msg.edit({embeds: [timeoutObj.embed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
-                await reply_msg.edit({ embeds: [initialEmbed, timeoutObj.embed], components: [] });
+                try {
+                        await reply_msg.edit({embeds: [initialEmbed, timeoutObj.embed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
             }
         },
         roles: {
@@ -65,8 +84,13 @@ const button_initial_next_interaction: InteractionModule<ButtonInteraction, butt
                     code: t_error_code
                 } = await roles_common_process(clientId, {action: 'just_next'});
                 if (roles_process_obj.error) {
-                    console.log(roles_process_obj.error)
-                    await interaction.reply({ embeds: [await ui_error_fatal(clientId, roles_process_obj.code)], components: [] })
+                    console.log(roles_process_obj.error);
+                    const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, roles_process_obj.code);
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
 
@@ -74,19 +98,32 @@ const button_initial_next_interaction: InteractionModule<ButtonInteraction, butt
                 const [ActionRowArr, rolesEmbed]: [[ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>]
                         | [ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<StringSelectMenuBuilder>, ActionRowBuilder<ButtonBuilder>], EmbedBuilder]
                     = roles_process_obj.value;
-                await interaction.update({ embeds: [rolesEmbed], components: ActionRowArr })
-                const update_msg: Message = await interaction.fetchReply();
-                timeout_set('create', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, rolesEmbed);
+                try {
+                    await interaction.update({ embeds: [rolesEmbed], components: ActionRowArr })
+                    const update_msg: Message = await interaction.fetchReply();
+                    timeout_set('create', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, rolesEmbed);
+                } catch (e) {
+                    console.log(e);
+                    await create_delete_database(clientId);
+                }
             },
             timeout: true,
             timeout_sec: timeout_sec.create,
             timeout_execute: async function(reply_msg: Message, clientId: string, timeout_sec: number, rolesEmbed: EmbedBuilder): Promise<void> {
                 const timeoutObj: {embed: EmbedBuilder, error: boolean} = await common_delete_create_timeout(clientId, timeout_sec);
                 if (timeoutObj.error) {
-                    await reply_msg.edit({embeds: [timeoutObj.embed], components: []});
+                    try {
+                        await reply_msg.edit({embeds: [timeoutObj.embed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
-                await reply_msg.edit({ embeds: [rolesEmbed, timeoutObj.embed], components: [] });
+                try {
+                    await reply_msg.edit({embeds: [rolesEmbed, timeoutObj.embed], components: []});
+                } catch (e) {
+                    console.log(e);
+                }
             }
         }
     },
@@ -106,7 +143,11 @@ const button_initial_next_interaction: InteractionModule<ButtonInteraction, butt
             if (interaction_check.type === 'outdated') {
                 const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
                 const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? display_error_str);
-                await interaction.update({embeds: [outdated_embed], components: []});
+                try {
+                    await interaction.update({embeds: [outdated_embed], components: []});
+                } catch (e) {
+                    console.log(e);
+                }
             }
             return;
         }

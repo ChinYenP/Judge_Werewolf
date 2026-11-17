@@ -20,25 +20,62 @@ const select_lang_interaction: InteractionModule<StringSelectMenuInteraction, se
 
                 if (interaction.values[0] === undefined || !isLanguages(interaction.values[0])) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
-                    await interaction.reply({embeds: [errorEmbed], components: []});
-                    return
-                };
-                const lang: t_languages = interaction.values[0];
-                //Do sequelize thing here while get output text
-                const sqlite_status: boolean = await sequelize_change_lang(interaction, lang, clientId);
-
-                if (!sqlite_status) {
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
-                }
+                };
 
+                const lang_value: t_languages = interaction.values[0];
+                //Do sequelize thing here while get output text
+
+                const settings: UserSettingsInstance | null = await USER_SETTINGS.findOne({ where: { clientId: clientId } });
+
+                if (settings !== null) {
+                    //clientId exist, update data:
+                    const [affectedCount] = await USER_SETTINGS.update({ lang: lang_value }, { where: { clientId: clientId } });
+                    if (affectedCount <= 0) {
+                        const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D3');
+                        try {
+                            await interaction.update({embeds: [errorEmbed], components: []});
+                        } catch (e) {
+                            console.log(e);
+                        }
+                        return;
+                    }
+                } else {
+                    //clientId not exist, create new data:
+                    try {
+                        await USER_SETTINGS.create({
+                            clientId: clientId,
+                            lang: lang_value,
+                        })
+                    } catch (error) {
+                        console.log(error);
+                        const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D1');
+                        try {
+                            await interaction.update({embeds: [errorEmbed], components: []});
+                        } catch (e) {
+                            console.log(e);
+                        }
+                        return;
+                    }
+                }
+                
                 //Success
                 const userEmbed: EmbedBuilder = await ui_user_info_embed(clientId);
                 const serverEmbed: EmbedBuilder = await ui_server_info_embed(clientId);
                 const rowLang: ActionRowBuilder<StringSelectMenuBuilder>[] = await user_settings_action_row(clientId);
-                await interaction.update({ embeds: [userEmbed, serverEmbed], components: rowLang });
-                const update_msg: Message = await interaction.fetchReply();
-                assertNotNull<Message>(update_msg);
-                timeout_set('user_settings', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, [userEmbed, serverEmbed]);
+                try {
+                    await interaction.update({ embeds: [userEmbed, serverEmbed], components: rowLang });
+                    const update_msg: Message = await interaction.fetchReply();
+                    assertNotNull<Message>(update_msg);
+                    timeout_set('user_settings', update_msg.id, clientId, this.timeout_sec, this.timeout_execute, update_msg, [userEmbed, serverEmbed]);
+                } catch (e) {
+                    console.log(e);
+                }
             },
             timeout: true,
             timeout_sec: timeout_sec.user_settings,
@@ -47,7 +84,11 @@ const select_lang_interaction: InteractionModule<StringSelectMenuInteraction, se
                 const serverEmbed: EmbedBuilder = data_passed[1];
                 const [timeout_text]: string[] = await get_display_text(['settings.embed.timeout_text'], clientId);
                 const timeoutEmbed: EmbedBuilder = await ui_timeout(clientId, timeout_sec, timeout_text ?? display_error_str);
-                await reply_msg.edit({ embeds: [userEmbed, serverEmbed, timeoutEmbed], components: [] });
+                try {
+                    await reply_msg.edit({ embeds: [userEmbed, serverEmbed, timeoutEmbed], components: [] });
+                } catch (e) {
+                    console.log(e);
+                }
             }
         }
     },
@@ -67,45 +108,15 @@ const select_lang_interaction: InteractionModule<StringSelectMenuInteraction, se
             if (interaction_check.type === 'outdated') {
                 const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
                 const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? display_error_str);
-                await interaction.update({embeds: [outdated_embed], components: []});
+                try {
+                    await interaction.update({embeds: [outdated_embed], components: []});
+                } catch (e) {
+                    console.log(e);
+                }
             }
             return;
         }
         await this.states.user_settings.execute(interaction);
-    }
-}
-
-
-async function sequelize_change_lang(interaction: StringSelectMenuInteraction, value: t_languages, clientId: string): (Promise<boolean>) {
-
-    // equivalent to: SELECT * FROM tags WHERE name = 'tagName' LIMIT 1;
-    const settings: UserSettingsInstance | null = await USER_SETTINGS.findOne({ where: { clientId: clientId } });
-
-    if (settings !== null) {
-        //clientId exist, update data:
-        // equivalent to: UPDATE SETTINGS (lang) values (?) WHERE clientId='?';
-        const [affectedCount] = await USER_SETTINGS.update({ lang: value }, { where: { clientId: clientId } });
-        if (affectedCount > 0) {
-            return (true);
-        }
-        const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D3');
-        await interaction.update({embeds: [errorEmbed], components: []});
-        return (false);
-    }
-    //clientId not exist, create new data:
-    try {
-        // equivalent to: INSERT INTO SETTINGS (clientId, lang, hardMode) values (?, ?, ?);
-        await USER_SETTINGS.create({
-            clientId: clientId,
-            lang: value,
-        })
-        return (true);
-    }
-    catch (error) {
-        console.log(error);
-        const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D1');
-        await interaction.update({embeds: [errorEmbed], components: []});
-        return (false);
     }
 }
 

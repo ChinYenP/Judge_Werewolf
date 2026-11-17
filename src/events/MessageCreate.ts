@@ -51,7 +51,11 @@ const message_create: EventModule<Message> = {
         }
         //Validate prefix
         if (!prefix_validation(preset_prefix)) {
-            await message.reply((await get_display_error_code('C3', clientId)));
+            try {
+                await message.reply((await get_display_error_code('C3', clientId)));
+            } catch (e) {
+                console.log(e);
+            }
         }
 
         // Check if the message starts with the prefix or sent by a bot
@@ -61,10 +65,18 @@ const message_create: EventModule<Message> = {
 
         const cooldown_status: t_cooldown_status = await check_cooldown(clientId, 'overall', command_cooldown_sec.overall);
         if (cooldown_status.status == 'cooldown') {
-            await message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)], components: [] })
+            try {
+                await message.reply({ embeds: [await ui_cooldown(clientId, cooldown_status.remaining_sec)], components: [] })
+            } catch (e) {
+                console.log(e);
+            }
             return;
         } else if (cooldown_status.status == 'fatal') {
-            await message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)], components: [] })
+            try {
+                await message.reply({ embeds: [await ui_error_fatal(clientId, cooldown_status.error_code)], components: [] })
+            } catch (e) {
+                console.log(e);
+            }
             return;
         }
 
@@ -74,21 +86,33 @@ const message_create: EventModule<Message> = {
         } else if (message.content.startsWith(clientMention)) {
             args = message.content.slice(clientMention.length).trim().split(/ +/);
         } else {
-            await message.reply((await get_display_error_code('C3', clientId)));
+            try {
+                await message.reply((await get_display_error_code('C3', clientId)));
+            } catch (e) {
+                console.log(e);
+            }
         }
         let commandName: string | undefined = args.shift();
         if (commandName === undefined) return;
         commandName = commandName.toLowerCase();
         if (!isCommand(commandName)) {
             const [cmd_not_exist_text]: string[] = await get_display_text(['general.command_not_exist'], clientId);
-            await message.reply(`${cmd_not_exist_text ?? display_error_str}${commandName}`);
+            try {
+                await message.reply(`${cmd_not_exist_text ?? display_error_str}${commandName}`);
+            } catch (e) {
+                console.log(e);
+            }
             console.error(`No command matching ${commandName} was found.`);
             return;
         }
         const command: AllCommandModules | undefined = await get_command_module(commandName);
         if (!command) {
             const [cmd_not_exist_text]: string[] = await get_display_text(['general.command_not_implemented'], clientId);
-            await message.reply(`${cmd_not_exist_text ?? display_error_str}${commandName}`);
+            try {
+                await message.reply(`${cmd_not_exist_text ?? display_error_str}${commandName}`);
+            } catch (e) {
+                console.log(e);
+            }
             console.error(`Command matching ${commandName} is not implemented yet.`);
             return;
         }
@@ -96,7 +120,11 @@ const message_create: EventModule<Message> = {
         try {
             await command.entry(message, args);
         } catch (error) {
-            await message.reply((await get_display_error_code('C2', clientId))[0] ?? display_error_str);
+            try {
+                await message.reply((await get_display_error_code('C2', clientId))[0] ?? display_error_str);
+            } catch (e) {
+                console.log(e);
+            }
             console.error(error);
         }
     }

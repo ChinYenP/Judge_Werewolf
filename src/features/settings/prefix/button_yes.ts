@@ -18,7 +18,11 @@ const button_yes_interaction: InteractionModule<ButtonInteraction, buttonPrefixY
 
                 if (interaction.guildId === null) {
                     const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
-                    await interaction.reply({embeds: [errorEmbed], components: []});
+                    try {
+                        await interaction.reply({embeds: [errorEmbed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 };
                 
@@ -27,7 +31,11 @@ const button_yes_interaction: InteractionModule<ButtonInteraction, buttonPrefixY
                 if (settings === null) {
                     const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
                     const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? display_error_str);
-                    await interaction.update({embeds: [outdated_embed], components: []});
+                    try {
+                        await interaction.update({embeds: [outdated_embed], components: []});
+                    } catch (e) {
+                        console.log(e);
+                    }
                     return;
                 }
                 const prefix: string = settings.prefix;
@@ -40,7 +48,11 @@ const button_yes_interaction: InteractionModule<ButtonInteraction, buttonPrefixY
                 //Success
                 const [success_text]: string[] = await get_display_text(['settings.server_settings.prefix.success'], clientId);
                 const successEmbed: EmbedBuilder = await ui_success(clientId, `${success_text ?? display_error_str}${prefix}`);
-                await interaction.update({ embeds: [successEmbed], components: []});
+                try {
+                    await interaction.update({ embeds: [successEmbed], components: []});
+                } catch (e) {
+                    console.log(e);
+                }
                 timeout_delete(clientId, 'settings_prefix');
             },
             timeout: false
@@ -62,7 +74,11 @@ const button_yes_interaction: InteractionModule<ButtonInteraction, buttonPrefixY
             if (interaction_check.type === 'outdated') {
                 const [outdated_interaction_text]: string[] = await get_display_text(['general.outdated_interaction'], clientId);
                 const outdated_embed: EmbedBuilder = await ui_error_non_fatal(clientId, outdated_interaction_text ?? display_error_str);
-                await interaction.update({embeds: [outdated_embed], components: []});
+                try {
+                    await interaction.update({embeds: [outdated_embed], components: []});
+                } catch (e) {
+                    console.log(e);
+                }
             }
             return;
         }
@@ -78,7 +94,11 @@ async function sequelize_prefix_yes(interaction: ButtonInteraction, prefix: stri
     if (interaction.guildId === null) {
         console.log('message.guildId should exists: ./utility/settings_prefix/button_yes.js');
         const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'U');
-        await interaction.update({embeds: [errorEmbed], components: []});
+        try {
+            await interaction.update({embeds: [errorEmbed], components: []});
+        } catch (e) {
+            console.log(e);
+        }
         return (false);
     }
 
@@ -89,7 +109,11 @@ async function sequelize_prefix_yes(interaction: ButtonInteraction, prefix: stri
         } catch (error) {
             console.error(error);
             const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D2');
-            await interaction.update({embeds: [errorEmbed], components: []});
+            try {
+                await interaction.update({embeds: [errorEmbed], components: []});
+            } catch (e) {
+                console.log(e);
+            }
         }
     }
 
@@ -104,7 +128,11 @@ async function sequelize_prefix_yes(interaction: ButtonInteraction, prefix: stri
             return (true);
         };
         const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D3');
-        await interaction.update({embeds: [errorEmbed], components: []});
+        try {
+            await interaction.update({embeds: [errorEmbed], components: []});
+        } catch (e) {
+            console.log(e);
+        }
         return (false);
     };
     //clientId not exist, create new data:
@@ -119,7 +147,11 @@ async function sequelize_prefix_yes(interaction: ButtonInteraction, prefix: stri
     catch (error) {
         console.log(error);
         const errorEmbed: EmbedBuilder = await ui_error_fatal(clientId, 'D1');
-        await interaction.update({embeds: [errorEmbed], components: []});
+        try {
+            await interaction.update({embeds: [errorEmbed], components: []});
+        } catch (e) {
+            console.log(e);
+        }
         return (false);
     };
 };
