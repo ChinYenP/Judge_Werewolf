@@ -2,6 +2,8 @@ import { Message, Events } from 'discord.js';
 import { external_delete_check, timeout_delete } from '../utility/timeout/timeout.js';
 import { isTextChannel } from '../global/types/other_types.js';
 import { EventModule } from '../global/types/module.js';
+import { create_delete_database } from '../features/create_game/interactions/button_cancel.js';
+import { delete_game_database } from '../features/gameplay/game_state/global/result.js';
 
 const messageDelete: EventModule<Message> = {
     event_name: Events.MessageDelete,
@@ -18,7 +20,16 @@ const messageDelete: EventModule<Message> = {
         } = external_delete_check(message.id);
         if (!exist_obj.exist) return;
         timeout_delete(exist_obj.clientId, exist_obj.timeout_type);
-        await message.channel.send({ content: 'External deletion to the bot\'s message is detected!', embeds: [], components: [] });
+        if (exist_obj.timeout_type === 'create') {
+            await create_delete_database(exist_obj.clientId);
+        } else if (exist_obj.timeout_type === 'gameplay') {
+            await delete_game_database(exist_obj.clientId);
+        }
+        try {
+            await message.channel.send({ content: 'Deleting bot\'s message will cause the session terminate.', embeds: [], components: [] });
+        } catch (e) {
+            console.log(e);
+        }
     }
 }
 
